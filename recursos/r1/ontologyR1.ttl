@@ -1,0 +1,228 @@
+@prefix :      <http://example.org/ontology#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+
+
+:UniversidadOntology a owl:Ontology ;
+    rdfs:label "Ontología de Universidad (ejemplo)" ;
+    rdfs:comment "Recurso 1" .
+
+##### Departamento #####
+:Departamento a owl:Class ;
+    rdfs:label "Departamento" ;
+    rdfs:comment "Representa un departamento dentro de la universidad." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :ID_Departamento ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+## DatatypeProperties
+:ID_Departamento a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Departamento ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_Departamento" ;
+    rdfs:comment "Código del departamento (ej. '01')." .
+
+:nombreDepartamento a owl:DatatypeProperty ;
+    rdfs:domain :Departamento ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombreDepartamento" ;
+    rdfs:comment "Nombre del departamento (ej. 'Matemáticas')." .
+
+##### Estudiante #####
+:Estudiante a owl:Class ;
+    rdfs:label "Estudiante" ;
+    rdfs:comment "Representa a un estudiante de la universidad." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :ID_Estudiante ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+## DatatypeProperties
+:ID_Estudiante a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_Estudiante" ;
+    rdfs:comment "Código del estudiante." .
+
+:nombreEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombreEstudiante" ;
+    rdfs:comment "Nombre del estudiante." .
+
+:apellidoEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string ;
+    rdfs:label "apellidoEstudiante" ;
+    rdfs:comment "Apellido del estudiante." .
+
+:emailEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string ;
+    rdfs:label "emailEstudiante" ;
+    rdfs:comment "Correo electrónico del estudiante." .
+
+:fechaNacimiento a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:date ;
+    rdfs:label "fechaNacimiento" ;
+    rdfs:comment "Fecha de nacimiento del estudiante." .
+
+
+##### Profesor #####
+:Profesor a owl:Class ;
+    rdfs:label "Profesor" ;
+    rdfs:comment "Representa a un profesor de la universidad." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :ID_Profesor ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+## DatatypeProperties
+:ID_Profesor a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_Profesor" ;
+    rdfs:comment "Código del profesor." .
+
+:nombreProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombreProfesor" ;
+    rdfs:comment "Nombre del profesor." .
+
+:apellidoProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string ;
+    rdfs:label "apellidoProfesor" ;
+    rdfs:comment "Apellido del profesor." .
+
+:emailProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string ;
+    rdfs:label "emailProfesor" ;
+    rdfs:comment "Correo electrónico del profesor." .
+## ObjectProperties
+:ID_Departamento_profesor a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range :Departamento ;
+    rdfs:label "ID_Departamento" ;
+    rdfs:comment "Departamento al que pertenece el profesor." .
+
+##### Curso #####
+:Curso a owl:Class ;
+    rdfs:label "Curso" ;
+    rdfs:comment "Representa un curso ofrecido por la universidad." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :ID_Curso ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+## DatatypeProperties
+:ID_Curso a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Curso ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_Curso" ;
+    rdfs:comment "Código del curso." .
+
+:nombreCurso a owl:DatatypeProperty ;
+    rdfs:domain :Curso ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombreCurso" ;
+    rdfs:comment "Nombre o título del curso." .
+
+:nivelCurso a owl:DatatypeProperty ;
+    rdfs:domain :Curso ;
+    rdfs:range xsd:string ;
+    rdfs:label "nivelCurso" ;
+    rdfs:comment "Nivel del curso (ej. 'Básico', 'Avanzado')." .
+
+:creditosCurso a owl:DatatypeProperty ;
+    rdfs:domain :Curso ;
+    rdfs:range xsd:integer ;
+    rdfs:label "creditosCurso" ;
+    rdfs:comment "Cantidad de créditos del curso." .
+
+## ObjectProperties
+:ID_Departamento_curso a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Curso ;
+    rdfs:range :Departamento ;
+    rdfs:label "ID_Departamento" ;
+    rdfs:comment "Departamento al que pertenece el curso." .
+
+##### Inscripcion #####
+:Inscripcion a owl:Class ;
+    rdfs:label "Inscripción" ;
+    rdfs:comment "Relaciona a un estudiante con un curso (matrícula)." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :estudianteInscrito ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :cursoInscrito ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+## DatatypeProperties
+:fechaInscripcion a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Inscripcion ;
+    rdfs:range xsd:date ;
+    rdfs:label "fechaInscripcion" ;
+    rdfs:comment "Fecha de inscripción del estudiante en el curso." .
+
+## ObjectProperties
+:ID_Estudiante_inscripcion a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Inscripcion ;
+    rdfs:range :Estudiante ;
+    rdfs:label "estudiante Inscrito" ;
+    rdfs:comment "Estudiante inscrito en el curso." .
+
+:ID_Curso_inscripcion a owl:ObjectProperty,owl:FunctionalProperty ;
+    rdfs:domain :Inscripcion ;
+    rdfs:range :Curso ;
+    rdfs:label "curso Inscrito" ;
+    rdfs:comment "Curso en el que está inscrito el estudiante." .
+
+##### Evaluacion #####
+:Evaluacion a owl:Class ;
+    rdfs:label "Evaluación" ;
+    rdfs:comment "Registra la calificación de un estudiante en un curso." ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :ID_evaluacion ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+## DatatypeProperties
+:notaEvaluacion a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Evaluacion ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "notaEvaluacion" ;
+    rdfs:comment "Nota obtenida por el estudiante en el curso." .
+
+:fechaEvaluacion a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Evaluacion ;
+    rdfs:range xsd:date ;
+    rdfs:label "fechaEvaluacion" ;
+    rdfs:comment "Fecha de la evaluación." .
+
+:ID_evaluacion a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Evaluacion ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_evaluacion" ;
+    rdfs:comment "Identificador de la evaluación." .
+## ObjectProperties
+:ID_Estudiante_evaluado a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Evaluacion ;
+    rdfs:range :Estudiante ;
+    rdfs:label "estudiante Evaluado" ;
+    rdfs:comment "Estudiante evaluado en la evaluación." .  
+
+:ID_Curso_evaluado a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Evaluacion ;
+    rdfs:range :Curso ;
+    rdfs:label "curso Evaluado" ;
+    rdfs:comment "Curso evaluado en la evaluación." .
