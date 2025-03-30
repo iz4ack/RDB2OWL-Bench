@@ -1,0 +1,8 @@
+-Conjunto de relaciones que forman una entidad, inducido por PKs
+-Relacion Parte-Todo
+-Relacion de 1 a 1 consigo misma
+-Herencia multiple
+-Restricciones CHECK y UNIQUE
+-SuperEntidad como union de subentidades
+-Propiedades transitivas (para relacione parte todo)
+-Propiedades simetricas (para relaciones de 1 a 1 consigo misma)
