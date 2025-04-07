@@ -13,9 +13,10 @@
 :Departamento a owl:Class ;
     rdfs:label "Departamento" ;
     rdfs:comment "Representa un departamento dentro de la universidad." ;
+    owl:hasKey :hasIdDepartamento ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_Departamento ;
+        owl:onProperty :hasIdDepartamento ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 ## DatatypeProperties
@@ -74,9 +75,10 @@
 :Estudiante a owl:Class ;
     rdfs:label "Estudiante" ;
     rdfs:comment "Representa a un estudiante de la universidad." ;
+    owl:hasKey :hasIdEstudiante ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_Estudiante ;
+        owl:onProperty :hasIdEstudiante ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
     rdfs:subClassOf :Persona .
@@ -104,9 +106,10 @@
 :Profesor a owl:Class ;
     rdfs:label "Profesor" ;
     rdfs:comment "Representa a un profesor de la universidad." ;
+    owl:hasKey :hasIdProfesor ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_Profesor ;
+        owl:onProperty :hasIdProfesor ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
     rdfs:subClassOf :Persona .
@@ -129,9 +132,10 @@
 :Curso a owl:Class ;
     rdfs:label "Curso" ;
     rdfs:comment "Representa un curso ofrecido por la universidad." ;
+    owl:hasKey :hasIdCurso ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_Curso ;
+        owl:onProperty :hasIdCurso ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 ## DatatypeProperties
@@ -170,14 +174,15 @@
 :Inscripcion a owl:Class ;
     rdfs:label "Inscripción" ;
     rdfs:comment "Relaciona a un estudiante con un curso (matrícula)." ;
+    owl:hasKey (:hasCursoInscripcion :hasEstudianteInscripcion);
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_Estudiante_inscripcion ;
+        owl:onProperty :hasEstudianteInscripcion ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_Curso_inscripcion ;
+        owl:onProperty :hasCursoInscripcion ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 ## DatatypeProperties
@@ -204,9 +209,10 @@
 :Evaluacion a owl:Class ;
     rdfs:label "Evaluación" ;
     rdfs:comment "Registra la calificación de un estudiante en un curso." ;
+    owl:hasKey :hasIdEvaluacion ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :ID_evaluacion ;
+        owl:onProperty :hasIdEvaluacion ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 ## DatatypeProperties

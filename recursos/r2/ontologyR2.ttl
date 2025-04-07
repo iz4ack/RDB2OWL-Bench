@@ -19,11 +19,17 @@
 :Departamento a owl:Class ;
     rdfs:label "Departamento" ;
     rdfs:comment "Unidad organizacional que agrupa proyectos y empleados." ;
+    owl:hasKey :hasIdDepartamento ;
     rdfs:subClassOf[
         a owl:Restriction ;
-        owl:onProperty :ID_Departamento ;
+        owl:onProperty :hasIdDepartamento ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
+:hasIdDepartamento a owl:DatatypeProperty ;
+    rdfs:domain :Departamento ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_Departamento" ;
+    rdfs:comment "Código único del departamento." .
 :hasNombreDepartamento a owl:DatatypeProperty ;
     rdfs:domain :Departamento ;
     rdfs:range xsd:string ;
@@ -39,9 +45,10 @@
 :Proyecto a owl:Class ;
     rdfs:label "Proyecto" ;
     rdfs:comment "Proyecto específico dentro de un departamento, con presupuesto asignado." ;
+    owl:hasKey :hasIdProyecto ;
     rdfs:subClassOf[
         a owl:Restriction ;
-        owl:onProperty :ID_Proyecto ;
+        owl:onProperty :hasIdProyecto ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 :hasIdProyecto a owl:DatatypeProperty;
@@ -65,9 +72,10 @@
 :Empleado a owl:Class ;
     rdfs:label "Empleado" ;
     rdfs:comment "Persona que trabaja en la organización." ;
+    owl:hasKey :hasIdEmpleado ;
     rdfs:subClassOf[
         a owl:Restriction ;
-        owl:onProperty :ID_Empleado ;
+        owl:onProperty :hasIdEmpleado ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 :hasIdEmpleado a owl:DatatypeProperty;
@@ -156,11 +164,23 @@
 :Asignacion a owl:Class ;
     rdfs:label "Asignación" ;
     rdfs:comment "Entidad que modela la relación de asignacion de un proyecto a un empleado en una fecha" ;
+    owl:hasKey (:hasEmpleadoAsignacion :hasProyectoAsignacion :hasTareaAsignacion) ;
     rdfs:subClassOf[
         a owl:Restriction ;
-        owl:onProperty :ID_Asignacion ;
+        owl:onProperty :hasEmpleadoAsignacion ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf[
+        a owl:Restriction ;
+        owl:onProperty :hasProyectoAsignacion ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf[
+        a owl:Restriction ;
+        owl:onProperty :hasTareaAsignacion ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
+
 :hasFechaInicioAsignacion a owl:DatatypeProperty ;
     rdfs:domain :Asignacion ;
     rdfs:range xsd:date ;
@@ -188,9 +208,10 @@
 :Tarea a owl:Class ;
     rdfs:label "Tarea" ;
     rdfs:comment "Actividad específica a realizar en un proyecto." ;
+    owl:hasKey :hasIdTarea ;
     rdfs:subClassOf[
         a owl:Restriction ;
-        owl:onProperty :ID_Tarea ;
+        owl:onProperty :hasIdTarea ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 :hasIdTarea a owl:DatatypeProperty;

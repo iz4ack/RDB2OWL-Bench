@@ -16,6 +16,7 @@
 :Territorio a owl:Class ;
     rdfs:label "Territorio" ;
     rdfs:comment "Unidad territorial que puede contener otros territorios." ;
+    owl:hasKey :hasIdTerritorio ;
     rdfs:subClassOf[ 
         a owl:Restriction ;
         owl:onProperty :hasIdTerritorio ;

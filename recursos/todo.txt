@@ -2,3 +2,6 @@
 -Herencia multiple?
 -Restricciones CHECK y UNIQUE?
 -SuperEntidad como union de subentidades
+-propiedades asimetricas
+-property chains https://www.w3.org/TR/owl2-primer/
+-keys https://www.w3.org/TR/owl2-primer/
