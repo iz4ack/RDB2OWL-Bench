@@ -1,0 +1,63 @@
+@prefix : <http://example.org/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Ontología
+#################################################################
+:TerritorioOntologia a owl:Ontology ;
+    rdfs:label "Ontología de Territorios" ;
+    rdfs:comment "Recurso 3. Modelo que demuestra relacion parte-todo, relacion 1..1 consigo mismo, atributos con check in literales, propiedades transitivas, inversas e IrreflexiveProperty." .
+
+#################################################################
+
+:Territorio a owl:Class ;
+    rdfs:label "Territorio" ;
+    rdfs:comment "Unidad territorial que puede contener otros territorios." ;
+    rdfs:subClassOf[ 
+        a owl:Restriction ;
+        owl:onProperty :hasIdTerritorio ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+:hasIdTerritorio a owl:DatatypeProperty ;
+    rdfs:domain :Territorio ;
+    rdfs:range xsd:integer ;
+    rdfs:label "ID_Territorio" ;
+    rdfs:comment "Código único del territorio." .
+
+:hasNombreTerritorio a owl:DatatypeProperty ;
+    rdfs:domain :Territorio ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombre" ;
+    rdfs:comment "Nombre del territorio." .
+
+:tipoTerritorio a rdfs:Datatype ; 
+  owl:oneOf ( 
+    "pais"^^xsd:string 
+    "region"^^xsd:string 
+    "provincia"^^xsd:string 
+    "localidad"^^xsd:string
+  ) . 
+
+:hasTipoTerritorio a owl:DatatypeProperty ;
+    rdfs:domain :Territorio ;
+    rdfs:range :tipoTerritorio ;
+    rdfs:label "tipo" ;
+    rdfs:comment "Tipo de territorio." .
+
+:esParteDe a owl:ObjectProperty, owl:IrreflexiveProperty, owl:transitiveProperty ;
+    rdfs:domain :Territorio ;
+    rdfs:range :Territorio ;
+    rdfs:label "es parte de" ;
+    rdfs:comment "Relación que indica que un territorio es parte de otro." ;
+    owl:inverseOf :tieneParteDe .
+
+:limitaCon a owl:ObjectProperty, owl:IrreflexiveProperty, owl:SymmetricProperty ;
+    rdfs:domain :Territorio ;
+    rdfs:range :Territorio ;
+    rdfs:label "limita con" ;
+    rdfs:comment "Relación que indica que un territorio limita con otro." ;
+    owl:inverseOf :limitaCon .
