@@ -1,0 +1,138 @@
+@prefix : <http://ejemplo.org/ontologia#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#################################################################
+# Ontología
+#################################################################
+:Recurso4 a owl:Ontology ;
+    rdfs:label "Ontología 4" ;
+    rdfs:comment "Recurso 4. UNIQUE, SuperEntidad como union de dos entidades(explicita e implicita), propiedades asimetricas, property chain, inverseOf" .
+
+#################################################################
+
+:EntidadFiscal a owl:Class ;
+    rdfs:label "Entidad Fiscal" ;
+    rdfs:comment "Clase base para una entidad tributaria, conjunto de personas juridicas y fisicas." ;
+    owl:hasKey ( :hasNIF ) .
+
+:hasNIF a owl:DatatypeProperty ;
+    rdfs:domain :EntidadFiscal ;
+    rdfs:range xsd:string ;
+    rdfs:label "NIF"@es ;
+    rdfs:comment "Número de Identificación Fiscal de la entidad." .
+
+:EntidadFiscal owl:equivalentClass [ 
+    a owl:Class ;
+    owl:unionOf ( :Empresa :Persona ) 
+] .
+
+## Persona
+:Persona a owl:Class ;
+    rdfs:label "Persona" ;
+    rdfs:comment "Clase base para representar personas en la organización." ;
+    rdfs:subClassOF :EntidadFiscal .
+
+:Persona owl:equivalentClass [ 
+    a owl:Class ;
+    owl:unionOf ( :Empleado :Consultor ) 
+] .
+:hasEmail a owl:DatatypeProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string ;
+    rdfs:label "correo electrónico"@es .
+:hasNombre a owl:DatatypeProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombre"@es ;
+    rdfs:comment "Nombre de la persona." . 
+
+:esMentorDe a owl:ObjectProperty, owl:AsymmetricProperty;
+    rdfs:domain :Persona ;
+    rdfs:range :Persona ;
+    rdfs:label "es mentor de"@es ; 
+    rdfs:comment "Relación de mentoría entre dos personas." .
+:tieneMentor owl:inverseOf :esMentorDe .
+
+:trabajaEn a owl:ObjectProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range :Empresa ;
+    rdfs:label "trabaja en"@es ;
+    rdfs:comment "Relación de trabajo entre una persona y una empresa." .
+
+:estaUbicadoEn a owl:ObjectProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range :Ubicacion ;
+    rdfs:label "está ubicado en"@es ;
+    rdfs:comment "Indica en que ubicacion trabaja una persona" .
+:estaUbicadoEn owl:propertyChainAxiom ( :enEmpresa :tieneUbicacion ) .
+
+## Empleado
+:Empleado a owl:Class ;
+    rdfs:subClassOf :Persona ;
+    rdfs:label "Empleado" ;
+    rdfs:comment "Persona que trabaja en la organización." .
+
+:hasSalario a owl:DatatypeProperty ;
+    rdfs:domain :Empleado ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "salario"@es ;
+    rdfs:comment "Salario del empleado." .
+
+## Consultor
+:Consultor a owl:Class ;
+    rdfs:subClassOf :Persona ;
+    rdfs:label "Consultor" ;
+    rdfs:comment "Persona que trabaja como consultor en la organización." .
+:hasTarifa a owl:DatatypeProperty ;
+    rdfs:domain :Consultor ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "tarifa"@es ;
+    rdfs:comment "Tarifa del consultor." .
+
+## Empresa
+:Empresa a owl:Class ;
+    rdfs:label "Empresa" ;
+    rdfs:comment "Clase que representa una empresa." ;
+    owl:subClassOf :EntidadFiscal . 
+:hasNombreEmpresa a owl:DatatypeProperty ;
+    rdfs:domain :Empresa ;
+    rdfs:range xsd:string ;
+    rdfs:label "nombreEmpresa"@es ;
+    rdfs:comment "Nombre de la empresa." .
+
+:tieneUbicacion a owl:ObjectProperty ;
+    rdfs:domain :Empresa ;
+    rdfs:range :Ubicacion ;
+    rdfs:label "tiene ubicación"@es ;
+    rdfs:comment "Relación que indica la ubicación de la empresa." .
+
+## Ubicacion
+:Ubicacion a owl:Class ;
+    rdfs:label "Ubicación" ;
+    rdfs:comment "Clase que representa una ubicación geográfica." .
+
+:hasCalle a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string ;
+    rdfs:label "calle"@es ;
+    rdfs:comment "Nombre de la calle." .
+
+:hasCiudad a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string ;
+    rdfs:label "ciudad"@es ;
+    rdfs:comment "Nombre de la ciudad." .
+
+:hasProvincia a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string ;
+    rdfs:label "provincia"@es ;
+    rdfs:comment "Nombre de la provincia." .
+:hasCoordenadas a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string ;
+    rdfs:label "coordenadas"@es ;
+    rdfs:comment "Coordenadas geográficas de la ubicación." .

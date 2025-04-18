@@ -6,12 +6,14 @@ CREATE TABLE Departamentos (
 
 CREATE TABLE Estudiantes (
     ID_Estudiante      INT           NOT NULL AUTO_INCREMENT,
+    DNI                VARCHAR(20)   ,
     Nombre             VARCHAR(100)  ,
     Apellido           VARCHAR(100)  ,
     Email              VARCHAR(150)  ,
     FechaNacimiento    DATE          ,
     FechaMatricula     DATE          ,
     PRIMARY KEY (ID_Estudiante),
+    CONSTRAINT UC_Estudiante UNIQUE (DNI)
 );
 
 CREATE TABLE Profesores (
@@ -22,7 +24,8 @@ CREATE TABLE Profesores (
     FechaNacimiento    DATE          ,
     ID_Departamento    INT           NOT NULL,
     PRIMARY KEY (ID_Profesor),
-    FOREIGN KEY (ID_Departamento) REFERENCES Departamentos(ID_Departamento)
+    FOREIGN KEY (ID_Departamento) REFERENCES Departamentos(ID_Departamento),
+    CONSTRAINT UC_Profesor UNIQUE (DNI)
 );
 
 CREATE TABLE Cursos (

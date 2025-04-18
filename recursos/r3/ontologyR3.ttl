@@ -15,19 +15,7 @@
 
 :Territorio a owl:Class ;
     rdfs:label "Territorio" ;
-    rdfs:comment "Unidad territorial que puede contener otros territorios." ;
-    owl:hasKey :hasIdTerritorio ;
-    rdfs:subClassOf[ 
-        a owl:Restriction ;
-        owl:onProperty :hasIdTerritorio ;
-        owl:cardinality "1"^^xsd:nonNegativeInteger
-    ] .
-
-:hasIdTerritorio a owl:DatatypeProperty ;
-    rdfs:domain :Territorio ;
-    rdfs:range xsd:integer ;
-    rdfs:label "ID_Territorio" ;
-    rdfs:comment "Código único del territorio." .
+    rdfs:comment "Unidad territorial que puede contener otros territorios." .
 
 :hasNombreTerritorio a owl:DatatypeProperty ;
     rdfs:domain :Territorio ;
