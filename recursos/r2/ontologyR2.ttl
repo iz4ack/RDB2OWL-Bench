@@ -183,7 +183,7 @@
 
 :hasFechaInicioAsignacion a owl:DatatypeProperty ;
     rdfs:domain :Asignacion ;
-    rdfs:range xsd:date ;
+    rdfs:range xsd:dateTime ;
     rdfs:label "fechaInicio" ;
     rdfs:comment "Fecha en que un empleado asume un cargo en un proyecto." .
 

@@ -7,7 +7,7 @@
 
 :UniversidadOntology a owl:Ontology ;
     rdfs:label "Ontología de Universidad (ejemplo)" ;
-    rdfs:comment "Recurso 1. Relacion 1..N, relacion N..N, clase normal, relacion N..N con atributos intermedios, " .
+    rdfs:comment "Recurso 1. Relacion 1..N, relacion N..N, clase normal, relacion N..N con atributos intermedios," .
 
 ##### Departamento #####
 :Departamento a owl:Class ;
@@ -67,7 +67,7 @@
 
 :hasFechaNacimiento a owl:DatatypeProperty ;
     rdfs:domain :Persona ;
-    rdfs:range xsd:date ;
+    rdfs:range xsd:dateTime ;
     rdfs:label "fechaNacimiento" ;
     rdfs:comment "Fecha de nacimiento de la persona." .
 
@@ -91,11 +91,11 @@
     rdfs:comment "Código del estudiante." .
 :hasFechaMatriculaEstudiante a owl:DatatypeProperty ;
     rdfs:domain :Estudiante ;
-    rdfs:range xsd:date ;
+    rdfs:range xsd:dateTime ;
     rdfs:label "fechaMatriculaEstudiante" ;
     rdfs:comment "Fecha de matrícula del estudiante." .
 ## ObjectProperties
-:hasProfesor a owl:ObjectProperty ;
+:hasProfesor a owl:ObjectProperty;
     rdfs:domain :Estudiante ;
     rdfs:range :Profesor ;
     rdfs:label "profesorTutor" ;
@@ -121,7 +121,7 @@
     rdfs:comment "Código del profesor." .
 
 ## ObjectProperties
-:pertenceDepartamentoProfesor a owl:ObjectProperty, owl:FunctionalProperty ;
+:pertenceDepartamentoProfesor a owl:ObjectProperty, owl:FunctionalProperty;
     rdfs:domain :Profesor ;
     rdfs:range :Departamento ;
     rdfs:label "ID_Departamento" ;
@@ -188,7 +188,7 @@
 ## DatatypeProperties
 :hasFechaInscripcion a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain :Inscripcion ;
-    rdfs:range xsd:date ;
+    rdfs:range xsd:dateTime ;
     rdfs:label "fechaInscripcion" ;
     rdfs:comment "Fecha de inscripción del estudiante en el curso." .
 
@@ -224,7 +224,7 @@
 
 :hasFechaEvaluacion a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain :Evaluacion ;
-    rdfs:range xsd:date ;
+    rdfs:range xsd:dateTime ;
     rdfs:label "fechaEvaluacion" ;
     rdfs:comment "Fecha de la evaluación." .
 
