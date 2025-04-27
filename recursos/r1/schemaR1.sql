@@ -48,12 +48,11 @@ CREATE TABLE Inscripciones (
 );
 
 CREATE TABLE Evaluaciones (
-    ID_Evaluacion      INT           NOT NULL AUTO_INCREMENT,
     ID_Estudiante      INT           NOT NULL,
     ID_Curso           INT           NOT NULL,
     Nota               DECIMAL(4,2)  ,
     FechaEvaluacion    DATE          ,
-    PRIMARY KEY (ID_Evaluacion),
+    PRIMARY KEY (ID_Estudiante, ID_Curso, FechaEvaluacion),
     FOREIGN KEY (ID_Estudiante) REFERENCES Estudiantes(ID_Estudiante),
     FOREIGN KEY (ID_Curso)      REFERENCES Cursos(ID_Curso)
 );

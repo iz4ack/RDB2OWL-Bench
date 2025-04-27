@@ -12,10 +12,20 @@
 ##### Departamento #####
 :Departamento a owl:Class ;
     rdfs:label "Departamento" ;
+    owl:hasKey :hasIdDepartamento ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasIdDepartamento ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
     rdfs:comment "Representa un departamento dentro de la universidad." .
 
 ## DatatypeProperties
-
+:hasIdDepartamento a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Departamento ;
+    rdfs:range xsd:string ;
+    rdfs:label "ID_Departamento" ;
+    rdfs:comment "Identificador único del departamento." .
 :hasNombreDepartamento a owl:DatatypeProperty ;
     rdfs:domain :Departamento ;
     rdfs:range xsd:string ;
@@ -107,8 +117,19 @@
 ##### Curso #####
 :Curso a owl:Class ;
     rdfs:label "Curso" ;
+    owl:hasKey :hasIdCurso ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasIdCurso ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
     rdfs:comment "Representa un curso ofrecido por la universidad." .
 ## DatatypeProperties
+:hasIdCurso a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Curso ;
+    rdfs:range xsd:string ;
+    rdfs:label "ID_Curso" ;
+    rdfs:comment "Identificador único del curso." .
 :hasNombreCurso a owl:DatatypeProperty ;
     rdfs:domain :Curso ;
     rdfs:range xsd:string ;
@@ -172,6 +193,22 @@
 ##### Evaluacion #####
 :Evaluacion a owl:Class ;
     rdfs:label "Evaluación" ;
+    owl:hasKey (:hasCursoEvaluado :hasEstudianteEvaluado :hasFechaEvaluacion);
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasEstudianteEvaluado ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasCursoEvaluado ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasFechaEvaluacion ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
     rdfs:comment "Registra la calificación de un estudiante en un curso." .
 
 ## DatatypeProperties

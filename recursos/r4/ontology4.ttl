@@ -9,13 +9,17 @@
 #################################################################
 :Recurso4 a owl:Ontology ;
     rdfs:label "Ontología 4" ;
-    rdfs:comment "Recurso 4. UNIQUE, SuperEntidad como union de dos entidades(explicita e implicita), propiedades asimetricas, property chain, inverseOf" .
+    rdfs:comment "Recurso 4. UNIQUE, SuperEntidad como union de dos entidades(explicita e implicita), propiedades asimetricas, property chain, inverseOf, IrreflexiveProperty" .
 
 #################################################################
 
 :EntidadFiscal a owl:Class ;
     rdfs:label "Entidad Fiscal" ;
     rdfs:comment "Clase base para una entidad tributaria, conjunto de personas juridicas y fisicas." ;
+    owl:equivalentClass [ 
+        a owl:Class ;
+        owl:disjointUnionOf ( :Empresa :Persona ) 
+    ] ;
     owl:hasKey ( :hasNIF ) .
 
 :hasNIF a owl:DatatypeProperty ;
@@ -23,11 +27,6 @@
     rdfs:range xsd:string ;
     rdfs:label "NIF"@es ;
     rdfs:comment "Número de Identificación Fiscal de la entidad." .
-
-:EntidadFiscal owl:equivalentClass [ 
-    a owl:Class ;
-    owl:unionOf ( :Empresa :Persona ) 
-] .
 
 ## Persona
 :Persona a owl:Class ;
@@ -49,7 +48,7 @@
     rdfs:label "nombre"@es ;
     rdfs:comment "Nombre de la persona." . 
 
-:esMentorDe a owl:ObjectProperty, owl:AsymmetricProperty;
+:esMentorDe a owl:ObjectProperty, owl:AsymmetricProperty, owl:IrreflexiveProperty ;
     rdfs:domain :Persona ;
     rdfs:range :Persona ;
     rdfs:label "es mentor de"@es ; 
