@@ -1,0 +1,64 @@
+@prefix : <http://example.org/universidad#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://example.org/universidad> a owl:Ontology .
+
+# Clases
+:Departamento a owl:Class .
+:Estudiante a owl:Class .
+:Profesor a owl:Class .
+
+# Properties de Estudiante
+:dniEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string .
+
+:nombreEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string .
+
+:apellidoEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string .
+
+:emailEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:string .
+
+:fechaNacimientoEstudiante a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:date .
+
+:fechaMatricula a owl:DatatypeProperty ;
+    rdfs:domain :Estudiante ;
+    rdfs:range xsd:date .
+
+# Properties de Profesor
+:nombreProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string .
+
+:apellidoProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string .
+
+:emailProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string .
+
+:fechaNacimientoProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:date .
+
+:dniProfesor a owl:DatatypeProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range xsd:string .
+
+# ObjectProperty: Profesor -> Departamento
+:perteneceADepartamento a owl:ObjectProperty ;
+    rdfs:domain :Profesor ;
+    rdfs:range :Departamento .
+
