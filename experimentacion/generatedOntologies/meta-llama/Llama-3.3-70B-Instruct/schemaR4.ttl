@@ -1,0 +1,93 @@
+@prefix :      <http://example.org/ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Clases
+:Persona a owl:Class .
+:Empleado a owl:Class .
+:Consultor a owl:Class .
+:Mentorea a owl:Class .
+:Empresa a owl:Class .
+:Ubicacion a owl:Class .
+
+# Propiedades de objeto
+:tieneMentor a owl:ObjectProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range :Persona .
+:tieneMentee a owl:ObjectProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range :Persona .
+:trabajaCon a owl:ObjectProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range :Empresa .
+:tieneUbicacion a owl:ObjectProperty ;
+    rdfs:domain :Empresa ;
+    rdfs:range :Ubicacion .
+
+# Propiedades de datos
+:NIF a owl:DatatypeProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:integer .
+:email a owl:DatatypeProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string .
+:nombre a owl:DatatypeProperty ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string .
+:salario a owl:DatatypeProperty ;
+    rdfs:domain :Empleado ;
+    rdfs:range xsd:decimal .
+:tarifaHora a owl:DatatypeProperty ;
+    rdfs:domain :Consultor ;
+    rdfs:range xsd:decimal .
+:nombreEmpresa a owl:DatatypeProperty ;
+    rdfs:domain :Empresa ;
+    rdfs:range xsd:string .
+:calle a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string .
+:ciudad a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string .
+:provincia a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string .
+:coordenadas a owl:DatatypeProperty ;
+    rdfs:domain :Ubicacion ;
+    rdfs:range xsd:string .
+
+# Restricciones de cardinalidad
+:Persona rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :NIF ;
+    owl:cardinality 1 ] .
+:Persona rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :email ;
+    owl:cardinality 1 ] .
+:Empleado rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :salario ;
+    owl:cardinality 1 ] .
+:Consultor rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :tarifaHora ;
+    owl:cardinality 1 ] .
+:Empresa rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :nombreEmpresa ;
+    owl:cardinality 1 ] .
+:Ubicacion rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :calle ;
+    owl:cardinality 1 ] .
+:Ubicacion rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :ciudad ;
+    owl:cardinality 1 ] .
+:Ubicacion rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :provincia ;
+    owl:cardinality 1 ] .
+:Ubicacion rdfs:subClassOf [ a owl:Restriction ;
+    owl:onProperty :coordenadas ;
+    owl:cardinality 1 ] .
+
+# Jerarquía de clases
+:Empleado rdfs:subClassOf :Persona .
+:Consultor rdfs:subClassOf :Persona .
+

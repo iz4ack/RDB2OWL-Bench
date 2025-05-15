@@ -7,6 +7,7 @@ import time
 import csv
 from huggingface_hub import InferenceClient
 from tqdm import tqdm
+import re
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -33,7 +34,6 @@ def parse_args():
     parser.add_argument(
         "--provider", "-p", default="together",
         help="Proveedor para InferenceClient (ej. 'together', 'huggingface').",
-        default="together"
     )
     parser.add_argument(
         "--api-key", "-k", default=None,
@@ -65,6 +65,10 @@ def build_prompt(sql_schema: str) -> str:
         "```"
     )
 
+def _sanitize(respuesta):
+	match = re.search(r"```turtle(.*?)```", respuesta, re.DOTALL)
+	return match.group(1).strip() if match else respuesta
+
 def main():
     args = parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
@@ -90,7 +94,8 @@ def main():
 
             schema_path = os.path.join(args.input_dir, fname)
             base = os.path.splitext(fname)[0]
-            ttl_path = os.path.join(args.output_dir, base + ".ttl")
+            ttl_path = os.path.join(args.output_dir, args.model)
+            ttl_path = os.path.join(ttl_path, base + ".ttl")
 
             sql_schema = load_sql_schema(schema_path)
             prompt = build_prompt(sql_schema)
@@ -108,7 +113,7 @@ def main():
                     max_tokens=args.max_tokens,
                     temperature=args.temperature,
                 )
-                turtle = completion.choices[0].message["content"]
+                turtle = _sanitize(completion.choices[0].message["content"])
 
                 # Guarda TTL
                 with open(ttl_path, "w", encoding="utf-8") as out:
