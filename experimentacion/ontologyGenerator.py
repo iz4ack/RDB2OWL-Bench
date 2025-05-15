@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument(
         "--output-dir", "-o",
         help="Carpeta donde se escribirán los archivos .ttl generados.",
-        default="/home/sausage69/OneDrive/GreI/4º/2Semestre/tfg/tfg/experimentacion/generatedOntologies"
+        default="/home/sausage69/OneDrive/GreI/4º/2Semestre/tfg/tfg/experimentacion/results"
     )
     parser.add_argument(
         "--log-file", "-l", default="generation_log.csv",

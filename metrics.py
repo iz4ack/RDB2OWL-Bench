@@ -359,8 +359,6 @@ def motif_distance(G1_nx: nx.DiGraph,
     tvd = 0.5 * np.abs(p_dist - q_dist).sum()
     return tvd
 
-
-
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Uso: python script.py ontologiaGenerada.ttl ontologiaGoldStandar.ttl")
