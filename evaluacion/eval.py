@@ -1,4 +1,6 @@
 import rdflib
+from graph_tool.all import Graph
+from graph_tool.clustering import motifs
 import networkx as nx
 import sys
 import matplotlib as mpl
@@ -7,15 +9,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 from sentence_transformers import SentenceTransformer
+import graph_tool.all as gt
 
+torch = __import__('torch')
+from torch_geometric.nn import SGConv
+from torch_geometric.data import Data
+from torch_geometric.utils import from_networkx
 
-
-from graph_metrics import (
-    graph_precision_recall_f1,
-    fuzzy_and_continuous_precision_recall_f1,
-    literal_prec_recall_f1,
-    motif_distance
-)
 
 def ttl_to_graph(ttl_file_path):
     # Cargar la ontología
@@ -52,28 +52,52 @@ def draw_graph(G, title="Graph", filename=None):
     if filename:
         plt.savefig(filename, format='png')
     plt.close()
+    
+def embed_nodes(
+    nodes_sys: list, 
+    nodes_gold: list, 
+    model_name: str = 'all-MiniLM-L6-v2'
+    ) -> tuple:
+    texts      = [str(u) for u in nodes_sys] + [str(v) for v in nodes_gold]
+    model   = SentenceTransformer(model_name)
+    emb_all = model.encode(texts, convert_to_numpy=True, show_progress_bar=False)
+    emb_sys = emb_all[:len(nodes_sys)]
+    emb_gold = emb_all[len(nodes_sys):]
+    return emb_sys, emb_gold
 
-def parse_title(t):
-    # Parsear el titulo para quedarse con el nombre
-    # http://example.org/universidad#Evaluacion , quedarse con Evaluacion
-    if "#" in t:
-        return t.split("#")[-1]
-    elif "/" in t:
-        return t.split("/")[-1]
-    else:
-        return t
 
-def title(G, n):
-    t = G.nodes[n]["title"]
-    return parse_title(t)
+def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
+    if len(G_pred) == 0 or len(G_true) == 0:
+        return 0, 0, 0
 
+    def parse_title(t):
+        # Parsear el titulo para quedarse con el nombre
+        # http://example.org/universidad#Evaluacion , quedarse con Evaluacion
+        if "#" in t:
+            return t.split("#")[-1]
+        elif "/" in t:
+            return t.split("/")[-1]
+        else:
+            return t
+    def title(G, n):
+        t = G.nodes[n]["title"]
+        return parse_title(t)
+
+    edges_G = {(title(G_pred, u), title(G_pred, v)) for u, v in G_pred.edges}
+    edges_G_true = {(title(G_true, u), title(G_true, v)) for u, v in G_true.edges}
+    
+    precision = len(edges_G & edges_G_true) / len(edges_G) # |E ∩ E′| / |E′| 
+    recall = len(edges_G & edges_G_true) / len(edges_G_true) # |E ∩ E′| / |E| 
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
+
+    return precision, recall, f1
 
 def fuzzy_f1(
     G_sys: nx.DiGraph,
     G_gold: nx.DiGraph,
-    threshold: float = 0.436,
+    threshold: float = 0.9,
     model_name: str = 'all-MiniLM-L6-v2'
-) -> dict:
+) -> tuple:
     """
     Calcula la métrica Fuzzy F1 entre dos grafos dirigidos.
     
@@ -97,21 +121,10 @@ def fuzzy_f1(
     # 1. Extraer nodos y preparar textos
     nodes_sys   = list(G_sys.nodes())
     nodes_gold  = list(G_gold.nodes())
-    texts_sys   = [parse_title(str(u)) for u in nodes_sys]
-    texts_gold  = [parse_title(str(u)) for u in nodes_gold]
-
-    # 2. Cargar modelo y calcular embeddings (numpy arrays)
-    model = SentenceTransformer(model_name)
-    all_texts = texts_sys + texts_gold
-    embeddings = model.encode(all_texts, convert_to_numpy=True, show_progress_bar=False)
-    emb_sys  = embeddings[: len(nodes_sys)]
-    emb_gold = embeddings[len(nodes_sys): ]
+    emb_sys, emb_gold = embed_nodes(nodes_sys, nodes_gold, model_name)
 
     # 3. Calcular matriz de similitud coseno
     #    sim[i,j] = cosine(emb_sys[i], emb_gold[j])
-    #norm_sys  = np.linalg.norm(emb_sys,  axis=1, keepdims=True)
-    #norm_gold = np.linalg.norm(emb_gold, axis=1, keepdims=True)
-    #sim = (emb_sys @ emb_gold.T) / (norm_sys * norm_gold.T + 1e-8)
     sim = cosine_similarity(emb_sys, emb_gold)
 
     # 4. Para cada nodo, precomputar con quién supera el umbral
@@ -161,7 +174,7 @@ def continuous_f1(
     G_sys: nx.DiGraph,
     G_gold: nx.DiGraph,
     model_name: str = 'all-MiniLM-L6-v2'
-) -> dict:
+) -> tuple:
     """
     Calcula la métrica Continuous F1 entre dos grafos dirigidos.
 
@@ -184,20 +197,14 @@ def continuous_f1(
 
     Devuelve
     -------
-      - 'scont'    : puntuación total del matching
       - 'precision': continuous precision
       - 'recall'   : continuous recall
       - 'f1'       : continuous F1
     """
     # 1) Extraer nodos y calcular embeddings
-    nodes_sys  = list(G_sys.nodes())
-    nodes_gold = list(G_gold.nodes())
-    texts      = [str(u) for u in nodes_sys] + [str(v) for v in nodes_gold]
-
-    model     = SentenceTransformer(model_name)
-    emb_all   = model.encode(texts, convert_to_numpy=True, show_progress_bar=False)
-    emb_sys   = emb_all[:len(nodes_sys)]
-    emb_gold  = emb_all[len(nodes_sys):]
+    nodes_sys   = list(G_sys.nodes())
+    nodes_gold  = list(G_gold.nodes())
+    emb_sys, emb_gold = embed_nodes(nodes_sys, nodes_gold, model_name)
 
     # 2) Matriz de similitud nodo-sistema vs nodo-oro
     sim_nodes = cosine_similarity(emb_sys, emb_gold)
@@ -237,10 +244,126 @@ def continuous_f1(
     return P, R, F1
 
 
+def graph_f1(
+    G_sys: nx.DiGraph,
+    G_gold: nx.DiGraph,
+    model_name: str = 'all-MiniLM-L6-v2',
+    K: int = 2
+) -> tuple:
+    # 1) Embeddings iniciales
+    nodes_sys   = list(G_sys.nodes())
+    nodes_gold  = list(G_gold.nodes())
+    emb_sys, emb_gold = embed_nodes(nodes_sys, nodes_gold, model_name)
+
+    # 2) Anotar cada nodo con su embedding
+    for i, n in enumerate(nodes_sys):
+        G_sys.nodes[n]['x'] = torch.from_numpy(emb_sys[i]).float()
+    for i, n in enumerate(nodes_gold):
+        G_gold.nodes[n]['x'] = torch.from_numpy(emb_gold[i]).float()
+
+    # 3) from_networkx + stackeo de embeddings para x
+    data_sys = from_networkx(G_sys, group_node_attrs=['x'])
+    xs_sys   = np.vstack(data_sys.x)             # convierte lista de vectores en array (n_sys, d)
+    data_sys.x = torch.from_numpy(xs_sys).float()
+
+    data_gold = from_networkx(G_gold, group_node_attrs=['x'])
+    xs_gold   = np.vstack(data_gold.x)
+    data_gold.x = torch.from_numpy(xs_gold).float()
+
+    # 4) SGConv con peso identidad
+    d    = emb_sys.shape[1]
+    conv = SGConv(d, d, K=K, cached=False, add_self_loops=True, bias=False)
+    with torch.no_grad():
+        conv.lin.weight.copy_(torch.eye(d))
+    conv.lin.weight.requires_grad_(False)
+
+    # 5) Propagación
+    H_sys  = conv(data_sys.x,  data_sys.edge_index).cpu().numpy()
+    H_gold = conv(data_gold.x, data_gold.edge_index).cpu().numpy()
+
+    # 6) Similaridad, matching y métricas
+    sim            = cosine_similarity(H_sys, H_gold)
+    row_ind, col_ind = linear_sum_assignment(-sim)
+    sgraph         = sim[row_ind, col_ind].sum()
+
+    n_sys, n_gold = len(nodes_sys), len(nodes_gold)
+    P = sgraph / n_sys  if n_sys  > 0 else 0.0
+    R = sgraph / n_gold if n_gold > 0 else 0.0
+    F1 = 2 * P * R / (P + R) if (P + R) > 0 else 0.0
+
+    return P, R, F1
+
+
+def motif_distance(G1_nx: nx.DiGraph,
+                   G2_nx: nx.DiGraph,
+                   k: int = 3,
+                   p: float = 1.0) -> float:
+    """
+    Calcula la motif distance entre G1_nx y G2_nx como TVD entre
+    las distribuciones de sus subgrafos dirigidos de tamaño k,
+    agrupando motifs por isomorfismo exacto.
+    """
+
+    def nx_to_gt(G_nx: nx.DiGraph) -> Graph:
+        Gt = Graph(directed=True)
+        # Añadimos n nodos
+        n = G_nx.number_of_nodes()
+        Gt.add_vertex(n)
+        # Mapeo de etiquetas NetworkX → índices [0..n-1]
+        idx = {v: i for i, v in enumerate(G_nx.nodes())}
+        # Añadimos aristas
+        for u, v in G_nx.edges():
+            Gt.add_edge(idx[u], idx[v])
+        return Gt
+
+    # 1) Convertimos ambos grafos a graph-tool
+    G1 = nx_to_gt(G1_nx)
+    G2 = nx_to_gt(G2_nx)
+
+    # 2) Contamos motifs de tamaño k
+    motifs1, counts1 = motifs(G1, k, p=p)
+    motifs2, counts2 = motifs(G2, k, p=p)
+
+    # 3) Unimos todas las clases de motif por isomorfismo
+    all_motifs = list(motifs1)  # empezamos con los de G1
+    for m2 in motifs2:
+        # si m2 no es isomorfo a ninguno en all_motifs, lo añadimos
+        if not any(gt.isomorphism(m2, m1) for m1 in all_motifs):
+            all_motifs.append(m2)
+
+    # 4) Creamos vectores de conteos alineados con all_motifs
+    all_counts1 = np.zeros(len(all_motifs), dtype=float)
+    all_counts2 = np.zeros(len(all_motifs), dtype=float)
+
+    # Rellenamos all_counts1
+    for m, c in zip(motifs1, counts1):
+        for j, gm in enumerate(all_motifs):
+            if gt.isomorphism(m, gm):
+                all_counts1[j] = c
+                break
+
+    # Rellenamos all_counts2
+    for m, c in zip(motifs2, counts2):
+        for j, gm in enumerate(all_motifs):
+            if gt.isomorphism(m, gm):
+                all_counts2[j] = c
+                break
+
+    # 5) Normalizamos a distribuciones de probabilidad
+    total1 = all_counts1.sum() or 1.0
+    total2 = all_counts2.sum() or 1.0
+    p_dist = all_counts1 / total1
+    q_dist = all_counts2 / total2
+
+    # 6) Distancia de variación total
+    tvd = 0.5 * np.abs(p_dist - q_dist).sum()
+    return tvd
+
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Uso: python script.py ontologia1.ttl ontologia2.ttl")
+        print("Uso: python script.py ontologiaGenerada.ttl ontologiaGoldStandar.ttl")
         sys.exit(1)
 
     ttl_file1 = sys.argv[1]
@@ -254,11 +377,15 @@ if __name__ == "__main__":
     #draw_graph(G2, title="Ontology 2 Graph", filename="ontology2_graph.png")
 
     #Metricas 
-    precisionLiteral, recallLiteral, f1Literal = literal_prec_recall_f1(G1, G2)
+    precisionLiteral, recallLiteral, f1Literal = literal_f1(G1, G2)
     pFuzzy, rFuzzy, f1Fuzzy = fuzzy_f1(G1, G2)
     pCont, rCont, f1Cont = continuous_f1(G1, G2)
+    pGraph, rGraph, f1Graph = graph_f1(G1, G2)
+    mDistance = motif_distance(G1, G2)
 
     print(f"Literal     : P={precisionLiteral:.4f} R={recallLiteral:.4f} F1={f1Literal:.4f}")
     print(f"Fuzzy F1      : P={pFuzzy:.4f} R={rFuzzy:.4f} F1={f1Fuzzy:.4f}")
     print(f"Continuous F1 : P={pCont:.4f} R={rCont:.4f} F1={f1Cont:.4f}")
+    print(f"Graph F1  : P={pGraph:.4f} R={rGraph:.4f} F1={f1Graph:.4f}")
+    print(f"Motif distance: {mDistance:.4f}")
 
