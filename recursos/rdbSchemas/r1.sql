@@ -1,58 +1,58 @@
-CREATE TABLE Departamentos (
-    ID_Departamento    INT          NOT NULL AUTO_INCREMENT,
-    Nombre             VARCHAR(100) ,
-    PRIMARY KEY (ID_Departamento)
+CREATE TABLE Departments (
+    DepartmentID      INT           NOT NULL AUTO_INCREMENT,
+    FullName              VARCHAR(100),
+    PRIMARY KEY (DepartmentID)
 );
 
-CREATE TABLE Estudiantes (
-    ID_Estudiante      INT           NOT NULL AUTO_INCREMENT,
-    DNI                VARCHAR(20)   ,
-    Nombre             VARCHAR(100)  ,
-    Apellido           VARCHAR(100)  ,
-    Email              VARCHAR(150)  ,
-    FechaNacimiento    DATE          ,
-    FechaMatricula     DATE          ,
-    PRIMARY KEY (ID_Estudiante),
-    CONSTRAINT UC_Estudiante UNIQUE (DNI)
+CREATE TABLE Students (
+    StudentID         INT            NOT NULL AUTO_INCREMENT,
+    NationalID        VARCHAR(20),
+    FirstName         VARCHAR(100),
+    LastName          VARCHAR(100),
+    Email             VARCHAR(150),
+    BirthDate         DATE,
+    EnrollmentDate    DATE,
+    PRIMARY KEY (StudentID),
+    CONSTRAINT UQ_Student UNIQUE (NationalID)
 );
 
-CREATE TABLE Profesores (
-    ID_Profesor        INT           NOT NULL AUTO_INCREMENT,
-    Nombre             VARCHAR(100)  ,
-    Apellido           VARCHAR(100)  ,
-    Email              VARCHAR(150)  ,
-    FechaNacimiento    DATE          ,
-    ID_Departamento    INT           NOT NULL,
-    PRIMARY KEY (ID_Profesor),
-    FOREIGN KEY (ID_Departamento) REFERENCES Departamentos(ID_Departamento),
-    CONSTRAINT UC_Profesor UNIQUE (DNI)
+CREATE TABLE Professors (
+    ProfessorID       INT            NOT NULL AUTO_INCREMENT,
+    FirstName         VARCHAR(100),
+    LastName          VARCHAR(100),
+    Email             VARCHAR(150),
+    BirthDate         DATE,
+    DepartmentID      INT            NOT NULL,
+    PRIMARY KEY (ProfessorID),
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
+    CONSTRAINT UQ_Professor UNIQUE (NationalID)
 );
 
-CREATE TABLE Cursos (
-    ID_Curso           INT           NOT NULL AUTO_INCREMENT,
-    Nombre             VARCHAR(100)  ,
-    Nivel              VARCHAR(50)   ,
-    Creditos           INT           ,
-    ID_Departamento    INT           NOT NULL,
-    PRIMARY KEY (ID_Curso),
-    FOREIGN KEY (ID_Departamento) REFERENCES Departamentos(ID_Departamento)
+CREATE TABLE Courses (
+    CourseID          INT            NOT NULL AUTO_INCREMENT,
+    FullName              VARCHAR(100),
+    CourseLevel             VARCHAR(50),
+    Credits           INT,
+    DepartmentID      INT            NOT NULL,
+    PRIMARY KEY (CourseID),
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
 
-CREATE TABLE Inscripciones (
-    ID_Estudiante      INT           NOT NULL,
-    ID_Curso           INT           NOT NULL,
-    FechaInscripcion   DATE          ,
-    PRIMARY KEY (ID_Estudiante, ID_Curso),
-    FOREIGN KEY (ID_Estudiante) REFERENCES Estudiantes(ID_Estudiante),
-    FOREIGN KEY (ID_Curso)      REFERENCES Cursos(ID_Curso)
+CREATE TABLE Enrollments (
+    StudentID         INT            NOT NULL,
+    CourseID          INT            NOT NULL,
+    EnrollmentDate    DATE,
+    PRIMARY KEY (StudentID, CourseID),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID)  REFERENCES Courses(CourseID)
 );
 
-CREATE TABLE Evaluaciones (
-    ID_Estudiante      INT           NOT NULL,
-    ID_Curso           INT           NOT NULL,
-    Nota               DECIMAL(4,2)  ,
-    FechaEvaluacion    DATE          ,
-    PRIMARY KEY (ID_Estudiante, ID_Curso, FechaEvaluacion),
-    FOREIGN KEY (ID_Estudiante) REFERENCES Estudiantes(ID_Estudiante),
-    FOREIGN KEY (ID_Curso)      REFERENCES Cursos(ID_Curso)
+CREATE TABLE Evaluations (
+    StudentID         INT            NOT NULL,
+    CourseID          INT            NOT NULL,
+    Grade             DECIMAL(4,2),
+    EvaluationDate    DATE,
+    PRIMARY KEY (StudentID, CourseID, EvaluationDate),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID)  REFERENCES Courses(CourseID)
 );

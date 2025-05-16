@@ -1,69 +1,68 @@
-CREATE TABLE Departamento (
-    ID_Departamento INT NOT NULL AUTO_INCREMENT,
-    Nombre          VARCHAR(100) NOT NULL,
-    Presupuesto     DECIMAL(12,2) NOT NULL,
-    ID_Jefe         INT NOT NULL,
-    PRIMARY KEY (ID_Departamento),
-    FOREIGN KEY (ID_Jefe) REFERENCES EmpleadoJefe(ID_Empleado)
+CREATE TABLE Department (
+    DepartmentID   INT           NOT NULL AUTO_INCREMENT,
+    FullName           VARCHAR(100)  NOT NULL,
+    Budget         DECIMAL(12,2) NOT NULL,
+    ManagerID      INT           NOT NULL,
+    PRIMARY KEY (DepartmentID),
+    FOREIGN KEY (ManagerID) REFERENCES Manager(EmployeeID)
 );
 
-CREATE TABLE Proyecto (
-    ID_Proyecto     INT NOT NULL AUTO_INCREMENT,
-    Nombre          VARCHAR(100) NOT NULL,
-    Presupuesto     DECIMAL(12,2) NOT NULL,
-    ID_Departamento INT NOT NULL,
-    PRIMARY KEY (ID_Proyecto),
-    FOREIGN KEY (ID_Departamento) REFERENCES Departamento(ID_Departamento)
+CREATE TABLE Project (
+    ProjectID      INT           NOT NULL AUTO_INCREMENT,
+    FullName           VARCHAR(100)  NOT NULL,
+    Budget         DECIMAL(12,2) NOT NULL,
+    DepartmentID   INT           NOT NULL,
+    PRIMARY KEY (ProjectID),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID)
 );
 
-CREATE TABLE Empleado (
-    ID_Empleado     INT NOT NULL AUTO_INCREMENT,
-    Nombre          VARCHAR(100) NOT NULL,
-    Apellido        VARCHAR(100) NOT NULL,
-    ID_Departamento INT NOT NULL,
-    PRIMARY KEY (ID_Empleado),
-    FOREIGN KEY (ID_Departamento) REFERENCES Departamento(ID_Departamento),
-    FOREIGN KEY (ID_Conyugue) REFERENCES Empleado(ID_Empleado)
+CREATE TABLE Employee (
+    EmployeeID     INT           NOT NULL AUTO_INCREMENT,
+    FirstName      VARCHAR(100)  NOT NULL,
+    LastName       VARCHAR(100)  NOT NULL,
+    DepartmentID   INT           NOT NULL,
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
+    FOREIGN KEY (SpouseID) REFERENCES Employee(EmployeeID)
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
 
-CREATE TABLE EmpleadoTecnico (
-    ID_Empleado INT NOT NULL,
-    Especialidad VARCHAR(100) NOT NULL,
-    PRIMARY KEY (ID_Empleado),
-    FOREIGN KEY (ID_Empleado) REFERENCES Empleado(ID_Empleado)
+CREATE TABLE TechnicalEmployee (
+    EmployeeID     INT           NOT NULL,
+    Specialty      VARCHAR(100)  NOT NULL,
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(EmployeeID)
 );
 
-CREATE TABLE EmpleadoAdministrativo(
-    ID_Empleado INT NOT NULL,
-    HorasTrabajadas INT NOT NULL,
-    PRIMARY KEY (ID_Empleado),
-    FOREIGN KEY (ID_Empleado) REFERENCES Empleado(ID_Empleado)
+CREATE TABLE AdministrativeEmployee (
+    EmployeeID     INT           NOT NULL,
+    HoursWorked    INT           NOT NULL,
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(EmployeeID)
 );
 
-CREATE TABLE EmpleadoJefe (
-    ID_Empleado INT NOT NULL,
-    antiguedadAños  INT NOT NULL,
-    PRIMARY KEY (ID_Empleado),
-    FOREIGN KEY (ID_Empleado) REFERENCES Empleado(ID_Empleado),
-    FOREIGN KEY (ID_Departamento) REFERENCES Departamento(ID_Departamento)
+CREATE TABLE Manager (
+    EmployeeID       INT           NOT NULL,
+    YearsOfService   INT           NOT NULL,
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (EmployeeID)   REFERENCES Employee(EmployeeID)
 );
 
-CREATE TABLE Tarea (
-    ID_Tarea        INT NOT NULL AUTO_INCREMENT,
-    Descripcion     VARCHAR(100) NOT NULL,
-    PRIMARY KEY (ID_Tarea),
-    FOREIGN KEY (ID_Proyecto) REFERENCES Proyecto(ID_Proyecto)
+CREATE TABLE Task (
+    TaskID          INT           NOT NULL AUTO_INCREMENT,
+    Description     VARCHAR(100)  NOT NULL,
+    PRIMARY KEY (TaskID),
+    FOREIGN KEY (ProjectID) REFERENCES Project(ProjectID)
 );
 
-CREATE TABLE Asignacion (
-    ID_Empleado   INT NOT NULL,
-    ID_Proyecto   INT NOT NULL,
-    ID_Tarea      INT NOT NULL,
-    FechaInicio   DATE NOT NULL,
-    PRIMARY KEY (ID_Empleado, ID_Proyecto, ID_Tarea),
-    FOREIGN KEY (ID_Empleado) REFERENCES Empleado(ID_Empleado),
-    FOREIGN KEY (ID_Proyecto) REFERENCES Proyecto(ID_Proyecto),
-    FOREIGN KEY (ID_Tarea) REFERENCES Tarea(ID_Tarea)
+CREATE TABLE Assignment (
+    EmployeeID      INT           NOT NULL,
+    ProjectID       INT           NOT NULL,
+    TaskID          INT           NOT NULL,
+    StartDate       DATE          NOT NULL,
+    PRIMARY KEY (EmployeeID, ProjectID, TaskID),
+    FOREIGN KEY (EmployeeID)  REFERENCES Employee(EmployeeID),
+    FOREIGN KEY (ProjectID)   REFERENCES Project(ProjectID),
+    FOREIGN KEY (TaskID)      REFERENCES Task(TaskID)
 );

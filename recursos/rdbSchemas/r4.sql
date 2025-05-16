@@ -1,49 +1,52 @@
-CREATE TABLE Persona (
+CREATE TABLE Person (
   NIF INT PRIMARY KEY,
   email VARCHAR(255) UNIQUE,
-  nombre VARCHAR(100)
+  first_name VARCHAR(100)
 );
 
-CREATE TABLE Empleado (
+CREATE TABLE Employee (
   id INT PRIMARY KEY,
-  salario DECIMAL
+  salary DECIMAL
 );
 
-CREATE TABLE Consultor (
+CREATE TABLE Consultant (
   id INT PRIMARY KEY,
-  tarifaHora DECIMAL
+  hourly_rate DECIMAL
 );
 
-CREATE TABLE Mentorea (
+CREATE TABLE Mentors (
   mentor_id INT,
   mentee_id INT,
   PRIMARY KEY (mentor_id, mentee_id),
-  FOREIGN KEY (mentor_id) REFERENCES Persona(id),
-  FOREIGN KEY (mentee_id) REFERENCES Persona(id)
+  FOREIGN KEY (mentor_id) REFERENCES Person(NIF),
+  FOREIGN KEY (mentee_id) REFERENCES Person(NIF)
 );
 
-CREATE TABLE Empresa (
+CREATE TABLE Company (
   NIF VARCHAR(9) PRIMARY KEY,
-  nombre VARCHAR(100)
+  company_name VARCHAR(100)
 );
 
-CREATE TABLE Ubicacion (
+CREATE TABLE Locationn (
   id INT PRIMARY KEY,
-  calle VARCHAR(255),
-  ciudad VARCHAR(100),
-  provincia VARCHAR(100),
-  coordenadas VARCHAR(100)
+  street VARCHAR(255),
+  city VARCHAR(100),
+  province VARCHAR(100),
+  coordinates VARCHAR(100)
 );
 
-CREATE TABLE TrabajaCon (
-  persona_id INT,
-  empresa_id INT,
-  PRIMARY KEY (persona_id, empresa_id)
+CREATE TABLE WorksWith (
+  person_id INT,
+  company_id VARCHAR(9),
+  PRIMARY KEY (person_id, company_id),
+  FOREIGN KEY (person_id) REFERENCES Person(NIF),
+  FOREIGN KEY (company_id) REFERENCES Company(NIF)
 );
 
-CREATE TABLE TieneUbicacion (
-  empresa_id INT,
-  ubicacion_id INT,
-  PRIMARY KEY (empresa_id, ubicacion_id)
+CREATE TABLE HasLocation (
+  company_id VARCHAR(9),
+  location_id INT,
+  PRIMARY KEY (company_id, location_id),
+  FOREIGN KEY (company_id) REFERENCES Company(NIF),
+  FOREIGN KEY (location_id) REFERENCES Location(id)
 );
-

@@ -1,209 +1,211 @@
-@prefix : <http://example.org/ontology#> .
+@prefix : <http://example.org/ontologyR2#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 #################################################################
-# Ontología
+# Ontology
 #################################################################
-:OrganizacionOntology a owl:Ontology ;
-    rdfs:label "Ontología de Gestión de Proyectos y Empleados" ;
-    rdfs:comment "Recurso 2. Modelo que demuestra jerarquia de clases explicita en el schema, subproperty y definicion de clase como interseccion" .
+:OrganizationOntology a owl:Ontology ;
+    rdfs:label "Project and Employee Management Ontology" ;
+    rdfs:comment "Resource 2. Model demonstrating explicit class hierarchy in the schema, subproperty, and class definition as an intersection." .
 
 #################################################################
-# Clases
+# Classes
 #################################################################
 
-## Departamento
-:Departamento a owl:Class ;
-    rdfs:label "Departamento" ;
-    owl:hasKey (:hasIdDepartamento ) ;
+## Department
+:Department a owl:Class ;
+    rdfs:label "Department" ;
+    owl:hasKey (:hasDepartmentId) ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasIdDepartamento ;
+        owl:onProperty :hasDepartmentId ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
-    rdfs:comment "Unidad organizacional que agrupa proyectos y empleados." .
+    rdfs:comment "Organizational unit grouping projects and employees." .
 
-:hasIdDepartamento a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:domain :Departamento ;
+:hasDepartmentId a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Department ;
     rdfs:range xsd:string ;
-    rdfs:label "idDepartamento" ;
-    rdfs:comment "Identificador único del departamento." .
-:hasNombreDepartamento a owl:DatatypeProperty ;
-    rdfs:domain :Departamento ;
+    rdfs:label "departmentId" ;
+    rdfs:comment "Unique identifier for the department." .
+
+:hasDepartmentName a owl:DatatypeProperty ;
+    rdfs:domain :Department ;
     rdfs:range xsd:string ;
-    rdfs:label "nombreDepartamento" ;
-    rdfs:comment "Nombre del departamento (ej. 'Recursos Humanos', 'I+D')." .
-:hasPresupuestoDepartamento a owl:DatatypeProperty ;
-    rdfs:domain :Departamento ;
+    rdfs:label "departmentName" ;
+    rdfs:comment "Name of the department (e.g., 'Human Resources', 'R&D')." .
+
+:hasDepartmentBudget a owl:DatatypeProperty ;
+    rdfs:domain :Department ;
     rdfs:range xsd:decimal ;
-    rdfs:label "presupuestoDepartamento" ;
-    rdfs:comment "Presupuesto asignado al departamento." .
+    rdfs:label "departmentBudget" ;
+    rdfs:comment "Budget assigned to the department." .
 
-## Proyecto
-:Proyecto a owl:Class ;
-    rdfs:label "Proyecto" ;
-    owl:hasKey (:hasIdProyecto ) ;
+## Project
+:Project a owl:Class ;
+    rdfs:label "Project" ;
+    owl:hasKey (:hasProjectId) ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasIdProyecto ;
+        owl:onProperty :hasProjectId ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
-    rdfs:comment "Proyecto específico dentro de un departamento, con presupuesto asignado." .
+    rdfs:comment "Specific project within a department, with an assigned budget." .
 
-:hasIdProyecto a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:domain :Proyecto ;
+:hasProjectId a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain :Project ;
     rdfs:range xsd:string ;
-    rdfs:label "idProyecto" ;
-    rdfs:comment "Identificador único del proyecto." .
-:hasNombreProyecto a owl:DatatypeProperty ;
-    rdfs:domain :Proyecto ;
-    rdfs:range xsd:string ;
-    rdfs:label "nombreProyecto" ;
-    rdfs:comment "Título o nombre del proyecto." .
+    rdfs:label "projectId" ;
+    rdfs:comment "Unique identifier for the project." .
 
-:hasPresupuesto a owl:DatatypeProperty ;
-    rdfs:domain :Proyecto ;
+:hasProjectName a owl:DatatypeProperty ;
+    rdfs:domain :Project ;
+    rdfs:range xsd:string ;
+    rdfs:label "projectName" ;
+    rdfs:comment "Title or name of the project." .
+
+:hasBudget a owl:DatatypeProperty ;
+    rdfs:domain :Project ;
     rdfs:range xsd:decimal ;
-    rdfs:label "presupuesto" ;
-    rdfs:comment "Presupuesto asignado al proyecto." .
+    rdfs:label "budget" ;
+    rdfs:comment "Budget assigned to the project." .
 
-## Empleado
-:Empleado a owl:Class ;
-    rdfs:label "Empleado" ;
-    rdfs:comment "Persona que trabaja en la organización." .
+## Employee
+:Employee a owl:Class ;
+    rdfs:label "Employee" ;
+    rdfs:comment "Person who works in the organization." .
 
-:hasNombreEmpleado a owl:DatatypeProperty ;
-    rdfs:domain :Empleado ;
+:hasEmployeeFirstName a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
     rdfs:range xsd:string ;
-    rdfs:label "nombreEmpleado" ;
-    rdfs:comment "Nombre de la persona empleada." .
+    rdfs:label "employeeFirstName" ;
+    rdfs:comment "First name of the employee." .
 
-:hasApellidoEmpleado a owl:DatatypeProperty ;
-    rdfs:domain :Empleado ;
+:hasEmployeeLastName a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
     rdfs:range xsd:string ;
-    rdfs:label "apellidoEmpleado" ;
-    rdfs:comment "Apellido de la persona empleada." .
+    rdfs:label "employeeLastName" ;
+    rdfs:comment "Last name of the employee." .
 
-:perteneceDepartamentoEmpleado a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:domain :Empleado ;
-    rdfs:range :Departamento ;
-    rdfs:label "departamentoEmpleado" ;
-    rdfs:comment "Departamento al que pertenece el empleado." .
-:esJefeDeDepartamento
-    a owl:ObjectProperty ;
-    rdfs:subPropertyOf :perteneceDepartamentoEmpleado ;
-    rdfs:domain :Empleado ;         
-    rdfs:range :Departamento ;
-    rdfs:label "esJefeDeDepartamento" ;
-    rdfs:comment "Relación que indica que el empleado es jefe de un departamento." .
+:belongsToDepartment a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range :Department ;
+    rdfs:label "employeeDepartment" ;
+    rdfs:comment "Department to which the employee belongs." .
 
-## EmpleadoTecnico, subclase de Empleado
-:EmpleadoTecnico a owl:Class ;
-    rdfs:subClassOf :Empleado ;
-    rdfs:label "EmpleadoTecnico" ;
-    rdfs:comment "Empleado especializado en tareas técnicas." .
-:especialidadEmpleado a owl:DatatypeProperty ;
-    rdfs:domain :EmpleadoTecnico ;
+:isManagerOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf :belongsToDepartment ;
+    rdfs:domain :Employee ;
+    rdfs:range :Department ;
+    rdfs:label "isManagerOf" ;
+    rdfs:comment "Relation indicating the employee is the head of a department." .
+
+## TechnicalEmployee, subclass of Employee
+:TechnicalEmployee a owl:Class ;
+    rdfs:subClassOf :Employee ;
+    rdfs:label "TechnicalEmployee" ;
+    rdfs:comment "Employee specialized in technical tasks." .
+
+:employeeSpecialty a owl:DatatypeProperty ;
+    rdfs:domain :TechnicalEmployee ;
     rdfs:range xsd:string ;
-    rdfs:label "especialidadEmpleado" ;
-    rdfs:comment "Área de especialización técnica del empleado." .
+    rdfs:label "employeeSpecialty" ;
+    rdfs:comment "Technical specialty area of the employee." .
 
-## EmpleadoAdministrativo, subclase de Empleado
-:EmpleadoAdministrativo a owl:Class ;
-    rdfs:subClassOf :Empleado ;
-    rdfs:label "EmpleadoAdministrativo" ;
-    rdfs:comment "Empleado de oficina, no especializado en tareas técnicas." .
+## AdministrativeEmployee, subclass of Employee
+:AdministrativeEmployee a owl:Class ;
+    rdfs:subClassOf :Employee ;
+    rdfs:label "AdministrativeEmployee" ;
+    rdfs:comment "Office employee not specialized in technical tasks." .
 
-:horasTrabajadas a owl:DatatypeProperty ;
-    rdfs:domain :EmpleadoAdministrativo ;
+:workedHours a owl:DatatypeProperty ;
+    rdfs:domain :AdministrativeEmployee ;
     rdfs:range xsd:decimal ;
     rdfs:label "workedHours" ;
-    rdfs:comment "Cantidad de horas trabajadas por el empleado." .
+    rdfs:comment "Number of hours worked by the employee." .
 
-## EmpleadoJefe, subclase de Empleado    
-:EmpleadoJefe a owl:Class ;
-    rdfs:label "EmpleadoJefe" ;
-    rdfs:comment "Empleado con rol de jefe de departamento." ;
+## DepartmentHead, subclass of Employee
+:Manager a owl:Class ;
+    rdfs:label "Manager" ;
+    rdfs:comment "Employee with the role of department head." ;
     owl:equivalentClass [
         a owl:ObjectIntersectionOf ;
         owl:intersectionOf (
-            :Empleado
+            :Employee
             [ a owl:Restriction ;
-              owl:onProperty :esJefeDeDepartamento ;
-              owl:someValuesFrom :Departamento
+              owl:onProperty :isManagerOf ;
+              owl:someValuesFrom :Department
             ]
         )
     ] .
 
-:hasAntiguedad a owl:DatatypeProperty ;
-    rdfs:domain :EmpleadoJefe ;
+:hasSeniority a owl:DatatypeProperty ;
+    rdfs:domain :Manager ;
     rdfs:range [
         a rdfs:Datatype ;
         owl:onDatatype xsd:integer ;
         owl:withRestrictions (
-            [
-                xsd:minExclusive "0"^^xsd:integer
-            ]
+            [ xsd:minExclusive "0"^^xsd:integer ]
         )
-    ];
-    rdfs:label "antiguedad" ;
-    rdfs:comment "Años de antigüedad en la empresa." .
+    ] ;
+    rdfs:label "seniority" ;
+    rdfs:comment "Number of years the employee has been with the company." .
 
-## Asignacion
-:Asignacion a owl:Class ;
-    rdfs:label "Asignación" ;
-    rdfs:comment "Entidad que modela la relación de asignacion de un proyecto a un empleado en una fecha" ;
-    owl:hasKey (:hasEmpleadoAsignacion :hasProyectoAsignacion :hasTareaAsignacion) ;
-    rdfs:subClassOf[
+## Assignment
+:Assignment a owl:Class ;
+    rdfs:label "Assignment" ;
+    rdfs:comment "Entity modeling the assignment of a project to an employee on a given date." ;
+    owl:hasKey (:hasAssignedEmployee :hasAssignedProject :hasAssignedTask) ;
+    rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasEmpleadoAsignacion ;
+        owl:onProperty :hasAssignedEmployee ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
-    rdfs:subClassOf[
+    rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasProyectoAsignacion ;
+        owl:onProperty :hasAssignedProject ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
-    rdfs:subClassOf[
+    rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasTareaAsignacion ;
+        owl:onProperty :hasAssignedTask ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 
-:hasFechaInicioAsignacion a owl:DatatypeProperty ;
-    rdfs:domain :Asignacion ;
+:hasAssignmentStartDate a owl:DatatypeProperty ;
+    rdfs:domain :Assignment ;
     rdfs:range xsd:dateTime ;
-    rdfs:label "fechaInicio" ;
-    rdfs:comment "Fecha en que un empleado asume un cargo en un proyecto." .
+    rdfs:label "startDate" ;
+    rdfs:comment "Date on which an employee begins work on a project." .
 
-:hasEmpleadoAsignacion a owl:ObjectProperty ;
-    rdfs:domain :Asignacion ;
-    rdfs:range :Empleado ;
-    rdfs:label "empleadoAsignacion" ;
-    rdfs:comment "Empleado asignado a un proyecto." .
+:hasAssignedEmployee a owl:ObjectProperty ;
+    rdfs:domain :Assignment ;
+    rdfs:range :Employee ;
+    rdfs:label "assignedEmployee" ;
+    rdfs:comment "Employee assigned to the project." .
 
-:hasProyectoAsignacion a owl:ObjectProperty ;
-    rdfs:domain :Asignacion ;
-    rdfs:range :Proyecto ;
-    rdfs:label "proyectoAsignacion" ;
-    rdfs:comment "Proyecto al que se asigna un empleado." .
-:hasTareaAsignacion a owl:ObjectProperty ;
-    rdfs:domain :Asignacion ;
-    rdfs:range :Tarea ;
-    rdfs:label "tareaAsignacion" ;
-    rdfs:comment "Tarea asignada al empleado en el proyecto." .
+:hasAssignedProject a owl:ObjectProperty ;
+    rdfs:domain :Assignment ;
+    rdfs:range :Project ;
+    rdfs:label "assignedProject" ;
+    rdfs:comment "Project to which the employee is assigned." .
 
-## Tarea 
-:Tarea a owl:Class ;
-    rdfs:label "Tarea" ;
-    rdfs:comment "Actividad específica a realizar en un proyecto." .
+:hasAssignedTask a owl:ObjectProperty ;
+    rdfs:domain :Assignment ;
+    rdfs:range :Task ;
+    rdfs:label "assignedTask" ;
+    rdfs:comment "Task assigned to the employee in the project." .
 
-:hasDescripcionTarea a owl:DatatypeProperty ;
-    rdfs:domain :Tarea ;
+## Task
+:Task a owl:Class ;
+    rdfs:label "Task" ;
+    rdfs:comment "Specific activity to be performed in a project." .
+
+:hasTaskDescription a owl:DatatypeProperty ;
+    rdfs:domain :Task ;
     rdfs:range xsd:string ;
-    rdfs:label "descripcionTarea" ;
-    rdfs:comment "Descripción de la tarea a realizar." .
-
+    rdfs:label "taskDescription" ;
+    rdfs:comment "Description of the task to be performed." .
