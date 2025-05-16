@@ -1,4 +1,5 @@
 import rdflib
+from rdflib.collection import Collection
 from graph_tool.all import Graph
 from graph_tool.clustering import motifs
 import networkx as nx
@@ -17,41 +18,52 @@ from torch_geometric.data import Data
 from torch_geometric.utils import from_networkx
 
 
+f = open("graph.txt", "w+")
+
+def shorten(uri, graph): # Acorta el URI
+    try:
+        return graph.qname(uri)
+    except:
+        return str(uri)  # si no puede acortar, devuelve el URI completo
+
 def ttl_to_graph(ttl_file_path):
     # Cargar la ontología
     g = rdflib.Graph()
     g.parse(ttl_file_path, format="ttl")
 
+    def describe_blank_node(graph, bnode):
+        """Genera una descripción legible de un blank node."""
+        if (bnode, rdflib.RDF.first, None) in graph:
+            # Es una lista RDF
+            try:
+                items = list(Collection(graph, bnode))
+                return "(" + ", ".join(shorten(i, graph) for i in items) + ")"
+            except:
+                return "_:listError"
+        else:
+            props = sorted(graph.predicate_objects(bnode), key=lambda x: shorten(x[0], graph))
+            label = "; ".join(f"{shorten(p, graph)}={shorten(o, graph)}" for p, o in props)
+            return f"[{label}]"
+
+    def format_node(n, g):
+        return str(n) if not isinstance(n, rdflib.BNode) else describe_blank_node(g, n)
+    
     # Crear un grafo dirigido
     G = nx.DiGraph()
-
     for subj, pred, obj in g:
+        f.write(f"{format_node(subj, g)} {format_node(pred, g)} {format_node(obj, g)}\n")
         # Asegurar que los nodos existan con atributo 'title'
         if pred != rdflib.RDFS.comment and pred != rdflib.RDFS.label: 
             if subj not in G:
-                G.add_node(subj, title=str(subj))
+                G.add_node(format_node(subj, g), title=shorten(format_node(subj, g), g))
             if obj not in G:
-                G.add_node(obj, title=str(obj))
+                G.add_node(format_node(obj, g), title=shorten(format_node(obj, g), g))
 
             # Agregar la arista (subj -> obj) con predicado como atributo opcional
-            G.add_edge(subj, obj, predicate=str(pred))
-
+            G.add_edge(format_node(subj, g), format_node(obj, g), predicate=shorten(format_node(pred, g), g))
+    f.write("-----------\n")
     return G
 
-def draw_graph(G, title="Graph", filename=None):
-    mpl.rcParams['text.usetex'] = False  # <--- desactiva LaTeX
-
-    plt.figure(figsize=(12, 8))
-    pos = nx.spring_layout(G, seed=42)
-    labels = {node: data.get('title', str(node)) for node, data in G.nodes(data=True)}
-    edge_labels = {(u, v): d.get('predicate', '') for u, v, d in G.edges(data=True)}
-    
-    nx.draw(G, pos, with_labels=True, labels=labels, node_size=500, node_color='skyblue', font_size=8, arrows=True)
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
-    plt.title(title)
-    if filename:
-        plt.savefig(filename, format='png')
-    plt.close()
     
 def embed_nodes(
     nodes_sys: list, 
@@ -70,18 +82,9 @@ def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
     if len(G_pred) == 0 or len(G_true) == 0:
         return 0, 0, 0
 
-    def parse_title(t):
-        # Parsear el titulo para quedarse con el nombre
-        # http://example.org/universidad#Evaluacion , quedarse con Evaluacion
-        if "#" in t:
-            return t.split("#")[-1]
-        elif "/" in t:
-            return t.split("/")[-1]
-        else:
-            return t
     def title(G, n):
         t = G.nodes[n]["title"]
-        return parse_title(t)
+        return shorten(t ,G)
 
     edges_G = {(title(G_pred, u), title(G_pred, v)) for u, v in G_pred.edges}
     edges_G_true = {(title(G_true, u), title(G_true, v)) for u, v in G_true.edges}
@@ -370,10 +373,6 @@ if __name__ == "__main__":
     G1 = ttl_to_graph(ttl_file1)
     G2 = ttl_to_graph(ttl_file2)
 
-    # Graficar los grafos
-    #draw_graph(G1, title="Ontology 1 Graph", filename="ontology1_graph.png")
-    #draw_graph(G2, title="Ontology 2 Graph", filename="ontology2_graph.png")
-
     #Metricas 
     precisionLiteral, recallLiteral, f1Literal = literal_f1(G1, G2)
     pFuzzy, rFuzzy, f1Fuzzy = fuzzy_f1(G1, G2)
@@ -386,4 +385,6 @@ if __name__ == "__main__":
     print(f"Continuous F1 : P={pCont:.4f} R={rCont:.4f} F1={f1Cont:.4f}")
     print(f"Graph F1  : P={pGraph:.4f} R={rGraph:.4f} F1={f1Graph:.4f}")
     print(f"Motif distance: {mDistance:.4f}")
+
+    f.close()
 
