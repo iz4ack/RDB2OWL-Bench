@@ -18,8 +18,6 @@ from torch_geometric.data import Data
 from torch_geometric.utils import from_networkx
 
 
-f = open("graph.txt", "w+")
-
 def shorten(uri, graph): # Acorta el URI
     try:
         return graph.qname(uri)
@@ -31,37 +29,56 @@ def ttl_to_graph(ttl_file_path):
     g = rdflib.Graph()
     g.parse(ttl_file_path, format="ttl")
 
-    def describe_blank_node(graph, bnode):
-        """Genera una descripción legible de un blank node."""
+    def describe_blank_node(graph, bnode, seen=None):
+        """Genera una representación legible (y determinista) de un blank node."""
+        if seen is None:
+            seen = set()
+
+        if bnode in seen:
+            return "_:recursion"
+        seen.add(bnode)
+
         if (bnode, rdflib.RDF.first, None) in graph:
-            # Es una lista RDF
             try:
                 items = list(Collection(graph, bnode))
-                return "(" + ", ".join(shorten(i, graph) for i in items) + ")"
+                return "(" + ", ".join(format_node(i, graph, seen=seen) for i in items) + ")"
             except:
-                return "_:listError"
-        else:
-            props = sorted(graph.predicate_objects(bnode), key=lambda x: shorten(x[0], graph))
-            label = "; ".join(f"{shorten(p, graph)}={shorten(o, graph)}" for p, o in props)
-            return f"[{label}]"
+                return "_:badList"
 
-    def format_node(n, g):
-        return str(n) if not isinstance(n, rdflib.BNode) else describe_blank_node(g, n)
+        props = sorted(graph.predicate_objects(bnode), key=lambda x: shorten(x[0], graph))
+        parts = []
+        for p, o in props:
+            p_str = shorten(p, graph)
+            o_str = format_node(o, graph, seen=seen)
+            parts.append(f"{p_str}={o_str}")
+        return "[" + "; ".join(parts) + "]"
+
+    def format_node(n, g, seen=None):
+        return str(n) if not isinstance(n, rdflib.BNode) else describe_blank_node(g, n, seen=seen)
     
     # Crear un grafo dirigido
     G = nx.DiGraph()
     for subj, pred, obj in g:
-        f.write(f"{format_node(subj, g)} {format_node(pred, g)} {format_node(obj, g)}\n")
         # Asegurar que los nodos existan con atributo 'title'
-        if pred != rdflib.RDFS.comment and pred != rdflib.RDFS.label: 
-            if subj not in G:
-                G.add_node(format_node(subj, g), title=shorten(format_node(subj, g), g))
-            if obj not in G:
-                G.add_node(format_node(obj, g), title=shorten(format_node(obj, g), g))
-
+        if pred in [rdflib.RDFS.comment, rdflib.RDFS.label]:
+                continue
+        if subj not in G:
+            G.add_node(format_node(subj, g), title=shorten(format_node(subj, g), g))
+        if obj not in G:
+            G.add_node(format_node(obj, g), title=shorten(format_node(obj, g), g))
+        # Especial: tratar owl:hasKey como relación semántica
+        if pred == rdflib.OWL.hasKey and isinstance(obj, rdflib.BNode):
+            try:
+                keys = list(Collection(g, obj))
+                for key in keys:
+                    key_label = format_node(key, g)
+                    G.add_edge(format_node(subj, g), key_label, predicate="hasKey")
+            except:
+                pass
+        else:
             # Agregar la arista (subj -> obj) con predicado como atributo opcional
             G.add_edge(format_node(subj, g), format_node(obj, g), predicate=shorten(format_node(pred, g), g))
-    f.write("-----------\n")
+
     return G
 
     
@@ -385,6 +402,3 @@ if __name__ == "__main__":
     print(f"Continuous F1 : P={pCont:.4f} R={rCont:.4f} F1={f1Cont:.4f}")
     print(f"Graph F1  : P={pGraph:.4f} R={rGraph:.4f} F1={f1Graph:.4f}")
     print(f"Motif distance: {mDistance:.4f}")
-
-    f.close()
-
