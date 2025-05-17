@@ -121,16 +121,6 @@ def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
     edges_G = {(title(G_pred, u), title(G_pred, v)) for u, v in G_pred.edges}
     edges_G_true = {(title(G_true, u), title(G_true, v)) for u, v in G_true.edges}
 
-    # Write disjoint set to file
-    with open("disjoint.txt", "w") as f:
-        c1 = edges_G - edges_G_true
-        c2 = edges_G_true - edges_G
-        for e in c1:
-            f.write(f"{e[0]} -> {e[1]}\n")
-        f.write("-------------------------------------\n")
-        for e in c2:
-            f.write(f"{e[0]} -> {e[1]}\n")  
-
     precision = len(edges_G & edges_G_true) / len(edges_G)
     recall = len(edges_G & edges_G_true) / len(edges_G_true)
     f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0

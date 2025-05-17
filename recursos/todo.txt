@@ -1,2 +1,0 @@
--Conjunto de relaciones que forman una entidad, inducido por PKs
--owl:differentFrom

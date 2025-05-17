@@ -13,10 +13,12 @@ def main():
     )
     parser.add_argument("--gen-dir", required=True, help="Directory with generated ontologies (.ttl)")
     parser.add_argument("--gold-dir", help="Directory with gold standard ontologies (.ttl)", default="resources/ontologies")
-    parser.add_argument("--output-csv", default="evaluation_results.csv", help="Output CSV file with metrics")
+    parser.add_argument("--output-csv", "-o", default="evaluation_results.csv", help="Output CSV file name with metrics, it will be saved in the gen_dir")
     args = parser.parse_args()
+    
+    output_path = os.path.join(args.gen_dir, args.output_csv)
 
-    with open(args.output_csv, "w", newline='', encoding="utf-8") as csvfile:
+    with open(output_path, "w", newline='', encoding="utf-8") as csvfile:
         fieldnames = [
             "file",
             "literal_P", "literal_R", "literal_F1",
