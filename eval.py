@@ -9,20 +9,20 @@ from metrics import (
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Evalúa ontologías generadas contra gold standards usando múltiples métricas."
+        description="Evaluates generated ontologies against gold standards using multiple metrics."
     )
-    parser.add_argument("--gen-dir", required=True, help="Directorio con ontologías generadas (.ttl)")
-    parser.add_argument("--gold-dir", help="Directorio con ontologías gold estándar (.ttl)", default="recursos/ontologies")
-    parser.add_argument("--output-csv", default="evaluation_results.csv", help="Fichero CSV de salida con métricas")
+    parser.add_argument("--gen-dir", required=True, help="Directory with generated ontologies (.ttl)")
+    parser.add_argument("--gold-dir", help="Directory with gold standard ontologies (.ttl)", default="resources/ontologies")
+    parser.add_argument("--output-csv", default="evaluation_results.csv", help="Output CSV file with metrics")
     args = parser.parse_args()
 
     with open(args.output_csv, "w", newline='', encoding="utf-8") as csvfile:
         fieldnames = [
             "file",
-            "literal_P","literal_R","literal_F1",
-            "fuzzy_P","fuzzy_R","fuzzy_F1",
-            "cont_P","cont_R","cont_F1",
-            "graph_P","graph_R","graph_F1",
+            "literal_P", "literal_R", "literal_F1",
+            "fuzzy_P", "fuzzy_R", "fuzzy_F1",
+            "cont_P", "cont_R", "cont_F1",
+            "graph_P", "graph_R", "graph_F1",
             "motif_dist"
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -33,13 +33,13 @@ def main():
             gen_path = os.path.join(args.gen_dir, fname)
             gold_path = os.path.join(args.gold_dir, fname)
             if not os.path.exists(gold_path):
-                print(f"Aviso: no encontrado gold para {fname}, se omite.", file=sys.stderr)
+                print(f"Warning: gold standard not found for {fname}, skipping.", file=sys.stderr)
                 continue
 
             G_sys = ttl_to_graph(gen_path)
             G_gold = ttl_to_graph(gold_path)
 
-            # Calcula métricas
+            # Compute metrics
             litP, litR, litF = literal_f1(G_sys, G_gold)
             fzP, fzR, fzF = fuzzy_f1(G_sys, G_gold)
             cP, cR, cF = continuous_f1(G_sys, G_gold)
@@ -54,8 +54,8 @@ def main():
                 "graph_P": f"{gP:.4f}", "graph_R": f"{gR:.4f}", "graph_F1": f"{gF:.4f}",
                 "motif_dist": f"{m_dist:.4f}"
             })
-            print(f"Evaluado {fname}")
-    print(f"Evaluación completada. Resultados en {args.output_csv}")
+            print(f"Evaluated {fname}")
+    print(f"Evaluation completed. Results in {args.output_csv}")
 
 if __name__ == "__main__":
     main()
