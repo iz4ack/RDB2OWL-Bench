@@ -1,6 +1,7 @@
 import rdflib
 from rdflib.collection import Collection
-from graph_tool.all import Graph
+from graph_tool import Graph
+from graph_tool.topology import isomorphism
 from graph_tool.clustering import motifs
 import networkx as nx
 import sys
@@ -10,7 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 from sentence_transformers import SentenceTransformer
-import graph_tool.all as gt
+
 
 torch = __import__('torch')
 from torch_geometric.nn import SGConv
@@ -18,15 +19,29 @@ from torch_geometric.data import Data
 from torch_geometric.utils import from_networkx
 
 
-def shorten(uri, graph): # Acorta el URI
+def shorten(uri, graph):
     try:
-        return graph.qname(uri)
+        # Si es un prefijo conocido como "rdf", "rdfs", "owl", "xsd", ":", etc.
+        return graph.namespace_manager.qname(uri)
     except:
-        return str(uri)  # si no puede acortar, devuelve el URI completo
-
+        # Si no hay prefijo, intenta extraer localname manualmente
+        uri = str(uri)
+        if "#" in uri:
+            return ":" + uri.split("#")[-1]
+        elif "/" in uri:
+            return uri.rsplit("/", 1)[-1]
+        else:
+            return uri
+    
 def ttl_to_graph(ttl_file_path):
     # Cargar la ontología
     g = rdflib.Graph()
+    # Registrar prefijos conocidos 
+    g.namespace_manager.bind(":", "http://example.org/ontology#")
+    g.namespace_manager.bind("owl", "http://www.w3.org/2002/07/owl#")
+    g.namespace_manager.bind("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+    g.namespace_manager.bind("xsd", "http://www.w3.org/2001/XMLSchema#")
+    g.namespace_manager.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
     g.parse(ttl_file_path, format="ttl")
 
     def describe_blank_node(graph, bnode, seen=None):
@@ -48,7 +63,7 @@ def ttl_to_graph(ttl_file_path):
         props = sorted(graph.predicate_objects(bnode), key=lambda x: shorten(x[0], graph))
         parts = []
         for p, o in props:
-            p_str = shorten(p, graph)
+            p_str = shorten(p, graph) if isinstance(p, rdflib.URIRef) else str(p)
             o_str = format_node(o, graph, seen=seen)
             parts.append(f"{p_str}={o_str}")
         return "[" + "; ".join(parts) + "]"
@@ -62,22 +77,25 @@ def ttl_to_graph(ttl_file_path):
         # Asegurar que los nodos existan con atributo 'title'
         if pred in [rdflib.RDFS.comment, rdflib.RDFS.label]:
                 continue
+        subj_label = format_node(subj, g)
+        obj_label = format_node(obj, g)
         if subj not in G:
-            G.add_node(format_node(subj, g), title=shorten(format_node(subj, g), g))
+            G.add_node(subj_label, title=shorten(subj, g) if isinstance(subj, rdflib.URIRef) else subj_label)
         if obj not in G:
-            G.add_node(format_node(obj, g), title=shorten(format_node(obj, g), g))
+            G.add_node(obj_label, title=shorten(obj, g) if isinstance(obj, rdflib.URIRef) else obj_label)
         # Especial: tratar owl:hasKey como relación semántica
         if pred == rdflib.OWL.hasKey and isinstance(obj, rdflib.BNode):
             try:
                 keys = list(Collection(g, obj))
                 for key in keys:
                     key_label = format_node(key, g)
-                    G.add_edge(format_node(subj, g), key_label, predicate="hasKey")
+                    G.add_edge(subj_label, key_label, predicate="hasKey")
             except:
                 pass
         else:
             # Agregar la arista (subj -> obj) con predicado como atributo opcional
-            G.add_edge(format_node(subj, g), format_node(obj, g), predicate=shorten(format_node(pred, g), g))
+            G.add_edge(subj_label, obj_label, predicate=pred)
+
 
     return G
 
@@ -105,7 +123,17 @@ def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
 
     edges_G = {(title(G_pred, u), title(G_pred, v)) for u, v in G_pred.edges}
     edges_G_true = {(title(G_true, u), title(G_true, v)) for u, v in G_true.edges}
-    
+
+    #printear conjunto disjunto
+    with open("disjunto.txt", "w") as f:
+        c1 = edges_G - edges_G_true
+        c2 = edges_G_true - edges_G
+        for e in c1:
+            f.write(f"{e[0]} -> {e[1]}\n")
+        f.write("-------------------------------------\n")
+        for e in c2:
+            f.write(f"{e[0]} -> {e[1]}\n")  
+#     
     precision = len(edges_G & edges_G_true) / len(edges_G) # |E ∩ E′| / |E′| 
     recall = len(edges_G & edges_G_true) / len(edges_G_true) # |E ∩ E′| / |E| 
     f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
@@ -348,7 +376,7 @@ def motif_distance(G1_nx: nx.DiGraph,
     all_motifs = list(motifs1)  # empezamos con los de G1
     for m2 in motifs2:
         # si m2 no es isomorfo a ninguno en all_motifs, lo añadimos
-        if not any(gt.isomorphism(m2, m1) for m1 in all_motifs):
+        if not any(isomorphism(m2, m1) for m1 in all_motifs):
             all_motifs.append(m2)
 
     # 4) Creamos vectores de conteos alineados con all_motifs
@@ -358,14 +386,14 @@ def motif_distance(G1_nx: nx.DiGraph,
     # Rellenamos all_counts1
     for m, c in zip(motifs1, counts1):
         for j, gm in enumerate(all_motifs):
-            if gt.isomorphism(m, gm):
+            if isomorphism(m, gm):
                 all_counts1[j] = c
                 break
 
     # Rellenamos all_counts2
     for m, c in zip(motifs2, counts2):
         for j, gm in enumerate(all_motifs):
-            if gt.isomorphism(m, gm):
+            if isomorphism(m, gm):
                 all_counts2[j] = c
                 break
 
