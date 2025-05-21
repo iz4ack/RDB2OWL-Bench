@@ -1,8 +1,0 @@
-ontology_prompt:
-  - role: system
-    content: "Eres un asistente experto en ingeniería ontológica."
-  - role: user
-    content: |
-      A partir del siguiente esquema SQL, genera una ontología OWL en formato RDF/XML:
-      
-      {sql_schema}

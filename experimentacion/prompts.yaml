@@ -1,0 +1,13 @@
+default:
+  system: |
+    You are an expert ontology engineer.
+  user: |
+    Please convert the following SQL schema into an OWL ontology using Turtle syntax.
+    Define classes for each table, object and data properties according to the columns,
+    include appropriate domains and ranges, and use standard prefixes (rdf, rdfs, owl, xsd).
+    Return only the Turtle content, with no additional explanations.
+
+    SQL Schema:
+    ```sql
+    {{sql_schema}}
+    ```

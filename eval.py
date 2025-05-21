@@ -12,7 +12,7 @@ def main():
         description="Evaluates generated ontologies against gold standards using multiple metrics."
     )
     parser.add_argument("--gen-dir", required=True, help="Directory with generated ontologies (.ttl)")
-    parser.add_argument("--gold-dir", help="Directory with gold standard ontologies (.ttl)", default="resources/ontologies")
+    parser.add_argument("--gold-dir", help="Directory with gold standard ontologies (.ttl)", default="recursos/ontologies")
     parser.add_argument("--output-csv", "-o", default="evaluation_results.csv", help="Output CSV file name with metrics, it will be saved in the gen_dir")
     args = parser.parse_args()
     
@@ -40,6 +40,18 @@ def main():
 
             G_sys = ttl_to_graph(gen_path)
             G_gold = ttl_to_graph(gold_path)
+
+            if G_sys is None or G_gold is None:
+                print(f"Warning: failed to parse {fname}, skipping.", file=sys.stderr)
+                writer.writerow({
+                    "file": fname,
+                    "literal_P": "N/A", "literal_R": "N/A", "literal_F1": "N/A",
+                    "fuzzy_P": "N/A", "fuzzy_R": "N/A", "fuzzy_F1": "N/A",
+                    "cont_P": "N/A", "cont_R": "N/A", "cont_F1": "N/A",
+                    "graph_P": "N/A", "graph_R": "N/A", "graph_F1": "N/A",
+                    "motif_dist": "N/A"
+                })
+                continue
 
             # Compute metrics
             litP, litR, litF = literal_f1(G_sys, G_gold)

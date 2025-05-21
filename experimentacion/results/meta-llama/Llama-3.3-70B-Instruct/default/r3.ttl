@@ -1,0 +1,36 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix territory: <http://example.org/territory/> .
+
+territory:Territory a owl:Class ;
+    rdfs:label "Territory" ;
+    rdfs:comment "A geographic territory" .
+
+territory:territoryName a owl:DatatypeProperty ;
+    rdfs:label "territory name" ;
+    rdfs:domain territory:Territory ;
+    rdfs:range xsd:string .
+
+territory:territoryType a owl:DatatypeProperty ;
+    rdfs:label "territory type" ;
+    rdfs:domain territory:Territory ;
+    rdfs:range xsd:string .
+
+territory:partOf a owl:ObjectProperty ;
+    rdfs:label "part of" ;
+    rdfs:domain territory:Territory ;
+    rdfs:range territory:Territory ;
+    owl:inverseOf territory:hasPart .
+
+territory:hasPart a owl:ObjectProperty ;
+    rdfs:label "has part" ;
+    rdfs:domain territory:Territory ;
+    rdfs:range territory:Territory ;
+    owl:inverseOf territory:partOf .
+
+territory:bordersWith a owl:SymmetricProperty ;
+    rdfs:label "borders with" ;
+    rdfs:domain territory:Territory ;
+    rdfs:range territory:Territory .

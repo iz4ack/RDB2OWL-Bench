@@ -8,6 +8,7 @@ import csv
 from huggingface_hub import InferenceClient
 from tqdm import tqdm
 import re
+import yaml
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -32,6 +33,10 @@ def parse_args():
         help="Model name on Hugging Face Hub."
     )
     parser.add_argument(
+        "--prompt-name", default="default",
+        help="Prompt name to use from prompts.yaml."
+    )
+    parser.add_argument(
         "--provider", "-p", default="together",
         help="Provider for InferenceClient (e.g., 'together', 'huggingface').",
     )
@@ -53,17 +58,17 @@ def load_sql_schema(path):
     with open(path, encoding="utf-8") as f:
         return f.read()
 
-def build_prompt(sql_schema: str) -> str:
-    return (
-        "Please convert the following SQL schema into an OWL ontology using Turtle syntax. "
-        "Define classes for each table, object and data properties according to the columns, "
-        "include appropriate domains and ranges, and use standard prefixes (rdf, rdfs, owl, xsd). "
-        "Return only the Turtle content, with no additional explanations.\n\n"
-        "SQL Schema:\n"
-        "```sql\n"
-        f"{sql_schema}\n"
-        "```"
-    )
+def _load_prompts(prompts_path):
+        with open(prompts_path, "r", encoding="utf-8") as f:
+            return yaml.safe_load(f)
+
+def build_prompt(sql_schema: str, prompt_name="default") -> tuple:
+    prompts = _load_prompts("prompts.yaml")
+    prompt = prompts.get(prompt_name)
+
+    system_message = prompt['system']
+    user_message = prompt['user'].replace("{{sql_schema}}", sql_schema)
+    return system_message, user_message
 
 def _sanitize(response):
     match = re.search(r"```turtle(.*?)```", response, re.DOTALL)
@@ -79,9 +84,12 @@ def main():
         api_key=args.api_key or os.getenv("HF_API_KEY")
     )
 
+
+    base_path = os.path.join(args.output_dir, args.model)
+    base_path = os.path.join(base_path, args.prompt_name)
+    os.makedirs(base_path, exist_ok=True)
     # Prepare log CSV
-    log_path = os.path.join(args.output_dir, args.model)
-    log_path = os.path.join(log_path, args.log_file)
+    log_path = os.path.join(base_path, args.log_file)
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
     with open(log_path, mode="w", newline="", encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=[
@@ -96,17 +104,17 @@ def main():
 
             schema_path = os.path.join(args.input_dir, fname)
             base = os.path.splitext(fname)[0]
-            ttl_path = os.path.join(args.output_dir, args.model)
-            ttl_path = os.path.join(ttl_path, base + ".ttl")
+            ttl_path = os.path.join(base_path, base + ".ttl")
 
             sql_schema = load_sql_schema(schema_path)
-            prompt = build_prompt(sql_schema)
+            system_message, user_message = build_prompt(sql_schema, prompt_name=args.prompt_name)
 
             start = time.time()
             try:
                 # Build messages
                 messages = [
-                    {"role": "user", "content": prompt}
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": user_message},
                 ]
                 # API call
                 completion = client.chat.completions.create(

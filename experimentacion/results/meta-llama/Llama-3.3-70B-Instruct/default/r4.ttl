@@ -1,0 +1,64 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Classes
+owl:Class rdf:ID "Person" .
+owl:Class rdf:ID "Employee" .
+owl:Class rdf:ID "Consultant" .
+owl:Class rdf:ID "Mentorship" .
+owl:Class rdf:ID "Company" .
+owl:Class rdf:ID "Location" .
+owl:Class rdf:ID "Employment" .
+owl:Class rdf:ID "CompanyLocation" .
+
+# Object Properties
+owl:ObjectProperty rdf:ID "mentors" .
+    rdfs:domain Person .
+    rdfs:range Person .
+owl:ObjectProperty rdf:ID "worksWith" .
+    rdfs:domain Person .
+    rdfs:range Company .
+owl:ObjectProperty rdf:ID "hasLocation" .
+    rdfs:domain Company .
+    rdfs:range Location .
+
+# Data Properties
+owl:DatatypeProperty rdf:ID "NIF" .
+    rdfs:domain Person .
+    rdfs:range xsd:integer .
+owl:DatatypeProperty rdf:ID "email" .
+    rdfs:domain Person .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "firstName" .
+    rdfs:domain Person .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "salary" .
+    rdfs:domain Employee .
+    rdfs:range xsd:decimal .
+owl:DatatypeProperty rdf:ID "hourlyRate" .
+    rdfs:domain Consultant .
+    rdfs:range xsd:decimal .
+owl:DatatypeProperty rdf:ID "companyName" .
+    rdfs:domain Company .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "companyNIF" .
+    rdfs:domain Company .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "street" .
+    rdfs:domain Location .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "city" .
+    rdfs:domain Location .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "province" .
+    rdfs:domain Location .
+    rdfs:range xsd:string .
+owl:DatatypeProperty rdf:ID "coordinates" .
+    rdfs:domain Location .
+    rdfs:range xsd:string .
+
+# Subclasses
+Employee rdfs:subClassOf Person .
+Consultant rdfs:subClassOf Person .

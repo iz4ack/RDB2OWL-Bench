@@ -11,6 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from collections import Counter
 
 
 torch = __import__('torch')
@@ -32,17 +33,33 @@ def shorten(uri, graph):
             return uri.rsplit("/", 1)[-1]
         else:
             return uri
-    
+
 def ttl_to_graph(ttl_file_path):
     # Load the ontology
     g = rdflib.Graph()
+
     # Register known prefixes
     g.namespace_manager.bind(":", "http://example.org/ontology#")
     g.namespace_manager.bind("owl", "http://www.w3.org/2002/07/owl#")
     g.namespace_manager.bind("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     g.namespace_manager.bind("xsd", "http://www.w3.org/2001/XMLSchema#")
     g.namespace_manager.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
-    g.parse(ttl_file_path, format="ttl")
+
+    try:
+        g.parse(ttl_file_path, format="ttl")
+    except Exception as e:
+        print(f"Error parsing {ttl_file_path}: {e}")
+        return None
+
+    def title(t, g):
+        t = shorten(t, g)
+        # Remove the prefix if it exists
+        if ":" in t:
+            prefix = t.split(":")[0]
+            if prefix not in [":", "rdf", "rdfs", "owl", "xsd"]:
+                t = t.split(":")[-1]  # Quita el prefijo si no está permitido
+
+        return t
 
     def describe_blank_node(graph, bnode, seen=None):
         """Generates a human-readable (and deterministic) representation of a blank node."""
@@ -80,9 +97,9 @@ def ttl_to_graph(ttl_file_path):
         subj_label = format_node(subj, g)
         obj_label = format_node(obj, g)
         if subj not in G:
-            G.add_node(subj_label, title=shorten(subj, g) if isinstance(subj, rdflib.URIRef) else subj_label)
+            G.add_node(subj_label, title=title(subj, g) if isinstance(subj, rdflib.URIRef) else subj_label)
         if obj not in G:
-            G.add_node(obj_label, title=shorten(obj, g) if isinstance(obj, rdflib.URIRef) else obj_label)
+            G.add_node(obj_label, title=title(obj, g) if isinstance(obj, rdflib.URIRef) else obj_label)
         # Special case: treat owl:hasKey as a semantic relation
         if pred == rdflib.OWL.hasKey and isinstance(obj, rdflib.BNode):
             try:
@@ -114,12 +131,8 @@ def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
     if len(G_pred) == 0 or len(G_true) == 0:
         return 0, 0, 0
 
-    def title(G, n):
-        t = G.nodes[n]["title"]
-        return shorten(t ,G)
-
-    edges_G = {(title(G_pred, u), title(G_pred, v)) for u, v in G_pred.edges}
-    edges_G_true = {(title(G_true, u), title(G_true, v)) for u, v in G_true.edges}
+    edges_G = {(G_pred.nodes[u]['title'], G_pred.nodes[v]['title']) for u, v in G_pred.edges}
+    edges_G_true = {(G_true.nodes[u]['title'], G_true.nodes[v]['title']) for u, v in G_true.edges}
 
     precision = len(edges_G & edges_G_true) / len(edges_G)
     recall = len(edges_G & edges_G_true) / len(edges_G_true)
@@ -156,7 +169,9 @@ def fuzzy_f1(
     # Extract nodes and calculate embeddings
     nodes_sys   = list(G_sys.nodes())
     nodes_gold  = list(G_gold.nodes())
-    emb_sys, emb_gold = embed_nodes(nodes_sys, nodes_gold, model_name)
+    node_sys_title = {n: G_sys.nodes[n]['title'] for n in nodes_sys}
+    node_gold_title = {n: G_gold.nodes[n]['title'] for n in nodes_gold}
+    emb_sys, emb_gold = embed_nodes(node_sys_title, node_gold_title, model_name)
 
     # Calculate similarity matrix
     #    sim[i,j] = cosine(emb_sys[i], emb_gold[j])

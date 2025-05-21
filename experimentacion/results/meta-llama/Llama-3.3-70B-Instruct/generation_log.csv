@@ -1,5 +1,0 @@
-schema_file,ttl_file,duration_s,status,error_msg
-schemaR1.sql,schemaR1.ttl,4.69,OK,
-schemaR2.sql,schemaR2.ttl,4.81,OK,
-schemaR3.sql,schemaR3.ttl,3.79,OK,
-schemaR4.sql,schemaR4.ttl,5.81,OK,
