@@ -134,16 +134,18 @@ def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
     edges_G = {(G_pred.nodes[u]['title'], G_pred.nodes[v]['title']) for u, v in G_pred.edges}
     edges_G_true = {(G_true.nodes[u]['title'], G_true.nodes[v]['title']) for u, v in G_true.edges}
 
-    precision = len(edges_G & edges_G_true) / len(edges_G)
-    recall = len(edges_G & edges_G_true) / len(edges_G_true)
+    intersection = edges_G.intersection(edges_G_true)
+
+    precision = len(intersection) / len(edges_G)
+    recall = len(intersection) / len(edges_G_true)
     f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
 
     return precision, recall, f1
 
 def fuzzy_f1(
-    G_sys: nx.DiGraph,
-    G_gold: nx.DiGraph,
-    threshold: float = 0.9,
+    G_pred: nx.DiGraph,
+    G_true: nx.DiGraph,
+    threshold: float = 0.436,
     model_name: str = 'all-MiniLM-L6-v2'
 ) -> tuple:
     """
@@ -167,10 +169,10 @@ def fuzzy_f1(
     - f1:        Fuzzy F1 = 2·P·R / (P+R) (0 if P+R == 0)
     """
     # Extract nodes and calculate embeddings
-    nodes_sys   = list(G_sys.nodes())
-    nodes_gold  = list(G_gold.nodes())
-    node_sys_title = {n: G_sys.nodes[n]['title'] for n in nodes_sys}
-    node_gold_title = {n: G_gold.nodes[n]['title'] for n in nodes_gold}
+    nodes_sys   = list(G_pred.nodes())
+    nodes_gold  = list(G_true.nodes())
+    node_sys_title = {G_pred.nodes[n]['title'] for n in nodes_sys}
+    node_gold_title = {G_true.nodes[n]['title'] for n in nodes_gold}
     emb_sys, emb_gold = embed_nodes(node_sys_title, node_gold_title, model_name)
 
     # Calculate similarity matrix
@@ -190,24 +192,24 @@ def fuzzy_f1(
 
     # Fuzzy precision
     # |{(u′, v′) ∈ E′ | ∃(u, v) ∈ E. NodeSim(u, u′) > t ∧ NodeSim(v, v′) > t}|
-    E_sys  = list(G_sys.edges())
+    E_sys  = list(G_pred.edges())
     match_sys = 0
     for u_sys, v_sys in E_sys:
         # ¿Does (u_sys, v_sys) match with any (u, v) in G_gold?
         gold_u_cand = sim_sys_to_gold.get(u_sys, set())
         gold_v_cand = sim_sys_to_gold.get(v_sys, set())
-        found = any((u, v) in G_gold.edges() for u in gold_u_cand for v in gold_v_cand)
+        found = any((u, v) in G_true.edges() for u in gold_u_cand for v in gold_v_cand)
         if found:
             match_sys += 1
 
     # Fuzzy recall
     # |{(u, v) ∈ E | ∃(u′, v′) ∈ E′. NodeSim(u, u′) > t ∧ NodeSim(v, v′) > t}|
-    E_gold = list(G_gold.edges())
+    E_gold = list(G_true.edges())
     match_gold = 0
     for u, v in E_gold:
         sys_u_cand = sim_gold_to_sys.get(u, set())
         sys_v_cand = sim_gold_to_sys.get(v, set())
-        found = any((u_p, v_p) in G_sys.edges() for u_p in sys_u_cand for v_p in sys_v_cand)
+        found = any((u_p, v_p) in G_pred.edges() for u_p in sys_u_cand for v_p in sys_v_cand)
         if found:
             match_gold += 1
 
