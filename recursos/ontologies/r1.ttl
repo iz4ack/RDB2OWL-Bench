@@ -106,10 +106,12 @@
 
 ## ObjectProperties
 :belongsToDepartment a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:domain :Professor ;
+    rdfs:domain [
+        owl:unionOf (:Professor :Course)
+    ] ;
     rdfs:range :Department ;
     rdfs:label "Department_ID" ;
-    rdfs:comment "Department to which the professor belongs." .
+    rdfs:comment "Department to which the professor or course belongs ." .
 
 ##### Course #####
 :Course a owl:Class ;
@@ -148,11 +150,6 @@
     rdfs:comment "Number of credits for the course." .
 
 ## ObjectProperties
-:belongsToDepartmentCourse a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:domain :Course ;
-    rdfs:range :Department ;
-    rdfs:label "Department_ID" ;
-    rdfs:comment "Department to which the course belongs." .
 
 ##### Enrollment #####
 :Enrollment a owl:Class ;

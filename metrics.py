@@ -106,7 +106,7 @@ def ttl_to_graph(ttl_file_path):
                 keys = list(Collection(g, obj))
                 for key in keys:
                     key_label = format_node(key, g)
-                    G.add_edge(subj_label, key_label, predicate="hasKey")
+                    G.add_edge(subj_label, key_label, predicate=rdflib.OWL.hasKey)
             except:
                 pass
         else:

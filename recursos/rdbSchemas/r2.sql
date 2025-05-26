@@ -1,6 +1,6 @@
 CREATE TABLE Department (
     DepartmentID   INT           NOT NULL AUTO_INCREMENT,
-    FullName           VARCHAR(100)  NOT NULL,
+    DepartmentName           VARCHAR(100)  NOT NULL,
     Budget         DECIMAL(12,2) NOT NULL,
     ManagerID      INT           NOT NULL,
     PRIMARY KEY (DepartmentID),
@@ -9,7 +9,7 @@ CREATE TABLE Department (
 
 CREATE TABLE Project (
     ProjectID      INT           NOT NULL AUTO_INCREMENT,
-    FullName           VARCHAR(100)  NOT NULL,
+    ProjectName           VARCHAR(100)  NOT NULL,
     Budget         DECIMAL(12,2) NOT NULL,
     DepartmentID   INT           NOT NULL,
     PRIMARY KEY (ProjectID),

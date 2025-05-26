@@ -44,6 +44,8 @@
     rdfs:label "departmentBudget" ;
     rdfs:comment "Budget assigned to the department." .
 
+:hasManager owl:inverseOf :isManagerOf .
+
 ## Project
 :Project a owl:Class ;
     rdfs:label "Project" ;
@@ -91,10 +93,12 @@
     rdfs:comment "Last name of the employee." .
 
 :belongsToDepartment a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:domain :Employee ;
+    rdfs:domain [
+        owl:unionOf (:Employee :Project)
+    ] ;
     rdfs:range :Department ;
     rdfs:label "employeeDepartment" ;
-    rdfs:comment "Department to which the employee belongs." .
+    rdfs:comment "Department to which the employee or project belongs." .
 
 :isManagerOf a owl:ObjectProperty ;
     rdfs:subPropertyOf :belongsToDepartment ;
