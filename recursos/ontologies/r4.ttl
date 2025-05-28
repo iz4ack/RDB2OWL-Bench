@@ -34,7 +34,8 @@
 :Person a owl:Class ;
     rdfs:label "Person" ;
     rdfs:comment "Base class to represent people in the organization." ;
-    rdfs:subClassOf :TaxEntity .
+    rdfs:subClassOf :TaxEntity ;
+    owl:hasKey ( :hasEmail :hasNIF ) .
 
 :Person owl:equivalentClass [ 
     a owl:Class ;

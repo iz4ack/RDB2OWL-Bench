@@ -5,14 +5,11 @@ from graph_tool.topology import isomorphism
 from graph_tool.clustering import motifs
 import networkx as nx
 import sys
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from collections import Counter
-
+from chokepoints import get_chokepoint_subgraph
 
 torch = __import__('torch')
 from torch_geometric.nn import SGConv
@@ -114,6 +111,7 @@ def ttl_to_graph(ttl_file_path):
             G.add_edge(subj_label, obj_label, predicate=pred)
 
     return G
+
 
 def embed_nodes(
     nodes_sys: list, 

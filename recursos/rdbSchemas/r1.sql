@@ -1,36 +1,33 @@
 CREATE TABLE Departments (
     DepartmentID      INT           NOT NULL AUTO_INCREMENT,
-    FullName              VARCHAR(100),
+    DepartmentName              VARCHAR(100),
     PRIMARY KEY (DepartmentID)
 );
 
 CREATE TABLE Students (
-    StudentID         INT            NOT NULL AUTO_INCREMENT,
-    NationalID        VARCHAR(20),
+    DNI         VARCHAR(9)            NOT NULL ,
     FirstName         VARCHAR(100),
     LastName          VARCHAR(100),
     Email             VARCHAR(150),
     BirthDate         DATE,
     EnrollmentDate    DATE,
-    PRIMARY KEY (StudentID),
-    CONSTRAINT UQ_Student UNIQUE (NationalID)
+    PRIMARY KEY (StudentID)
 );
 
 CREATE TABLE Professors (
-    ProfessorID       INT            NOT NULL AUTO_INCREMENT,
+    DNI         VARCHAR(9)            NOT NULL ,
     FirstName         VARCHAR(100),
     LastName          VARCHAR(100),
     Email             VARCHAR(150),
     BirthDate         DATE,
     DepartmentID      INT            NOT NULL,
     PRIMARY KEY (ProfessorID),
-    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
-    CONSTRAINT UQ_Professor UNIQUE (NationalID)
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
 
 CREATE TABLE Courses (
     CourseID          INT            NOT NULL AUTO_INCREMENT,
-    FullName              VARCHAR(100),
+    CourseName              VARCHAR(100),
     CourseLevel             VARCHAR(50),
     Credits           INT,
     DepartmentID      INT            NOT NULL,

@@ -1,0 +1,126 @@
+[owl:onDatatype=http://www.w3.org/2001/XMLSchema#integer; owl:withRestrictions=([xsd:minExclusive=0]); rdf:type=http://www.w3.org/2000/01/rdf-schema#Datatype] http://www.w3.org/2002/07/owl#withRestrictions ([xsd:minExclusive=0])
+[owl:onDatatype=http://www.w3.org/2001/XMLSchema#integer; owl:withRestrictions=([xsd:minExclusive=0]); rdf:type=http://www.w3.org/2000/01/rdf-schema#Datatype] http://www.w3.org/2002/07/owl#onDatatype http://www.w3.org/2001/XMLSchema#integer
+[owl:onDatatype=http://www.w3.org/2001/XMLSchema#integer; owl:withRestrictions=([xsd:minExclusive=0]); rdf:type=http://www.w3.org/2000/01/rdf-schema#Datatype] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2000/01/rdf-schema#Datatype
+([xsd:minExclusive=0]) http://www.w3.org/1999/02/22-rdf-syntax-ns#first [xsd:minExclusive=0]
+([xsd:minExclusive=0]) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+http://example.org/ontology#Project http://www.w3.org/2002/07/owl#hasKey http://example.org/ontology#hasProjectId
+http://example.org/ontology#Project http://www.w3.org/2000/01/rdf-schema#subClassOf [owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasProjectId; rdf:type=http://www.w3.org/2002/07/owl#Restriction]
+http://example.org/ontology#Project http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+(http://example.org/ontology#hasProjectId) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#hasProjectId
+(http://example.org/ontology#hasProjectId) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+http://example.org/ontology#hasProjectId http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#hasProjectId http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Project
+http://example.org/ontology#hasProjectId http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasProjectId http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#FunctionalProperty
+[owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#onProperty http://example.org/ontology#isManagerOf
+[owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#someValuesFrom http://example.org/ontology#Department
+[owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Restriction
+http://example.org/ontology#isManagerOf http://www.w3.org/2000/01/rdf-schema#range http://example.org/ontology#Department
+http://example.org/ontology#isManagerOf http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#ObjectProperty
+http://example.org/ontology#isManagerOf http://www.w3.org/2000/01/rdf-schema#subPropertyOf http://example.org/ontology#belongsToDepartment
+http://example.org/ontology#isManagerOf http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Employee
+http://example.org/ontology#hasManager http://www.w3.org/2002/07/owl#inverseOf http://example.org/ontology#isManagerOf
+http://example.org/ontology#AdministrativeEmployee http://www.w3.org/2000/01/rdf-schema#subClassOf http://example.org/ontology#Employee
+http://example.org/ontology#AdministrativeEmployee http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+http://example.org/ontology#Employee http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+http://example.org/ontology#hasTaskDescription http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasTaskDescription http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#hasTaskDescription http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Task
+(http://example.org/ontology#hasDepartmentId) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#hasDepartmentId
+(http://example.org/ontology#hasDepartmentId) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+http://example.org/ontology#hasDepartmentId http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Department
+http://example.org/ontology#hasDepartmentId http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#FunctionalProperty
+http://example.org/ontology#hasDepartmentId http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasDepartmentId http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasDepartmentId; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Restriction
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasDepartmentId; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#onProperty http://example.org/ontology#hasDepartmentId
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasDepartmentId; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#cardinality 1
+http://example.org/ontology#hasEmployeeFirstName http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Employee
+http://example.org/ontology#hasEmployeeFirstName http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasEmployeeFirstName http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#workedHours http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#decimal
+http://example.org/ontology#workedHours http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#AdministrativeEmployee
+http://example.org/ontology#workedHours http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#Department http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+http://example.org/ontology#Department http://www.w3.org/2002/07/owl#hasKey http://example.org/ontology#hasDepartmentId
+http://example.org/ontology#Department http://www.w3.org/2000/01/rdf-schema#subClassOf [owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasDepartmentId; rdf:type=http://www.w3.org/2002/07/owl#Restriction]
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasProjectId; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#cardinality 1
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasProjectId; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#onProperty http://example.org/ontology#hasProjectId
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasProjectId; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Restriction
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedEmployee; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#cardinality 1
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedEmployee; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Restriction
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedEmployee; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#onProperty http://example.org/ontology#hasAssignedEmployee
+([owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]) http://www.w3.org/1999/02/22-rdf-syntax-ns#first [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]
+([owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+(http://example.org/ontology#Employee, [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest ([owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction])
+(http://example.org/ontology#Employee, [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#Employee
+http://example.org/ontology#hasAssignmentStartDate http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasAssignmentStartDate http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Assignment
+http://example.org/ontology#hasAssignmentStartDate http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#dateTime
+http://example.org/ontology#Manager http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+http://example.org/ontology#Manager http://www.w3.org/2002/07/owl#equivalentClass [owl:intersectionOf=(http://example.org/ontology#Employee, [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]); rdf:type=http://www.w3.org/2002/07/owl#ObjectIntersectionOf]
+http://example.org/ontology#Assignment http://www.w3.org/2000/01/rdf-schema#subClassOf [owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedTask; rdf:type=http://www.w3.org/2002/07/owl#Restriction]
+http://example.org/ontology#Assignment http://www.w3.org/2002/07/owl#hasKey http://example.org/ontology#hasAssignedEmployee
+http://example.org/ontology#Assignment http://www.w3.org/2002/07/owl#hasKey http://example.org/ontology#hasAssignedProject
+http://example.org/ontology#Assignment http://www.w3.org/2002/07/owl#hasKey http://example.org/ontology#hasAssignedTask
+http://example.org/ontology#Assignment http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+http://example.org/ontology#Assignment http://www.w3.org/2000/01/rdf-schema#subClassOf [owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedProject; rdf:type=http://www.w3.org/2002/07/owl#Restriction]
+http://example.org/ontology#Assignment http://www.w3.org/2000/01/rdf-schema#subClassOf [owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedEmployee; rdf:type=http://www.w3.org/2002/07/owl#Restriction]
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedTask; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Restriction
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedTask; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#cardinality 1
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedTask; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#onProperty http://example.org/ontology#hasAssignedTask
+http://example.org/ontology#belongsToDepartment http://www.w3.org/2000/01/rdf-schema#domain [owl:unionOf=(http://example.org/ontology#Employee, http://example.org/ontology#Project)]
+http://example.org/ontology#belongsToDepartment http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#ObjectProperty
+http://example.org/ontology#belongsToDepartment http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#FunctionalProperty
+http://example.org/ontology#belongsToDepartment http://www.w3.org/2000/01/rdf-schema#range http://example.org/ontology#Department
+[owl:unionOf=(http://example.org/ontology#Employee, http://example.org/ontology#Project)] http://www.w3.org/2002/07/owl#unionOf (http://example.org/ontology#Employee, http://example.org/ontology#Project)
+(http://example.org/ontology#hasAssignedEmployee, http://example.org/ontology#hasAssignedProject, http://example.org/ontology#hasAssignedTask) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest (http://example.org/ontology#hasAssignedProject, http://example.org/ontology#hasAssignedTask)
+(http://example.org/ontology#hasAssignedEmployee, http://example.org/ontology#hasAssignedProject, http://example.org/ontology#hasAssignedTask) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#hasAssignedEmployee
+http://example.org/ontology#hasAssignedEmployee http://www.w3.org/2000/01/rdf-schema#range http://example.org/ontology#Employee
+http://example.org/ontology#hasAssignedEmployee http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#ObjectProperty
+http://example.org/ontology#hasAssignedEmployee http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Assignment
+http://example.org/ontology#hasAssignedProject http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Assignment
+http://example.org/ontology#hasAssignedProject http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#ObjectProperty
+http://example.org/ontology#hasAssignedProject http://www.w3.org/2000/01/rdf-schema#range http://example.org/ontology#Project
+http://example.org/ontology#hasAssignedTask http://www.w3.org/2000/01/rdf-schema#range http://example.org/ontology#Task
+http://example.org/ontology#hasAssignedTask http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#ObjectProperty
+http://example.org/ontology#hasAssignedTask http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Assignment
+[xsd:minExclusive=0] http://www.w3.org/2001/XMLSchema#minExclusive 0
+http://example.org/ontology#employeeSpecialty http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#employeeSpecialty http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#employeeSpecialty http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#TechnicalEmployee
+(http://example.org/ontology#hasAssignedProject, http://example.org/ontology#hasAssignedTask) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#hasAssignedProject
+(http://example.org/ontology#hasAssignedProject, http://example.org/ontology#hasAssignedTask) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest (http://example.org/ontology#hasAssignedTask)
+http://example.org/ontology#Task http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+(http://example.org/ontology#Employee, http://example.org/ontology#Project) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest (http://example.org/ontology#Project)
+(http://example.org/ontology#Employee, http://example.org/ontology#Project) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#Employee
+(http://example.org/ontology#Project) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#Project
+(http://example.org/ontology#Project) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+http://example.org/ontology#hasDepartmentBudget http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#decimal
+http://example.org/ontology#hasDepartmentBudget http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Department
+http://example.org/ontology#hasDepartmentBudget http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasSeniority http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasSeniority http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Manager
+http://example.org/ontology#hasSeniority http://www.w3.org/2000/01/rdf-schema#range [owl:onDatatype=http://www.w3.org/2001/XMLSchema#integer; owl:withRestrictions=([xsd:minExclusive=0]); rdf:type=http://www.w3.org/2000/01/rdf-schema#Datatype]
+http://example.org/ontology#hasDepartmentName http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#hasDepartmentName http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasDepartmentName http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Department
+http://example.org/ontology#hasEmployeeLastName http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#hasEmployeeLastName http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasEmployeeLastName http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Employee
+[owl:intersectionOf=(http://example.org/ontology#Employee, [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]); rdf:type=http://www.w3.org/2002/07/owl#ObjectIntersectionOf] http://www.w3.org/2002/07/owl#intersectionOf (http://example.org/ontology#Employee, [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction])
+[owl:intersectionOf=(http://example.org/ontology#Employee, [owl:onProperty=http://example.org/ontology#isManagerOf; owl:someValuesFrom=http://example.org/ontology#Department; rdf:type=http://www.w3.org/2002/07/owl#Restriction]); rdf:type=http://www.w3.org/2002/07/owl#ObjectIntersectionOf] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#ObjectIntersectionOf
+http://example.org/ontology#OrganizationOntology http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Ontology
+(http://example.org/ontology#hasAssignedTask) http://www.w3.org/1999/02/22-rdf-syntax-ns#rest http://www.w3.org/1999/02/22-rdf-syntax-ns#nil
+(http://example.org/ontology#hasAssignedTask) http://www.w3.org/1999/02/22-rdf-syntax-ns#first http://example.org/ontology#hasAssignedTask
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedProject; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Restriction
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedProject; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#onProperty http://example.org/ontology#hasAssignedProject
+[owl:cardinality=1; owl:onProperty=http://example.org/ontology#hasAssignedProject; rdf:type=http://www.w3.org/2002/07/owl#Restriction] http://www.w3.org/2002/07/owl#cardinality 1
+http://example.org/ontology#hasProjectName http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Project
+http://example.org/ontology#hasProjectName http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#string
+http://example.org/ontology#hasProjectName http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasBudget http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#DatatypeProperty
+http://example.org/ontology#hasBudget http://www.w3.org/2000/01/rdf-schema#range http://www.w3.org/2001/XMLSchema#decimal
+http://example.org/ontology#hasBudget http://www.w3.org/2000/01/rdf-schema#domain http://example.org/ontology#Project
+http://example.org/ontology#TechnicalEmployee http://www.w3.org/2000/01/rdf-schema#subClassOf http://example.org/ontology#Employee
+http://example.org/ontology#TechnicalEmployee http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class

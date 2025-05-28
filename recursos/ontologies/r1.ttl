@@ -11,7 +11,7 @@
 ##### Department #####
 :Department a owl:Class ;
     rdfs:label "Department" ;
-    owl:hasKey :hasDepartmentId ;
+    owl:hasKey :hasID ;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty :hasDepartmentId ;
@@ -20,11 +20,13 @@
     rdfs:comment "Represents a department within the university." .
 
 ## DatatypeProperties
-:hasDepartmentId a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:domain :Department ;
+:hasID a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain [
+        owl:unionOf (:Course :Department)
+    ];
     rdfs:range xsd:string ;
-    rdfs:label "Department_ID" ;
-    rdfs:comment "Unique identifier for the department." .
+    rdfs:label "ID" ;
+    rdfs:comment "Unique identifier." .
 
 :hasDepartmentName a owl:DatatypeProperty ;
     rdfs:domain :Department ;
@@ -39,16 +41,11 @@
     owl:hasKey :hasDNI ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasFirstName ;
-        owl:cardinality "1"^^xsd:nonNegativeInteger
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty :hasLastName ;
+        owl:onProperty :hasDNI ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] .
 
-:hasDNI a owl:DatatypeProperty ;
+:hasDNI a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:string ;
     rdfs:label "DNI" ;
@@ -84,14 +81,17 @@
     rdfs:comment "Represents a university student." ;
     rdfs:subClassOf :Person .
 
-## DatatypeProperties
-:hasEnrollmentDate a owl:DatatypeProperty ;
-    rdfs:domain :Student ;
-    rdfs:range xsd:dateTime ;
-    rdfs:label "studentEnrollmentDate" ;
-    rdfs:comment "Date when the student enrolled." .
-
 ## ObjectProperties
+:enrrolledCourse a owl:ObjectProperty ;
+    rdfs:domain :Student ;
+    rdfs:range :Enrollment ;
+    rdfs:label "enrolledCourse" ;
+    rdfs:comment "Course in which the student is enrolled." .
+
+:hasEvaluationStudent a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( :enrrolledCourse :hasEvaluation ) .
+
+
 :hasProfessor a owl:ObjectProperty ;
     rdfs:domain :Student ;
     rdfs:range :Professor ;
@@ -102,7 +102,12 @@
 :Professor a owl:Class ;
     rdfs:label "Professor" ;
     rdfs:comment "Represents a university professor." ;
-    rdfs:subClassOf :Person .
+    rdfs:subClassOf :Person ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :belongsToDepartment ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
 
 ## ObjectProperties
 :belongsToDepartment a owl:ObjectProperty, owl:FunctionalProperty ;
@@ -116,21 +121,20 @@
 ##### Course #####
 :Course a owl:Class ;
     rdfs:label "Course" ;
-    owl:hasKey :hasCourseId ;
+    owl:hasKey :hasID;
     rdfs:subClassOf [
         a owl:Restriction ;
         owl:onProperty :hasCourseId ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :belongsToDepartment ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ;
     rdfs:comment "Represents a course offered by the university." .
 
 ## DatatypeProperties
-:hasCourseId a owl:DatatypeProperty, owl:FunctionalProperty ;
-    rdfs:domain :Course ;
-    rdfs:range xsd:string ;
-    rdfs:label "Course_ID" ;
-    rdfs:comment "Unique identifier for the course." .
-
 :hasCourseName a owl:DatatypeProperty ;
     rdfs:domain :Course ;
     rdfs:range xsd:string ;
@@ -155,10 +159,10 @@
 :Enrollment a owl:Class ;
     rdfs:label "Enrollment" ;
     rdfs:comment "Relates a student to a course (registration)." ;
-    owl:hasKey (:hasCourseEnrollment :hasStudentEnrollment) ;
+    owl:hasKey (:hasCourseEnrollment :hasStudentEnrolled) ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasStudentEnrollment ;
+        owl:onProperty :hasStudentEnrolled ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
     rdfs:subClassOf [
@@ -168,18 +172,25 @@
     ] .
 
 ## DatatypeProperties
-:hasEnrollmentDate a owl:DatatypeProperty, owl:FunctionalProperty ;
+:hasEnrollmentDate a owl:DatatypeProperty;
     rdfs:domain :Enrollment ;
     rdfs:range xsd:dateTime ;
     rdfs:label "enrollmentDate" ;
     rdfs:comment "Date the student enrolled in the course." .
 
 ## ObjectProperties
-:hasStudentEnrollment a owl:ObjectProperty, owl:FunctionalProperty ;
+:hasStudentEnrolled owl:inverseOf :enrrolledCourse ;
+    a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain :Enrollment ;
     rdfs:range :Student ;
     rdfs:label "enrolledStudent" ;
-    rdfs:comment "Student enrolled in the course." .
+    rdfs:comment "Student who is enrolled in the course." .
+
+:hasEvaluation a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain :Enrollment ;
+    rdfs:range :Evaluation ;
+    rdfs:label "enrollmentEvaluation" ;
+    rdfs:comment "Evaluation associated with the student's enrollment in the course." .
 
 :hasCourseEnrollment a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain :Enrollment ;
@@ -198,12 +209,7 @@
     ] ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :hasEvaluatedCourse ;
-        owl:cardinality "1"^^xsd:nonNegativeInteger
-    ] ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty :hasEvaluationDate ;
+        owl:onProperty :hasCourseEvaluated ;
         owl:cardinality "1"^^xsd:nonNegativeInteger
     ] ;
     rdfs:comment "Records the grade of a student in a course." .
@@ -222,13 +228,14 @@
     rdfs:comment "Date of the evaluation." .
 
 ## ObjectProperties
-:hasEvaluatedStudent a owl:ObjectProperty, owl:FunctionalProperty ;
+:hasEvaluatedStudent owl:inverseOf :hasEvaluation ;
+    a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain :Evaluation ;
     rdfs:range :Student ;
     rdfs:label "evaluatedStudent" ;
-    rdfs:comment "Student evaluated in the assessment." .
+    rdfs:comment "Student who has been evaluated in the course." .
 
-:hasEvaluatedCourse a owl:ObjectProperty, owl:FunctionalProperty ;
+:hasCourseEvaluated a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain :Evaluation ;
     rdfs:range :Course ;
     rdfs:label "evaluatedCourse" ;
