@@ -2,63 +2,101 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.com/ontology/> .
 
-# Classes
-owl:Class rdf:ID "Person" .
-owl:Class rdf:ID "Employee" .
-owl:Class rdf:ID "Consultant" .
-owl:Class rdf:ID "Mentorship" .
-owl:Class rdf:ID "Company" .
-owl:Class rdf:ID "Location" .
-owl:Class rdf:ID "Employment" .
-owl:Class rdf:ID "CompanyLocation" .
-
-# Object Properties
-owl:ObjectProperty rdf:ID "mentors" .
-    rdfs:domain Person .
-    rdfs:range Person .
-owl:ObjectProperty rdf:ID "worksWith" .
-    rdfs:domain Person .
-    rdfs:range Company .
-owl:ObjectProperty rdf:ID "hasLocation" .
-    rdfs:domain Company .
-    rdfs:range Location .
-
-# Data Properties
-owl:DatatypeProperty rdf:ID "NIF" .
-    rdfs:domain Person .
-    rdfs:range xsd:integer .
-owl:DatatypeProperty rdf:ID "email" .
-    rdfs:domain Person .
+:Person a owl:Class .
+:email a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
     rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "firstName" .
-    rdfs:domain Person .
+:first_name a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
     rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "salary" .
-    rdfs:domain Employee .
+:roleType a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+:employee_salary a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
     rdfs:range xsd:decimal .
-owl:DatatypeProperty rdf:ID "hourlyRate" .
-    rdfs:domain Consultant .
+:consultant_hourly_rate a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
     rdfs:range xsd:decimal .
-owl:DatatypeProperty rdf:ID "companyName" .
-    rdfs:domain Company .
+
+:Employee a owl:Class ;
+    rdfs:subClassOf :Person .
+:Consultant a owl:Class ;
+    rdfs:subClassOf :Person .
+
+:hasRoleType a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :RoleType .
+:RoleType a owl:Class ;
+    rdfs:subClassOf owl:Thing .
+:EmployeeRole a owl:NamedIndividual , :RoleType ;
+    rdfs:label "Employee" .
+:ConsultantRole a owl:NamedIndividual , :RoleType ;
+    rdfs:label "Consultant" .
+
+:Person a owl:Class ;
+    rdfs:subClassOf [ a owl:Restriction ;
+        owl:onProperty :roleType ;
+        owl:someValuesFrom [ a rdfs:Class ;
+            owl:oneOf ( :EmployeeRole :ConsultantRole )
+        ]
+    ] .
+
+:Mentor a owl:Class ;
+    rdfs:subClassOf :Person .
+:Mentee a owl:Class ;
+    rdfs:subClassOf :Person .
+:mentors a owl:ObjectProperty ;
+    rdfs:domain :Mentor ;
+    rdfs:range :Mentee .
+:isMentoredBy a owl:ObjectProperty ;
+    rdfs:domain :Mentee ;
+    rdfs:range :Mentor ;
+    owl:inverseOf :mentors .
+
+:Company a owl:Class .
+:company_name a owl:DatatypeProperty ;
+    rdfs:domain :Company ;
     rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "companyNIF" .
-    rdfs:domain Company .
+:location a owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range :Location .
+
+:Location a owl:Class .
+:street a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
     rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "street" .
-    rdfs:domain Location .
+:city a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
     rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "city" .
-    rdfs:domain Location .
+:province a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
     rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "province" .
-    rdfs:domain Location .
-    rdfs:range xsd:string .
-owl:DatatypeProperty rdf:ID "coordinates" .
-    rdfs:domain Location .
+:coordinates a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
     rdfs:range xsd:string .
 
-# Subclasses
-Employee rdfs:subClassOf Person .
-Consultant rdfs:subClassOf Person .
+:worksWith a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Company .
+:hasEmployee a owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range :Person ;
+    owl:inverseOf :worksWith .
+
+:Person a owl:Class ;
+    rdfs:subClassOf [ a owl:Restriction ;
+        owl:onProperty :employee_salary ;
+        owl:someValuesFrom xsd:decimal ;
+        owl:qualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass :Employee
+    ] ;
+    rdfs:subClassOf [ a owl:Restriction ;
+        owl:onProperty :consultant_hourly_rate ;
+        owl:someValuesFrom xsd:decimal ;
+        owl:qualifiedCardinality "0"^^xsd:nonNegativeInteger ;
+        owl:onClass :Consultant
+    ] .
+

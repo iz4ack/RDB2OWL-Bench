@@ -5,6 +5,8 @@ import csv
 from metrics import (   
     literal_f1, fuzzy_f1, continuous_f1, graph_f1, motif_distance, ttl_to_graph
 )
+from chokepoints import get_chokepoint_subgraph
+from tqdm import tqdm
 
 
 def main():
@@ -14,6 +16,7 @@ def main():
     parser.add_argument("--gen-dir", required=True, help="Directory with generated ontologies (.ttl)")
     parser.add_argument("--gold-dir", help="Directory with gold standard ontologies (.ttl)", default="recursos/ontologies")
     parser.add_argument("--output-csv", "-o", default="evaluation_results.csv", help="Output CSV file name with metrics, it will be saved in the gen_dir")
+    parser.add_argument("--chokepoint", "-c", type=int, default=2, help="Max chokepoint level to evaluate (0-2)")
     args = parser.parse_args()
     
     output_path = os.path.join(args.gen_dir, args.output_csv)
@@ -30,7 +33,7 @@ def main():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        for fname in sorted(os.listdir(args.gen_dir)):
+        for fname in tqdm(sorted(os.listdir(args.gen_dir))):
             if not fname.endswith(".ttl"): continue
             gen_path = os.path.join(args.gen_dir, fname)
             gold_path = os.path.join(args.gold_dir, fname)
@@ -52,24 +55,32 @@ def main():
                     "motif_dist": "N/A"
                 })
                 continue
+            
+            # Run metrics for each chokepoint
+            for i in tqdm(range(args.chokepoint + 1)):
+                G_sys_cp = get_chokepoint_subgraph(G_sys, i) if i != 2 else G_sys
+                G_gold_cp = get_chokepoint_subgraph(G_gold, i) if i != 2 else G_gold
 
-            # Compute metrics
-            litP, litR, litF = literal_f1(G_sys, G_gold)
-            fzP, fzR, fzF = fuzzy_f1(G_sys, G_gold)
-            cP, cR, cF = continuous_f1(G_sys, G_gold)
-            gP, gR, gF = graph_f1(G_sys, G_gold)
-            m_dist = motif_distance(G_sys, G_gold)
+                if G_sys_cp is None or G_gold_cp is None:
+                    print(f"Warning: failed to apply chokepoint {i} for {fname}, skipping.", file=sys.stderr)
+                    continue
+                # Compute metrics
+                litP, litR, litF = literal_f1(G_sys_cp, G_gold_cp)
+                fzP, fzR, fzF = fuzzy_f1(G_sys_cp, G_gold_cp)
+                cP, cR, cF = continuous_f1(G_sys_cp, G_gold_cp)
+                gP, gR, gF = graph_f1(G_sys_cp, G_gold_cp)
+                m_dist = motif_distance(G_sys_cp, G_gold_cp)
 
-            writer.writerow({
-                "file": fname,
-                "literal_P": f"{litP:.4f}", "literal_R": f"{litR:.4f}", "literal_F1": f"{litF:.4f}",
-                "fuzzy_P": f"{fzP:.4f}", "fuzzy_R": f"{fzR:.4f}", "fuzzy_F1": f"{fzF:.4f}",
-                "cont_P": f"{cP:.4f}", "cont_R": f"{cR:.4f}", "cont_F1": f"{cF:.4f}",
-                "graph_P": f"{gP:.4f}", "graph_R": f"{gR:.4f}", "graph_F1": f"{gF:.4f}",
-                "motif_dist": f"{m_dist:.4f}"
-            })
-            print(f"Evaluated {fname}")
-    print(f"Evaluation completed. Results in {args.output_csv}")
+                writer.writerow({
+                    "file": f"{fname} (chokepoint {i})",
+                    "literal_P": f"{litP:.4f}", "literal_R": f"{litR:.4f}", "literal_F1": f"{litF:.4f}",
+                    "fuzzy_P": f"{fzP:.4f}", "fuzzy_R": f"{fzR:.4f}", "fuzzy_F1": f"{fzF:.4f}",
+                    "cont_P": f"{cP:.4f}", "cont_R": f"{cR:.4f}", "cont_F1": f"{cF:.4f}",
+                    "graph_P": f"{gP:.4f}", "graph_R": f"{gR:.4f}", "graph_F1": f"{gF:.4f}",
+                    "motif_dist": f"{m_dist:.4f}"
+                })
+                print(f"\nEvaluated {fname} (chokepoint {i})")
+    print(f"\nEvaluation completed. Results in {args.output_csv}")
 
 if __name__ == "__main__":
     main()

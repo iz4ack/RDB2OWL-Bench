@@ -1,0 +1,177 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/ontology#> .
+
+:Person a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasNIF ;
+        owl:cardinality 1 ;
+        owl:onDatatype xsd:integer
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasEmail ;
+        owl:maxCardinality 1 ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasFirstName ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:hasValue "Employee" ;
+        owl:onProperty :hasRoleType ;
+        owl:someValuesFrom [
+            a owl:Class ;
+            owl:unionOf (:Employee :Consultant)
+        ]
+    ] .
+
+:Employee a owl:Class ;
+    rdfs:subClassOf :Person ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasSalary ;
+        owl:onDataRange xsd:decimal
+    ] .
+
+:Consultant a owl:Class ;
+    rdfs:subClassOf :Person ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasHourlyRate ;
+        owl:onDataRange xsd:decimal
+    ] .
+
+:Mentorship a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasMentor ;
+        owl:someValuesFrom :Person
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasMentee ;
+        owl:someValuesFrom :Person
+    ] .
+
+:Company a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasNIF ;
+        owl:cardinality 1 ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasCompanyName ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasLocation ;
+        owl:someValuesFrom :Location
+    ] .
+
+:Location a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasStreet ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasCity ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasProvince ;
+        owl:onDataRange xsd:string
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasCoordinates ;
+        owl:onDataRange xsd:string
+    ] .
+
+:WorksWith a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :involvesPerson ;
+        owl:someValuesFrom :Person
+    ] ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :involvesCompany ;
+        owl:someValuesFrom :Company
+    ] .
+
+:hasNIF a owl:DatatypeProperty ;
+    rdfs:domain :Person, :Company ;
+    rdfs:range xsd:integer, xsd:string .
+
+:hasEmail a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasFirstName a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasRoleType a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasSalary a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:decimal .
+
+:hasHourlyRate a owl:DatatypeProperty ;
+    rdfs:domain :Consultant ;
+    rdfs:range xsd:decimal .
+
+:hasMentor a owl:ObjectProperty ;
+    rdfs:domain :Mentorship ;
+    rdfs:range :Person .
+
+:hasMentee a owl:ObjectProperty ;
+    rdfs:domain :Mentorship ;
+    rdfs:range :Person .
+
+:hasCompanyName a owl:DatatypeProperty ;
+    rdfs:domain :Company ;
+    rdfs:range xsd:string .
+
+:hasLocation a owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range :Location .
+
+:hasStreet a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string .
+
+:hasCity a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string .
+
+:hasProvince a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string .
+
+:hasCoordinates a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string .
+
+:involvesPerson a owl:ObjectProperty ;
+    rdfs:domain :WorksWith ;
+    rdfs:range :Person .
+
+:involvesCompany a owl:ObjectProperty ;
+    rdfs:domain :WorksWith ;
+    rdfs:range :Company .

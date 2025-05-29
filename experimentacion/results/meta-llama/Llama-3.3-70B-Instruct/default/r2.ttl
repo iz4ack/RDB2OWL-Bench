@@ -2,7 +2,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix : <http://example.com/ontology/> .
+@prefix : <http://example.org/> .
 
 :Department a owl:Class .
 :Project a owl:Class .
@@ -19,7 +19,7 @@
 :departmentID a owl:DatatypeProperty ;
     rdfs:domain :Department ;
     rdfs:range xsd:integer .
-:fullName a owl:DatatypeProperty ;
+:departmentName a owl:DatatypeProperty ;
     rdfs:domain :Department ;
     rdfs:range xsd:string .
 :budget a owl:DatatypeProperty ;
@@ -32,15 +32,15 @@
 :projectID a owl:DatatypeProperty ;
     rdfs:domain :Project ;
     rdfs:range xsd:integer .
-:projectFullName a owl:DatatypeProperty ;
+:projectName a owl:DatatypeProperty ;
     rdfs:domain :Project ;
     rdfs:range xsd:string .
 :projectBudget a owl:DatatypeProperty ;
     rdfs:domain :Project ;
     rdfs:range xsd:decimal .
-:departmentIDProject a owl:DatatypeProperty ;
+:department a owl:ObjectProperty ;
     rdfs:domain :Project ;
-    rdfs:range xsd:integer .
+    rdfs:range :Department .
 
 :employeeID a owl:DatatypeProperty ;
     rdfs:domain :Employee ;
@@ -51,9 +51,9 @@
 :lastName a owl:DatatypeProperty ;
     rdfs:domain :Employee ;
     rdfs:range xsd:string .
-:departmentIDEmployee a owl:DatatypeProperty ;
+:employeeDepartment a owl:ObjectProperty ;
     rdfs:domain :Employee ;
-    rdfs:range xsd:integer .
+    rdfs:range :Department .
 
 :specialty a owl:DatatypeProperty ;
     rdfs:domain :TechnicalEmployee ;
@@ -74,37 +74,49 @@
     rdfs:domain :Task ;
     rdfs:range xsd:string .
 
-:assignmentEmployeeID a owl:DatatypeProperty ;
+:assignmentEmployee a owl:ObjectProperty ;
     rdfs:domain :Assignment ;
-    rdfs:range xsd:integer .
-:assignmentProjectID a owl:DatatypeProperty ;
+    rdfs:range :Employee .
+:assignmentProject a owl:ObjectProperty ;
     rdfs:domain :Assignment ;
-    rdfs:range xsd:integer .
-:assignmentTaskID a owl:DatatypeProperty ;
+    rdfs:range :Project .
+:assignmentTask a owl:ObjectProperty ;
     rdfs:domain :Assignment ;
-    rdfs:range xsd:integer .
+    rdfs:range :Task .
 :startDate a owl:DatatypeProperty ;
     rdfs:domain :Assignment ;
     rdfs:range xsd:date .
 
-:hasManager a owl:ObjectProperty ;
-    rdfs:domain :Department ;
-    rdfs:range :Manager .
-:hasProject a owl:ObjectProperty ;
-    rdfs:domain :Department ;
-    rdfs:range :Project .
-:hasEmployee a owl:ObjectProperty ;
-    rdfs:domain :Department ;
-    rdfs:range :Employee .
-:hasTask a owl:ObjectProperty ;
-    rdfs:domain :Project ;
-    rdfs:range :Task .
-:hasAssignment a owl:ObjectProperty ;
-    rdfs:domain :Project ;
-    rdfs:range :Assignment .
-:assignedTo a owl:ObjectProperty ;
-    rdfs:domain :Employee ;
-    rdfs:range :Assignment .
-:worksOn a owl:ObjectProperty ;
-    rdfs:domain :Employee ;
-    rdfs:range :Task .
+:Department a owl:Restriction ;
+    owl:onProperty :managerID ;
+    owl:someValuesFrom :Manager .
+
+:Project a owl:Restriction ;
+    owl:onProperty :department ;
+    owl:someValuesFrom :Department .
+
+:Employee a owl:Restriction ;
+    owl:onProperty :employeeDepartment ;
+    owl:someValuesFrom :Department .
+
+:TechnicalEmployee a owl:Restriction ;
+    owl:onProperty :employeeID ;
+    owl:someValuesFrom :Employee .
+
+:AdministrativeEmployee a owl:Restriction ;
+    owl:onProperty :employeeID ;
+    owl:someValuesFrom :Employee .
+
+:Manager a owl:Restriction ;
+    owl:onProperty :employeeID ;
+    owl:someValuesFrom :Employee .
+
+:Assignment a owl:Restriction ;
+    owl:onProperty :assignmentEmployee ;
+    owl:someValuesFrom :Employee .
+:Assignment a owl:Restriction ;
+    owl:onProperty :assignmentProject ;
+    owl:someValuesFrom :Project .
+:Assignment a owl:Restriction ;
+    owl:onProperty :assignmentTask ;
+    owl:someValuesFrom :Task .

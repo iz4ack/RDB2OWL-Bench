@@ -1,0 +1,5 @@
+schema_file,ttl_file,duration_s,status,error_msg
+r1.sql,,0.98,ERROR,404 Client Error: Not Found for url: https://router.huggingface.co/nebius/v1/chat/completions (Request ID: Root=1-68384980-2f1b0c586d5ee906678ad4f4;21da5124-3459-401d-ac16-26d365a0ba91)
+r2.sql,,0.61,ERROR,404 Client Error: Not Found for url: https://router.huggingface.co/nebius/v1/chat/completions (Request ID: Root=1-68384980-066685891a1fa7884a09eb45;755182a1-460c-45fd-8d63-3051bc9704ff)
+r3.sql,,0.31,ERROR,404 Client Error: Not Found for url: https://router.huggingface.co/nebius/v1/chat/completions (Request ID: Root=1-68384981-30a078be4d5a9a745b25f741;f3080254-142a-4e63-af16-ab6a1d5a5544)
+r4.sql,,0.56,ERROR,404 Client Error: Not Found for url: https://router.huggingface.co/nebius/v1/chat/completions (Request ID: Root=1-68384981-650c598433d4294b0aa2aee2;9d5eb289-ae72-48ad-b852-05afd518aad2)

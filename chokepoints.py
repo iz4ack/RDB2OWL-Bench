@@ -28,30 +28,6 @@ BASE = {
         "rdf_type_objects": {
             OWL.Restriction
         }
-    },
-    2: {
-        "predicates": {
-            OWL.equivalentClass,
-            OWL.disjointWith,
-            OWL.intersectionOf,
-            OWL.equivalentProperty,
-            OWL.disjointUnionOf,
-            OWL.unionOf,
-            OWL.complementOf,
-            OWL.propertyChainAxiom,
-            OWL.hasKey,
-            OWL.inverseOf
-        },
-        "rdf_type_objects": {
-            OWL.IrreflexiveProperty,
-            OWL.SymmetricProperty,
-            OWL.TransitiveProperty,
-            OWL.FunctionalProperty,
-            OWL.InverseFunctionalProperty,
-            OWL.AsymmetricProperty,
-            OWL.ReflexiveProperty,
-            OWL.IrreflexiveProperty
-        }
     }
 }
 

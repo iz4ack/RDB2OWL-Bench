@@ -9,7 +9,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from chokepoints import get_chokepoint_subgraph
 
 torch = __import__('torch')
 from torch_geometric.nn import SGConv
@@ -89,7 +88,7 @@ def ttl_to_graph(ttl_file_path):
     G = nx.DiGraph()
     for subj, pred, obj in g:
         # Ensure nodes exist with 'title' attribute
-        if pred in [rdflib.RDFS.comment, rdflib.RDFS.label]:
+        if pred in [rdflib.RDFS.comment, rdflib.RDFS.label, rdflib.RDF.first, rdflib.RDF.rest]:
                 continue
         subj_label = format_node(subj, g)
         obj_label = format_node(obj, g)

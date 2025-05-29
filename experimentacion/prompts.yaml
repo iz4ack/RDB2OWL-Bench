@@ -3,8 +3,8 @@ default:
     You are an expert ontology engineer.
   user: |
     I'll give you a SQL Schema, extract the full ontology from it in turtle syntax. 
-    Include advance and complex classes, property and restrictions necessary. 
-    Make sure the syntax is correct. Use standard prefixes (rdf, rdfs, owl, xsd, :).
+    Include advance and complex classes, properties and restrictions necessary. 
+    Make sure there are no turtle syntax errors. Use standard prefixes (rdf, rdfs, owl, xsd, :).
     Return only the Turtle content, with no additional explanations.
 
     SQL Schema:

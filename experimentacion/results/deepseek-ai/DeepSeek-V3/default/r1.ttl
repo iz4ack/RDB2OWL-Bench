@@ -1,0 +1,168 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/ontology#> .
+
+:Department a owl:Class ;
+    rdfs:label "Department" ;
+    rdfs:comment "A university department" .
+
+:DepartmentID a owl:DatatypeProperty ;
+    rdfs:label "Department ID" ;
+    rdfs:domain :Department ;
+    rdfs:range xsd:integer .
+
+:DepartmentName a owl:DatatypeProperty ;
+    rdfs:label "Department Name" ;
+    rdfs:domain :Department ;
+    rdfs:range xsd:string .
+
+:Student a owl:Class ;
+    rdfs:label "Student" ;
+    rdfs:comment "A university student" .
+
+:StudentID a owl:DatatypeProperty ;
+    rdfs:label "Student ID" ;
+    rdfs:domain :Student ;
+    rdfs:range xsd:string .
+
+:DNI a owl:DatatypeProperty ;
+    rdfs:label "DNI" ;
+    rdfs:domain :Student ;
+    rdfs:range xsd:string .
+
+:FirstName a owl:DatatypeProperty ;
+    rdfs:label "First Name" ;
+    rdfs:domain :Student , :Professor ;
+    rdfs:range xsd:string .
+
+:LastName a owl:DatatypeProperty ;
+    rdfs:label "Last Name" ;
+    rdfs:domain :Student , :Professor ;
+    rdfs:range xsd:string .
+
+:Email a owl:DatatypeProperty ;
+    rdfs:label "Email" ;
+    rdfs:domain :Student , :Professor ;
+    rdfs:range xsd:string .
+
+:BirthDate a owl:DatatypeProperty ;
+    rdfs:label "Birth Date" ;
+    rdfs:domain :Student , :Professor ;
+    rdfs:range xsd:date .
+
+:EnrollmentDate a owl:DatatypeProperty ;
+    rdfs:label "Enrollment Date" ;
+    rdfs:domain :Student ;
+    rdfs:range xsd:date .
+
+:Professor a owl:Class ;
+    rdfs:label "Professor" ;
+    rdfs:comment "A university professor" .
+
+:ProfessorID a owl:DatatypeProperty ;
+    rdfs:label "Professor ID" ;
+    rdfs:domain :Professor ;
+    rdfs:range xsd:string .
+
+:belongsToDepartment a owl:ObjectProperty ;
+    rdfs:label "belongs to department" ;
+    rdfs:domain :Professor ;
+    rdfs:range :Department .
+
+:Course a owl:Class ;
+    rdfs:label "Course" ;
+    rdfs:comment "A university course" .
+
+:CourseID a owl:DatatypeProperty ;
+    rdfs:label "Course ID" ;
+    rdfs:domain :Course ;
+    rdfs:range xsd:integer .
+
+:CourseName a owl:DatatypeProperty ;
+    rdfs:label "Course Name" ;
+    rdfs:domain :Course ;
+    rdfs:range xsd:string .
+
+:CourseLevel a owl:DatatypeProperty ;
+    rdfs:label "Course Level" ;
+    rdfs:domain :Course ;
+    rdfs:range xsd:string .
+
+:Credits a owl:DatatypeProperty ;
+    rdfs:label "Credits" ;
+    rdfs:domain :Course ;
+    rdfs:range xsd:integer .
+
+:offeredBy a owl:ObjectProperty ;
+    rdfs:label "offered by" ;
+    rdfs:domain :Course ;
+    rdfs:range :Department .
+
+:Enrollment a owl:Class ;
+    rdfs:label "Enrollment" ;
+    rdfs:comment "A student's enrollment in a course" .
+
+:hasEnrollment a owl:ObjectProperty ;
+    rdfs:label "has enrollment" ;
+    rdfs:domain :Student ;
+    rdfs:range :Enrollment .
+
+:enrolledIn a owl:ObjectProperty ;
+    rdfs:label "enrolled in" ;
+    rdfs:domain :Enrollment ;
+    rdfs:range :Course .
+
+:enrollmentDate a owl:DatatypeProperty ;
+    rdfs:label "enrollment date" ;
+    rdfs:domain :Enrollment ;
+    rdfs:range xsd:date .
+
+:Evaluation a owl:Class ;
+    rdfs:label "Evaluation" ;
+    rdfs:comment "A student's evaluation in a course" .
+
+:hasEvaluation a owl:ObjectProperty ;
+    rdfs:label "has evaluation" ;
+    rdfs:domain :Student ;
+    rdfs:range :Evaluation .
+
+:forCourse a owl:ObjectProperty ;
+    rdfs:label "for course" ;
+    rdfs:domain :Evaluation ;
+    rdfs:range :Course .
+
+:Grade a owl:DatatypeProperty ;
+    rdfs:label "Grade" ;
+    rdfs:domain :Evaluation ;
+    rdfs:range xsd:decimal .
+
+:EvaluationDate a owl:DatatypeProperty ;
+    rdfs:label "Evaluation Date" ;
+    rdfs:domain :Evaluation ;
+    rdfs:range xsd:date .
+
+:Student a owl:Restriction ;
+    owl:onProperty :hasEnrollment ;
+    owl:someValuesFrom :Enrollment .
+
+:Student a owl:Restriction ;
+    owl:onProperty :hasEvaluation ;
+    owl:someValuesFrom :Evaluation .
+
+:Professor a owl:Restriction ;
+    owl:onProperty :belongsToDepartment ;
+    owl:someValuesFrom :Department .
+
+:Course a owl:Restriction ;
+    owl:onProperty :offeredBy ;
+    owl:someValuesFrom :Department .
+
+:Enrollment a owl:Restriction ;
+    owl:onProperty :enrolledIn ;
+    owl:someValuesFrom :Course .
+
+:Evaluation a owl:Restriction ;
+    owl:onProperty :forCourse ;
+    owl:someValuesFrom :Course .

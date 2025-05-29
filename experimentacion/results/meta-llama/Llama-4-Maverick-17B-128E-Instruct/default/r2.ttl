@@ -1,0 +1,176 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/ontology#> .
+
+:Department rdf:type owl:Class .
+:Department rdfs:label "Department" .
+
+:DepartmentID rdf:type owl:DatatypeProperty .
+:DepartmentID rdfs:domain :Department .
+:DepartmentID rdfs:range xsd:integer .
+
+:DepartmentName rdf:type owl:DatatypeProperty .
+:DepartmentName rdfs:domain :Department .
+:DepartmentName rdfs:range xsd:string .
+
+:Budget rdf:type owl:DatatypeProperty .
+:Budget rdfs:domain :Department .
+:Budget rdfs:range xsd:decimal .
+
+:Manager rdf:type owl:ObjectProperty .
+:Manager rdfs:domain :Department .
+:Manager rdfs:range :Manager .
+
+:Project rdf:type owl:Class .
+:Project rdfs:label "Project" .
+
+:ProjectID rdf:type owl:DatatypeProperty .
+:ProjectID rdfs:domain :Project .
+:ProjectID rdfs:range xsd:integer .
+
+:ProjectName rdf:type owl:DatatypeProperty .
+:ProjectName rdfs:domain :Project .
+:ProjectName rdfs:range xsd:string .
+
+:department rdf:type owl:ObjectProperty .
+:department rdfs:domain :Project .
+:department rdfs:range :Department .
+
+:Employee rdf:type owl:Class .
+:Employee rdfs:label "Employee" .
+
+:EmployeeID rdf:type owl:DatatypeProperty .
+:EmployeeID rdfs:domain :Employee .
+:EmployeeID rdfs:range xsd:integer .
+
+:FirstName rdf:type owl:DatatypeProperty .
+:FirstName rdfs:domain :Employee .
+:FirstName rdfs:range xsd:string .
+
+:LastName rdf:type owl:DatatypeProperty .
+:LastName rdfs:domain :Employee .
+:LastName rdfs:range xsd:string .
+
+:departmentEmployee rdf:type owl:ObjectProperty .
+:departmentEmployee rdfs:domain :Employee .
+:departmentEmployee rdfs:range :Department .
+
+:TechnicalEmployee rdf:type owl:Class .
+:TechnicalEmployee rdfs:label "Technical Employee" .
+:TechnicalEmployee rdfs:subClassOf :Employee .
+
+:Specialty rdf:type owl:DatatypeProperty .
+:Specialty rdfs:domain :TechnicalEmployee .
+:Specialty rdfs:range xsd:string .
+
+:AdministrativeEmployee rdf:type owl:Class .
+:AdministrativeEmployee rdfs:label "Administrative Employee" .
+:AdministrativeEmployee rdfs:subClassOf :Employee .
+
+:HoursWorked rdf:type owl:DatatypeProperty .
+:HoursWorked rdfs:domain :AdministrativeEmployee .
+:HoursWorked rdfs:range xsd:integer .
+
+:Manager rdf:type owl:Class .
+:Manager rdfs:label "Manager" .
+:Manager rdfs:subClassOf :Employee .
+
+:YearsOfService rdf:type owl:DatatypeProperty .
+:YearsOfService rdfs:domain :Manager .
+:YearsOfService rdfs:range xsd:integer .
+
+:Task rdf:type owl:Class .
+:Task rdfs:label "Task" .
+
+:TaskID rdf:type owl:DatatypeProperty .
+:TaskID rdfs:domain :Task .
+:TaskID rdfs:range xsd:integer .
+
+:Description rdf:type owl:DatatypeProperty .
+:Description rdfs:domain :Task .
+:Description rdfs:range xsd:string .
+
+:projectTask rdf:type owl:ObjectProperty .
+:projectTask rdfs:domain :Task .
+:projectTask rdfs:range :Project .
+
+:Assignment rdf:type owl:Class .
+:Assignment rdfs:label "Assignment" .
+
+:employeeAssignment rdf:type owl:ObjectProperty .
+:employeeAssignment rdfs:domain :Assignment .
+:employeeAssignment rdfs:range :Employee .
+
+:projectAssignment rdf:type owl:ObjectProperty .
+:projectAssignment rdfs:domain :Assignment .
+:projectAssignment rdfs:range :Project .
+
+:taskAssignment rdf:type owl:ObjectProperty .
+:taskAssignment rdfs:domain :Assignment .
+:taskAssignment rdfs:range :Task .
+
+:StartDate rdf:type owl:DatatypeProperty .
+:StartDate rdfs:domain :Assignment .
+:StartDate rdfs:range xsd:date .
+
+:Department owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :Manager ;
+    owl:cardinality 1 ;
+    owl:onClass :Manager
+] .
+
+:Project owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :department ;
+    owl:cardinality 1 ;
+    owl:onClass :Department
+] .
+
+:Employee owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :departmentEmployee ;
+    owl:cardinality 1 ;
+    owl:onClass :Department
+] .
+
+:Task owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :projectTask ;
+    owl:cardinality 1 ;
+    owl:onClass :Project
+] .
+
+:Assignment owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :employeeAssignment ;
+    owl:cardinality 1 ;
+    owl:onClass :Employee
+] .
+
+:Assignment owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :projectAssignment ;
+    owl:cardinality 1 ;
+    owl:onClass :Project
+] .
+
+:Assignment owl:equivalentClass [
+    rdf:type owl:Restriction ;
+    owl:onProperty :taskAssignment ;
+    owl:cardinality 1 ;
+    owl:onClass :Task
+] .
+
+:TechnicalEmployee owl:disjointWith :AdministrativeEmployee .
+:TechnicalEmployee owl:disjointWith :Manager .
+:AdministrativeEmployee owl:disjointWith :Manager .
+
+:DepartmentID rdf:type owl:FunctionalProperty .
+:ProjectID rdf:type owl:FunctionalProperty .
+:EmployeeID rdf:type owl:FunctionalProperty .
+:TaskID rdf:type owl:FunctionalProperty .
+
+:Manager a owl:InverseFunctionalProperty .

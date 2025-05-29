@@ -2,35 +2,60 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix territory: <http://example.org/territory/> .
+@prefix : <http://example.com/territory#> .
 
-territory:Territory a owl:Class ;
-    rdfs:label "Territory" ;
-    rdfs:comment "A geographic territory" .
-
-territory:territoryName a owl:DatatypeProperty ;
-    rdfs:label "territory name" ;
-    rdfs:domain territory:Territory ;
+:Territory a owl:Class .
+:TerritoryName a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
     rdfs:range xsd:string .
+:TerritoryType a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:string ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :TerritoryType ;
+        owl:oneOf ( "country" "region" "province" "locality" ) ] .
 
-territory:territoryType a owl:DatatypeProperty ;
-    rdfs:label "territory type" ;
-    rdfs:domain territory:Territory ;
-    rdfs:range xsd:string .
+:PartOf a owl:ObjectProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:inverseOf :PartOf ;
+    owl:symmetric false ;
+    rdfs:subPropertyOf :contains .
 
-territory:partOf a owl:ObjectProperty ;
-    rdfs:label "part of" ;
-    rdfs:domain territory:Territory ;
-    rdfs:range territory:Territory ;
-    owl:inverseOf territory:hasPart .
+:contains a owl:TransitiveProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory .
 
-territory:hasPart a owl:ObjectProperty ;
-    rdfs:label "has part" ;
-    rdfs:domain territory:Territory ;
-    rdfs:range territory:Territory ;
-    owl:inverseOf territory:partOf .
+:BordersWith a owl:SymmetricProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :BordersWith ;
+        owl:allDisjoint ( :PartOf ) ] .
 
-territory:bordersWith a owl:SymmetricProperty ;
-    rdfs:label "borders with" ;
-    rdfs:domain territory:Territory ;
-    rdfs:range territory:Territory .
+:Country a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :TerritoryType ;
+        owl:hasValue "country" ] .
+
+:Region a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :TerritoryType ;
+        owl:hasValue "region" ] .
+
+:Province a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :TerritoryType ;
+        owl:hasValue "province" ] .
+
+:Locality a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :TerritoryType ;
+        owl:hasValue "locality" ] .
+
+:DisjointTerritoryTypes a owl:AllDisjoint ;
+    owl:members ( :Country :Region :Province :Locality ) .

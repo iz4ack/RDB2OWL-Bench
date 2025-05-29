@@ -1,0 +1,92 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/ontology#> .
+
+:Territory a owl:Class ;
+    rdfs:label "Territory" ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            [
+                a owl:Restriction ;
+                owl:onProperty :territory_name ;
+                owl:someValuesFrom xsd:string
+            ]
+            [
+                a owl:Restriction ;
+                owl:onProperty :territory_type ;
+                owl:someValuesFrom [
+                    a owl:Class ;
+                    owl:oneOf (
+                        :country
+                        :region
+                        :province
+                        :locality
+                    )
+                ]
+            ]
+        )
+    ] .
+
+:country a owl:NamedIndividual , :TerritoryType .
+:region a owl:NamedIndividual , :TerritoryType .
+:province a owl:NamedIndividual , :TerritoryType .
+:locality a owl:NamedIndividual , :TerritoryType .
+
+:TerritoryType a owl:Class ;
+    rdfs:label "TerritoryType" .
+
+:territory_name a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:string .
+
+:territory_type a owl:ObjectProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :TerritoryType .
+
+:PartOf a owl:ObjectProperty ;
+    rdfs:label "PartOf" ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:propertyDisjointWith :BordersWith ;
+    [
+        a owl:Restriction ;
+        owl:onProperty :PartOf ;
+        owl:allValuesFrom [
+            a owl:Restriction ;
+            owl:onProperty [ owl:inverseOf :PartOf ] ;
+            owl:allValuesFrom :Territory
+        ]
+    ] .
+
+:BordersWith a owl:SymmetricProperty , owl:IrreflexiveProperty ;
+    rdfs:label "BordersWith" ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:propertyDisjointWith :PartOf .
+
+:parent_id a owl:ObjectProperty ;
+    rdfs:subPropertyOf :PartOf ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory .
+
+:child_id a owl:ObjectProperty ;
+    rdfs:subPropertyOf [ owl:inverseOf :PartOf ] ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory .
+
+:territory1_id a owl:ObjectProperty ;
+    rdfs:subPropertyOf :BordersWith ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory .
+
+:territory2_id a owl:ObjectProperty ;
+    rdfs:subPropertyOf :BordersWith ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory .
+
+[ a owl:AllDisjointProperties ;
+  owl:members ( :PartOf :BordersWith )
+] .

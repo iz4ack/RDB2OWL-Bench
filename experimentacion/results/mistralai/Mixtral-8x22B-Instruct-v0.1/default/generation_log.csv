@@ -1,5 +1,17 @@
 schema_file,ttl_file,duration_s,status,error_msg
-r1.sql,r1.ttl,9.42,OK,
-r2.sql,r2.ttl,10.85,OK,
-r3.sql,r3.ttl,4.32,OK,
-r4.sql,r4.ttl,7.44,OK,
+r1.sql,,0.74,ERROR,"(Request ID: nvyfqhS-4yUbBN-9475c4ed9d32aa75)
+
+Bad request:
+{'message': 'The dedicated endpoint for mistralai/Mixtral-8x22B-Instruct-v0.1 is not running. Please visit https://api.together.ai/models to start the endpoint.', 'type': 'invalid_request_error', 'param': None, 'code': 'dedicated_endpoint_not_running'}"
+r2.sql,,0.31,ERROR,"(Request ID: nvyfqoG-4yUbBN-9475c4efbecfaa17)
+
+Bad request:
+{'message': 'The dedicated endpoint for mistralai/Mixtral-8x22B-Instruct-v0.1 is not running. Please visit https://api.together.ai/models to start the endpoint.', 'type': 'invalid_request_error', 'param': None, 'code': 'dedicated_endpoint_not_running'}"
+r3.sql,,0.51,ERROR,"(Request ID: nvyfqwD-4yUbBN-9475c4f2996b0aa9)
+
+Bad request:
+{'message': 'The dedicated endpoint for mistralai/Mixtral-8x22B-Instruct-v0.1 is not running. Please visit https://api.together.ai/models to start the endpoint.', 'type': 'invalid_request_error', 'param': None, 'code': 'dedicated_endpoint_not_running'}"
+r4.sql,,0.30,ERROR,"(Request ID: nvyfr3U-4yUbBN-9475c4f4cfea6fa1)
+
+Bad request:
+{'message': 'The dedicated endpoint for mistralai/Mixtral-8x22B-Instruct-v0.1 is not running. Please visit https://api.together.ai/models to start the endpoint.', 'type': 'invalid_request_error', 'param': None, 'code': 'dedicated_endpoint_not_running'}"
