@@ -24,7 +24,7 @@
     ] ;
     owl:hasKey ( :hasNIF ) .
 
-:hasNIF a owl:DatatypeProperty ;
+:hasNIF a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain :TaxEntity ;
     rdfs:range xsd:string ;
     rdfs:label "NIF" ;
@@ -103,7 +103,12 @@
 :Company a owl:Class ;
     rdfs:label "Company" ;
     rdfs:comment "Class representing a company." ;
-    rdfs:subClassOf :TaxEntity .
+    rdfs:subClassOf :TaxEntity ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasLocation ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger 
+    ] .
 
 :hasCompanyName a owl:DatatypeProperty ;
     rdfs:domain :Company ;
@@ -111,7 +116,7 @@
     rdfs:label "company name" ;
     rdfs:comment "Name of the company." .
 
-:hasLocation a owl:ObjectProperty ;
+:hasLocation a owl:ObjectProperty, owl:InverseFunctionalProperty, owl:FunctionalProperty;
     rdfs:domain :Company ;
     rdfs:range :Location ;
     rdfs:label "has location" ;

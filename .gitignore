@@ -6,3 +6,4 @@ lib64/
 # pixi environments
 .pixi
 *.egg-info
+aux/

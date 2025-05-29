@@ -1,17 +1,10 @@
 CREATE TABLE Person (
   NIF INT PRIMARY KEY,
   email VARCHAR(255) UNIQUE,
-  first_name VARCHAR(100)
-);
-
-CREATE TABLE Employee (
-  id INT PRIMARY KEY,
-  salary DECIMAL
-);
-
-CREATE TABLE Consultant (
-  id INT PRIMARY KEY,
-  hourly_rate DECIMAL
+  first_name VARCHAR(100),
+  roleType VARCHAR(20) CHECK(type IN 'Employee', 'Consultant'),
+  employee_salary DECIMAL,
+  consultant_hourly_rate DECIMAL,
 );
 
 CREATE TABLE Mentors (
@@ -24,7 +17,9 @@ CREATE TABLE Mentors (
 
 CREATE TABLE Company (
   NIF VARCHAR(9) PRIMARY KEY,
-  company_name VARCHAR(100)
+  company_name VARCHAR(100), 
+  location_id INT NOT NULL,
+  FOREIGN KEY (location_id) REFERENCES Locationn(id)
 );
 
 CREATE TABLE Locationn (
@@ -43,10 +38,3 @@ CREATE TABLE WorksWith (
   FOREIGN KEY (company_id) REFERENCES Company(NIF)
 );
 
-CREATE TABLE HasLocation (
-  company_id VARCHAR(9),
-  location_id INT,
-  PRIMARY KEY (company_id, location_id),
-  FOREIGN KEY (company_id) REFERENCES Company(NIF),
-  FOREIGN KEY (location_id) REFERENCES Location(id)
-);

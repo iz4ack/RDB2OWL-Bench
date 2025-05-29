@@ -22,6 +22,7 @@
 ## DatatypeProperties
 :hasID a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain [
+        a owl:Class ;
         owl:unionOf (:Course :Department)
     ];
     rdfs:range xsd:string ;
@@ -88,9 +89,8 @@
     rdfs:label "enrolledCourse" ;
     rdfs:comment "Course in which the student is enrolled." .
 
-:hasEvaluationStudent a owl:ObjectProperty ;
-    owl:propertyChainAxiom ( :enrrolledCourse :hasEvaluation ) .
-
+:hasEnrollmentEvaluation a owl:ObjectProperty ;
+    owl:propertyChainAxiom ( :enrrolledCourse :hasEvaluation) .
 
 :hasProfessor a owl:ObjectProperty ;
     rdfs:domain :Student ;
@@ -112,6 +112,7 @@
 ## ObjectProperties
 :belongsToDepartment a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain [
+        a owl:Class ;
         owl:unionOf (:Professor :Course)
     ] ;
     rdfs:range :Department ;
@@ -228,15 +229,22 @@
     rdfs:comment "Date of the evaluation." .
 
 ## ObjectProperties
-:hasEvaluatedStudent owl:inverseOf :hasEvaluation ;
+:hasEvaluatedStudent owl:inverseOf :hasEnrollmentEvaluation ;
     a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain :Evaluation ;
     rdfs:range :Student ;
     rdfs:label "evaluatedStudent" ;
     rdfs:comment "Student who has been evaluated in the course." .
 
+:belongsToEnrollment a owl:ObjectProperty ;
+    rdfs:domain :Evaluation ;
+    rdfs:range :Enrollment ;
+    rdfs:label "belongsToEnrollment" ;
+    rdfs:comment "Enrollment to which the evaluation belongs." ;
+    owl:inverseOf :hasEvaluation .
 :hasCourseEvaluated a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain :Evaluation ;
     rdfs:range :Course ;
     rdfs:label "evaluatedCourse" ;
-    rdfs:comment "Course evaluated in the assessment." .
+    rdfs:comment "Course evaluated in the assessment." ;
+    owl:propertyChainAxiom ( :belongsToEnrollment :hasCourseEnrollment) .

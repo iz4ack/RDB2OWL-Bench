@@ -1,7 +1,7 @@
 CREATE TABLE Territory (
     id SERIAL PRIMARY KEY,
-    territory_name VARCHAR(100) NOT NULL,
-    territory_type VARCHAR(50) NOT NULL CHECK(type IN ('country', 'region', 'province', 'locality'))
+    territory_name VARCHAR(100) ,
+    territory_type VARCHAR(50) CHECK(type IN ('country', 'region', 'province', 'locality'))
 );
 
 CREATE TABLE PartOf (

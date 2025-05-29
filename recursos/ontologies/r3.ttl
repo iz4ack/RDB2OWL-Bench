@@ -44,7 +44,7 @@
 #################################################################
 # Object Properties
 #################################################################
-:isPartOf a owl:ObjectProperty, owl:IrreflexiveProperty, owl:TransitiveProperty ;
+:isPartOf a owl:ObjectProperty, owl:IrreflexiveProperty, owl:TransitiveProperty;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
     rdfs:label "is part of" ;

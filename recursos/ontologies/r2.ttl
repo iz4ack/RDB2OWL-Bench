@@ -33,6 +33,7 @@
 
 :hasID a owl:DatatypeProperty, owl:FunctionalProperty ;
     rdfs:domain [
+        a owl:Class ;
         owl:unionOf (:Employee :Project :Department :Task)
     ];
     rdfs:range xsd:string ;
@@ -47,6 +48,7 @@
 
 :hasBudget a owl:DatatypeProperty ;
     rdfs:domain [
+        a owl:Class ;
         owl:unionOf (:Department :Project)
         ];
     rdfs:range [
@@ -117,6 +119,7 @@
 
 :belongsToDepartment a owl:ObjectProperty, owl:FunctionalProperty ;
     rdfs:domain [
+        a owl:Class ;
         owl:unionOf (:Employee :Project)
     ] ;
     rdfs:range :Department ;

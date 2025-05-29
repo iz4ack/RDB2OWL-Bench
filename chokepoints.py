@@ -15,21 +15,15 @@ BASE = {
     1: {
         "predicates": {
             RDFS.subClassOf,
-            OWL.equivalentClass,
             OWL.withRestrictions,
             OWL.onProperty,
+            OWL.onDatatype,
             OWL.allValuesFrom,
             OWL.someValuesFrom,
             OWL.hasValue,
-            OWL.disjointWith,
             OWL.cardinality,
             OWL.minCardinality,
-            OWL.maxCardinality,
-            OWL.intersectionOf,
-            OWL.unionOf,
-            OWL.complementOf,
-            OWL.equivalentProperty,
-            OWL.disjointUnionOf
+            OWL.maxCardinality
         },
         "rdf_type_objects": {
             OWL.Restriction
@@ -37,6 +31,13 @@ BASE = {
     },
     2: {
         "predicates": {
+            OWL.equivalentClass,
+            OWL.disjointWith,
+            OWL.intersectionOf,
+            OWL.equivalentProperty,
+            OWL.disjointUnionOf,
+            OWL.unionOf,
+            OWL.complementOf,
             OWL.propertyChainAxiom,
             OWL.hasKey,
             OWL.inverseOf
@@ -48,7 +49,8 @@ BASE = {
             OWL.FunctionalProperty,
             OWL.InverseFunctionalProperty,
             OWL.AsymmetricProperty,
-            OWL.ReflexiveProperty
+            OWL.ReflexiveProperty,
+            OWL.IrreflexiveProperty
         }
     }
 }
