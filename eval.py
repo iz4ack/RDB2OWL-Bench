@@ -33,7 +33,7 @@ def main():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        for fname in tqdm(sorted(os.listdir(args.gen_dir))):
+        for fname in sorted(os.listdir(args.gen_dir)):
             if not fname.endswith(".ttl"): continue
             gen_path = os.path.join(args.gen_dir, fname)
             gold_path = os.path.join(args.gold_dir, fname)
@@ -57,7 +57,7 @@ def main():
                 continue
             
             # Run metrics for each chokepoint
-            for i in tqdm(range(args.chokepoint + 1)):
+            for i in tqdm(range(args.chokepoint + 1), desc=f"Evaluating {fname}"):
                 G_sys_cp = get_chokepoint_subgraph(G_sys, i) if i != 2 else G_sys
                 G_gold_cp = get_chokepoint_subgraph(G_gold, i) if i != 2 else G_gold
 

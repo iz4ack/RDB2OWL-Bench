@@ -1,0 +1,53 @@
+@prefix : <http://example.org/ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Classes
+#################################################################
+
+:Territory a owl:Class .
+
+#################################################################
+# Object Properties
+#################################################################
+
+:isPartOf a owl:ObjectProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:propertyDisjointWith :hasPart .
+
+:hasPart a owl:ObjectProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:inverseOf :isPartOf .
+
+:bordersWith a owl:ObjectProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:SymmetricProperty true ;
+    owl:IrreflexiveProperty true .
+
+#################################################################
+# Data Properties
+#################################################################
+
+:hasTerritoryID a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:integer .
+
+:hasTerritoryName a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:string .
+
+:hasTerritoryType a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:string ;
+    owl:oneOf (
+        "country"^^xsd:string
+        "region"^^xsd:string
+        "province"^^xsd:string
+        "locality"^^xsd:string
+    ) .

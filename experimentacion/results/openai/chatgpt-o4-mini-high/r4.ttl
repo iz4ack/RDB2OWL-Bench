@@ -1,0 +1,191 @@
+@prefix : <http://example.org/org#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/org> a owl:Ontology .
+
+### Data range para roleType
+:RoleTypeEnum
+    a rdfs:Datatype ;
+    owl:oneOf ( "Employee"^^xsd:string "Consultant"^^xsd:string ) .
+
+### Clases
+:Person       a owl:Class .
+:Employee     a owl:Class ;
+    rdfs:subClassOf :Person ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Person
+            [ a owl:Restriction ;
+              owl:onProperty :hasRoleType ;
+              owl:hasValue "Employee"^^xsd:string
+            ]
+        )
+    ] .
+:Consultant   a owl:Class ;
+    rdfs:subClassOf :Person ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Person
+            [ a owl:Restriction ;
+              owl:onProperty :hasRoleType ;
+              owl:hasValue "Consultant"^^xsd:string
+            ]
+        )
+    ] .
+:Employee     owl:disjointWith :Consultant .
+
+:Company      a owl:Class .
+:Location     a owl:Class .
+
+### Propiedades de datos
+:hasNIF                         a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  xsd:integer .
+
+:hasEmail                       a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  xsd:string .
+
+:hasFirstName                   a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  xsd:string .
+
+:hasRoleType                    a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  :RoleTypeEnum .
+
+:hasEmployeeSalary              a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range  xsd:decimal .
+
+:hasConsultantHourlyRate        a owl:DatatypeProperty ;
+    rdfs:domain :Consultant ;
+    rdfs:range  xsd:decimal .
+
+:hasCompanyNIF                  a owl:DatatypeProperty ;
+    rdfs:domain :Company ;
+    rdfs:range  xsd:string .
+
+:hasCompanyName                 a owl:DatatypeProperty ;
+    rdfs:domain :Company ;
+    rdfs:range  xsd:string .
+
+:hasLocationID                  a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range  xsd:integer .
+
+:hasStreet                      a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range  xsd:string .
+
+:hasCity                        a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range  xsd:string .
+
+:hasProvince                    a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range  xsd:string .
+
+:hasCoordinates                 a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range  xsd:string .
+
+### Propiedades de objeto
+:mentors                        a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  :Person ;
+    owl:inverseOf :isMentoredBy .
+
+:isMentoredBy                   a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  :Person .
+
+:worksWith                      a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range  :Company ;
+    owl:inverseOf :employs .
+
+:employs                        a owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range  :Person .
+
+:hasLocation                    a owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range  :Location ;
+    owl:inverseOf :locationOf .
+
+:locationOf                     a owl:ObjectProperty ;
+    rdfs:domain :Location ;
+    rdfs:range  :Company .
+
+### Restricciones de cardinalidad
+:Person rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty :hasNIF ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasRoleType ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasEmail ;
+      owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasFirstName ;
+      owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+:Employee rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty :hasEmployeeSalary ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+:Consultant rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty :hasConsultantHourlyRate ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+:Company rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty :hasCompanyNIF ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasCompanyName ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasLocation ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] .
+
+:Location rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty :hasLocationID ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasStreet ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasCity ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasProvince ;
+      owl:cardinality "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty :hasCoordinates ;
+      owl:maxCardinality "1"^^xsd:nonNegativeInteger
+    ] .

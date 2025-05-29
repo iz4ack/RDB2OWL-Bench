@@ -87,6 +87,8 @@
     rdfs:label "salary" ;
     rdfs:comment "Employee's salary." .
 
+:Employee owl:disjointWith :Consultant .
+
 ## Consultant
 :Consultant a owl:Class ;
     rdfs:subClassOf :Person ;

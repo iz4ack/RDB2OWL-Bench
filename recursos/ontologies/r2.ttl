@@ -188,6 +188,10 @@
     rdfs:label "seniority" ;
     rdfs:comment "Number of years the employee has been with the company." .
 
+[ a owl:AllDisjointClasses ;
+  owl:members ( :TechnicalEmployee :AdministrativeEmployee :Manager )
+] .
+
 ## Assignment
 :Assignment a owl:Class ;
     rdfs:label "Assignment" ;

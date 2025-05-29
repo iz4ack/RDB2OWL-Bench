@@ -49,8 +49,7 @@ CREATE TABLE Manager (
 CREATE TABLE Task (
     TaskID          INT           NOT NULL AUTO_INCREMENT,
     Description     VARCHAR(100)  ,
-    PRIMARY KEY (TaskID),
-    FOREIGN KEY (ProjectID) REFERENCES Project(ProjectID)
+    PRIMARY KEY (TaskID)
 );
 
 CREATE TABLE Assignment (

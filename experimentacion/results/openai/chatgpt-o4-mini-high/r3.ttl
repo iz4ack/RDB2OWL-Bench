@@ -1,0 +1,73 @@
+@prefix : <http://example.org/territory#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/territory> a owl:Ontology .
+
+### Data Range for Territory Types
+:TerritoryTypeRange
+    a rdfs:Datatype ;
+    owl:oneOf (
+        "country"  ^^xsd:string
+        "region"   ^^xsd:string
+        "province" ^^xsd:string
+        "locality" ^^xsd:string
+    ) .
+
+### Classes
+:Territory a owl:Class .
+
+### Datatype Properties
+:hasId
+    a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range  xsd:integer .
+
+:hasTerritoryName
+    a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range  xsd:string .
+
+:hasTerritoryType
+    a owl:DatatypeProperty ;
+    rdfs:domain :Territory ;
+    rdfs:range  :TerritoryTypeRange .
+
+### Object Properties
+:partOf
+    a owl:ObjectProperty , owl:TransitiveProperty , owl:AsymmetricProperty , owl:IrreflexiveProperty ;
+    rdfs:domain    :Territory ;
+    rdfs:range     :Territory ;
+    owl:inverseOf  :hasPart .
+
+:hasPart
+    a owl:ObjectProperty ;
+    rdfs:domain    :Territory ;
+    rdfs:range     :Territory ;
+    owl:inverseOf  :partOf .
+
+:bordersWith
+    a owl:ObjectProperty , owl:SymmetricProperty , owl:IrreflexiveProperty ;
+    rdfs:domain    :Territory ;
+    rdfs:range     :Territory .
+
+### Class Restrictions
+:Territory rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty    :hasId ;
+      owl:cardinality   "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty    :hasTerritoryName ;
+      owl:cardinality   "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty    :hasTerritoryType ;
+      owl:cardinality   "1"^^xsd:nonNegativeInteger
+    ] ,
+    [ a owl:Restriction ;
+      owl:onProperty    :bordersWith ;
+      owl:cardinality   "1"^^xsd:nonNegativeInteger
+    ] .
