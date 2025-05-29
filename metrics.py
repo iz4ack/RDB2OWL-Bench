@@ -88,7 +88,8 @@ def ttl_to_graph(ttl_file_path):
     G = nx.DiGraph()
     for subj, pred, obj in g:
         # Ensure nodes exist with 'title' attribute
-        if pred in [rdflib.RDFS.comment, rdflib.RDFS.label, rdflib.RDF.first, rdflib.RDF.rest]:
+        #if pred in [rdflib.RDFS.comment, rdflib.RDFS.label, rdflib.RDF.first, rdflib.RDF.rest]:
+        if pred in [rdflib.RDFS.comment, rdflib.RDFS.label]:
                 continue
         subj_label = format_node(subj, g)
         obj_label = format_node(obj, g)

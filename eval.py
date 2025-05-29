@@ -79,7 +79,7 @@ def main():
                     "graph_P": f"{gP:.4f}", "graph_R": f"{gR:.4f}", "graph_F1": f"{gF:.4f}",
                     "motif_dist": f"{m_dist:.4f}"
                 })
-                print(f"\nEvaluated {fname} (chokepoint {i})")
+                #print(f"\nEvaluated {fname} (chokepoint {i})")
     print(f"\nEvaluation completed. Results in {args.output_csv}")
 
 if __name__ == "__main__":
