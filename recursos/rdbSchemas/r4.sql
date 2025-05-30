@@ -1,5 +1,5 @@
 CREATE TABLE Person (
-  NIF INT PRIMARY KEY,
+  NIF VARCHAR(9) PRIMARY KEY,
   email VARCHAR(255) UNIQUE,
   first_name VARCHAR(100),
   roleType VARCHAR(20) CHECK(type IN 'Employee', 'Consultant'),

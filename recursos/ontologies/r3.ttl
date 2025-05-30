@@ -55,3 +55,5 @@
     rdfs:range :Territory ;
     rdfs:label "borders with" ;
     rdfs:comment "Indicates that a territory borders another." .
+
+:hasPart owl:propertyDisjointWith :bordersWith .

@@ -30,7 +30,7 @@ def shorten(uri, graph):
         else:
             return uri
 
-def ttl_to_graph(ttl_file_path):
+def ttl_to_graph(ttl_file_path, fmt="ttl"):
     # Load the ontology
     g = rdflib.Graph()
 
@@ -42,7 +42,7 @@ def ttl_to_graph(ttl_file_path):
     g.namespace_manager.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
 
     try:
-        g.parse(ttl_file_path, format="ttl")
+        g.parse(ttl_file_path, format=fmt)
     except Exception as e:
         print(f"Error parsing {ttl_file_path}: {e}")
         return None

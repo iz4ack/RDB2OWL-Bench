@@ -1,0 +1,5 @@
+schema_file,ttl_file,duration_s,status,error_msg
+r1.sql,r1.ttl,31.44,OK,
+r2.sql,r2.ttl,24.77,OK,
+r3.sql,r3.ttl,18.63,OK,
+r4.sql,r4.ttl,25.19,OK,

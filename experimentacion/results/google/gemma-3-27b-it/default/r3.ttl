@@ -1,0 +1,79 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/ontology#> .
+
+:Territory a owl:Class ;
+    rdfs:label "Territory"@en ;
+    rdfs:comment "Represents a geographical territory."@en ;
+    rdfs:subClassOf :GeographicalEntity .
+
+:PartOf a owl:ObjectProperty ;
+    rdfs:label "is part of"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:inverseOf :hasPart ;
+    owl:propertyDisjointWith :bordersWith .
+
+:hasPart a owl:ObjectProperty ;
+    rdfs:label "has part"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:inverseOf :isPartOf .
+
+:isPartOf a owl:ObjectProperty ;
+    rdfs:label "is part of"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory .
+
+:bordersWith a owl:ObjectProperty ;
+    rdfs:label "borders with"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:symmetricProperty :bordersWith ;
+    owl:propertyDisjointWith :isPartOf .
+
+:territoryName a owl:DatatypeProperty ;
+    rdfs:label "territory name"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:string .
+
+:territoryType a owl:DatatypeProperty ;
+    rdfs:label "territory type"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :TerritoryType ;
+    rdfs:comment "The type of territory (country, region, province, locality)."@en .
+
+:TerritoryType a owl:Class ;
+    rdfs:label "Territory Type"@en ;
+    rdfs:subClassOf rdfs:Literal .
+
+:Country a owl:Class ;
+    rdfs:label "Country"@en ;
+    rdfs:subClassOf :TerritoryType .
+
+:Region a owl:Class ;
+    rdfs:label "Region"@en ;
+    rdfs:subClassOf :TerritoryType .
+
+:Province a owl:Class ;
+    rdfs:label "Province"@en ;
+    rdfs:subClassOf :TerritoryType .
+
+:Locality a owl:Class ;
+    rdfs:label "Locality"@en ;
+    rdfs:subClassOf :TerritoryType .
+
+:GeographicalEntity a owl:Class ;
+    rdfs:label "Geographical Entity"@en .
+    
+:NoSelfReference a owl:Restriction ;
+    owl:onProperty :isPartOf ;
+    owl:allValuesFrom :Territory ;
+    owl:notAllValuesFrom :Territory .
+
+:NoSelfBorder a owl:Restriction ;
+    owl:onProperty :bordersWith ;
+    owl:allValuesFrom :Territory ;
+    owl:notAllValuesFrom :Territory .

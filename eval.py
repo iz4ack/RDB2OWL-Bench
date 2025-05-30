@@ -34,15 +34,22 @@ def main():
         writer.writeheader()
 
         for fname in sorted(os.listdir(args.gen_dir)):
-            if not fname.endswith(".ttl"): continue
+            if fname.endswith(".ttl"): fmt = "ttl"
+            elif fname.endswith(".xml"): fmt = "xml"
+            else: continue  # Skip non-TTL/XML files
+
+            gold_name = os.path.splitext(fname)[0]
+            gold_name += ".ttl"
+
             gen_path = os.path.join(args.gen_dir, fname)
-            gold_path = os.path.join(args.gold_dir, fname)
+            gold_path = os.path.join(args.gold_dir, gold_name)
+
             if not os.path.exists(gold_path):
                 print(f"Warning: gold standard not found for {fname}, skipping.", file=sys.stderr)
                 continue
 
-            G_sys = ttl_to_graph(gen_path)
-            G_gold = ttl_to_graph(gold_path)
+            G_sys = ttl_to_graph(gen_path, fmt=fmt)
+            G_gold = ttl_to_graph(gold_path, fmt="ttl")
 
             if G_sys is None or G_gold is None:
                 print(f"Warning: failed to parse {fname}, skipping.", file=sys.stderr)

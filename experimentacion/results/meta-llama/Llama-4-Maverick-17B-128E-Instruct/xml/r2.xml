@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://example.org/ontology#"
+    xml:lang="en"
+>
+
+    <!-- Classes -->
+    <owl:Class rdf:ID="Department"/>
+    <owl:Class rdf:ID="Project"/>
+    <owl:Class rdf:ID="Employee"/>
+    <owl:Class rdf:ID="TechnicalEmployee">
+        <rdfs:subClassOf rdf:resource="#Employee"/>
+    </owl:Class>
+    <owl:Class rdf:ID="AdministrativeEmployee">
+        <rdfs:subClassOf rdf:resource="#Employee"/>
+    </owl:Class>
+    <owl:Class rdf:ID="Manager">
+        <rdfs:subClassOf rdf:resource="#Employee"/>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#managesDepartment"/>
+                <owl:minCardinality rdf:datatype="xsd:int">1</owl:minCardinality>
+            </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Class rdf:ID="Task"/>
+    <owl:Class rdf:ID="Assignment"/>
+
+    <!-- Properties -->
+    <owl:ObjectProperty rdf:ID="hasEmployee">
+        <rdfs:domain rdf:resource="#Department"/>
+        <rdfs:range rdf:resource="#Employee"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="managesDepartment">
+        <rdfs:domain rdf:resource="#Manager"/>
+        <rdfs:range rdf:resource="#Department"/>
+        <owl:inverseOf rdf:resource="#hasManager"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="hasManager">
+        <rdfs:domain rdf:resource="#Department"/>
+        <rdfs:range rdf:resource="#Manager"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="hasProject">
+        <rdfs:domain rdf:resource="#Department"/>
+        <rdfs:range rdf:resource="#Project"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="belongsToDepartment">
+        <rdfs:domain rdf:resource="#Employee"/>
+        <rdfs:range rdf:resource="#Department"/>
+        <owl:inverseOf rdf:resource="#hasEmployee"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="worksOnProject">
+        <rdfs:domain rdf:resource="#Employee"/>
+        <rdfs:range rdf:resource="#Project"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="hasTask">
+        <rdfs:domain rdf:resource="#Assignment"/>
+        <rdfs:range rdf:resource="#Task"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="assignedToEmployee">
+        <rdfs:domain rdf:resource="#Assignment"/>
+        <rdfs:range rdf:resource="#Employee"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="assignedToProject">
+        <rdfs:domain rdf:resource="#Assignment"/>
+        <rdfs:range rdf:resource="#Project"/>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:ID="departmentID">
+        <rdfs:domain rdf:resource="#Department"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="departmentName">
+        <rdfs:domain rdf:resource="#Department"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="budget">
+        <rdfs:domain rdf:resource="#Department"/>
+        <rdfs:range rdf:resource="xsd:decimal"/>
+        <rdfs:domain rdf:resource="#Project"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="projectID">
+        <rdfs:domain rdf:resource="#Project"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="projectName">
+        <rdfs:domain rdf:resource="#Project"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="employeeID">
+        <rdfs:domain rdf:resource="#Employee"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="firstName">
+        <rdfs:domain rdf:resource="#Employee"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="lastName">
+        <rdfs:domain rdf:resource="#Employee"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="specialty">
+        <rdfs:domain rdf:resource="#TechnicalEmployee"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="hoursWorked">
+        <rdfs:domain rdf:resource="#AdministrativeEmployee"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="yearsOfService">
+        <rdfs:domain rdf:resource="#Manager"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="taskID">
+        <rdfs:domain rdf:resource="#Task"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="description">
+        <rdfs:domain rdf:resource="#Task"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="startDate">
+        <rdfs:domain rdf:resource="#Assignment"/>
+        <rdfs:range rdf:resource="xsd:date"/>
+    </owl:DatatypeProperty>
+
+    <!-- Restrictions -->
+    <owl:Class rdf:ID="DepartmentWithManager">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#hasManager"/>
+                <owl:minCardinality rdf:datatype="xsd:int">1</owl:minCardinality>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Department"/>
+    </owl:Class>
+    <owl:Class rdf:ID="EmployeeWithAssignment">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#worksOnProject"/>
+                <owl:minCardinality rdf:datatype="xsd:int">1</owl:minCardinality>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Employee"/>
+    </owl:Class>
+
+    <!-- Disjoint Classes -->
+    <owl:AllDisjointClasses>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#TechnicalEmployee"/>
+            <rdf:Description rdf:about="#AdministrativeEmployee"/>
+            <rdf:Description rdf:about="#Manager"/>
+        </owl:members>
+    </owl:AllDisjointClasses>
+
+</rdf:RDF>

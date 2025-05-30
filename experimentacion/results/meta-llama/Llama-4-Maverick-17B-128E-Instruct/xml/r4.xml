@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://example.org/ontology#"
+    xml:lang="en"
+>
+
+    <!-- Classes -->
+    <owl:Class rdf:ID="Person"/>
+    <owl:Class rdf:ID="Employee">
+        <rdfs:subClassOf rdf:resource="#Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#roleType"/>
+                <owl:hasValue rdf:datatype="xsd:string">Employee</owl:hasValue>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:ID="Consultant">
+        <rdfs:subClassOf rdf:resource="#Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#roleType"/>
+                <owl:hasValue rdf:datatype="xsd:string">Consultant</owl:hasValue>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:ID="Company"/>
+    <owl:Class rdf:ID="Location"/>
+    <owl:Class rdf:ID="Mentorship"/>
+
+    <!-- Properties -->
+    <owl:DatatypeProperty rdf:ID="NIF">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="email">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="first_name">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="roleType">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="employee_salary">
+        <rdfs:domain rdf:resource="#Employee"/>
+        <rdfs:range rdf:resource="xsd:decimal"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="consultant_hourly_rate">
+        <rdfs:domain rdf:resource="#Consultant"/>
+        <rdfs:range rdf:resource="xsd:decimal"/>
+    </owl:DatatypeProperty>
+    <owl:ObjectProperty rdf:ID="hasMentor">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="#Person"/>
+        <owl:inverseOf rdf:resource="#isMentorOf"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:ID="isMentorOf">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="#Person"/>
+    </owl:ObjectProperty>
+    <owl:DatatypeProperty rdf:ID="company_NIF">
+        <rdfs:domain rdf:resource="#Company"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="company_name">
+        <rdfs:domain rdf:resource="#Company"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:ObjectProperty rdf:ID="locatedIn">
+        <rdfs:domain rdf:resource="#Company"/>
+        <rdfs:range rdf:resource="#Location"/>
+    </owl:ObjectProperty>
+    <owl:DatatypeProperty rdf:ID="location_id">
+        <rdfs:domain rdf:resource="#Location"/>
+        <rdfs:range rdf:resource="xsd:int"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="street">
+        <rdfs:domain rdf:resource="#Location"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="city">
+        <rdfs:domain rdf:resource="#Location"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="province">
+        <rdfs:domain rdf:resource="#Location"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:DatatypeProperty rdf:ID="coordinates">
+        <rdfs:domain rdf:resource="#Location"/>
+        <rdfs:range rdf:resource="xsd:string"/>
+    </owl:DatatypeProperty>
+    <owl:ObjectProperty rdf:ID="worksWith">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="#Company"/>
+    </owl:ObjectProperty>
+
+    <!-- Restrictions -->
+    <owl:Axiom>
+        <owl:property rdf:resource="#roleType"/>
+        <owl:hasValue rdf:datatype="xsd:string">Employee</owl:hasValue>
+        <owl:subject rdf:resource="#Employee"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:property rdf:resource="#roleType"/>
+        <owl:hasValue rdf:datatype="xsd:string">Consultant</owl:hasValue>
+        <owl:subject rdf:resource="#Consultant"/>
+    </owl:Axiom>
+    <owl:Class rdf:ID="Mentor">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#isMentorOf"/>
+                <owl:someValuesFrom rdf:resource="#Person"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Person"/>
+    </owl:Class>
+    <owl:Class rdf:ID="Mentee">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#hasMentor"/>
+                <owl:someValuesFrom rdf:resource="#Person"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Person"/>
+    </owl:Class>
+
+    <!-- Disjointness -->
+    <owl:AllDisjointClasses>
+        <owl:members rdf:parseType="Collection">
+            <owl:Class rdf:about="#Employee"/>
+            <owl:Class rdf:about="#Consultant"/>
+        </owl:members>
+    </owl:AllDisjointClasses>
+
+</rdf:RDF>

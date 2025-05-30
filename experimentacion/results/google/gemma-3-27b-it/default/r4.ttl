@@ -1,0 +1,137 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/> .
+
+:Person a owl:Class ;
+    rdfs:label "Person" .
+
+:Employee a owl:Class ;
+    rdfs:subClassOf :Person ;
+    rdfs:label "Employee" .
+
+:Consultant a owl:Class ;
+    rdfs:subClassOf :Person ;
+    rdfs:label "Consultant" .
+
+:Company a owl:Class ;
+    rdfs:label "Company" .
+
+:Location a owl:Class ;
+    rdfs:label "Location" .
+
+:Mentorship a owl:Class ;
+    rdfs:label "Mentorship" .
+
+:WorksWith a owl:Class ;
+    rdfs:label "WorksWith" .
+
+:nif a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:integer ;
+    rdfs:label "NIF" .
+
+:email a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string ;
+    rdfs:label "Email" .
+
+:firstName a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string ;
+    rdfs:label "First Name" .
+
+:roleType a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :RoleType ;
+    rdfs:label "Role Type" .
+
+:employeeSalary a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "Employee Salary" .
+
+:consultantHourlyRate a owl:DatatypeProperty ;
+    rdfs:domain :Consultant ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "Consultant Hourly Rate" .
+
+:companyName a owl:DatatypeProperty ;
+    rdfs:domain :Company ;
+    rdfs:range xsd:string ;
+    rdfs:label "Company Name" .
+
+:locationId a owl:DatatypeProperty ;
+    rdfs:domain :Company ;
+    rdfs:range xsd:integer ;
+    rdfs:label "Location ID" .
+
+:street a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string ;
+    rdfs:label "Street" .
+
+:city a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string ;
+    rdfs:label "City" .
+
+:province a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string ;
+    rdfs:label "Province" .
+
+:coordinates a owl:DatatypeProperty ;
+    rdfs:domain :Location ;
+    rdfs:range xsd:string ;
+    rdfs:label "Coordinates" .
+
+:mentorId a owl:DatatypeProperty ;
+    rdfs:domain :Mentorship ;
+    rdfs:range xsd:integer ;
+    rdfs:label "Mentor ID" .
+
+:menteeId a owl:DatatypeProperty ;
+    rdfs:domain :Mentorship ;
+    rdfs:range xsd:integer ;
+    rdfs:label "Mentee ID" .
+
+:personId a owl:DatatypeProperty ;
+    rdfs:domain :WorksWith ;
+    rdfs:range xsd:integer ;
+    rdfs:label "Person ID" .
+
+:companyId a owl:DatatypeProperty ;
+    rdfs:domain :WorksWith ;
+    rdfs:range xsd:string ;
+    rdfs:label "Company ID" .
+
+:RoleType a owl:Class ;
+    rdfs:label "Role Type" .
+
+:EmployeeRole a :RoleType ;
+    rdfs:label "Employee" .
+
+:ConsultantRole a :RoleType ;
+    rdfs:label "Consultant" .
+
+:hasMentor a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    rdfs:label "has Mentor" .
+
+:hasMentee a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    rdfs:label "has Mentee" .
+
+:worksFor a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Company ;
+    rdfs:label "works for" .
+
+:locatedIn a owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range :Location ;
+    rdfs:label "located in" .

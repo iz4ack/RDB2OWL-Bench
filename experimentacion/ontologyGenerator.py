@@ -84,7 +84,6 @@ def main():
         api_key=args.api_key or os.getenv("HF_API_KEY")
     )
 
-
     base_path = os.path.join(args.output_dir, args.model)
     base_path = os.path.join(base_path, args.prompt_name)
     os.makedirs(base_path, exist_ok=True)
