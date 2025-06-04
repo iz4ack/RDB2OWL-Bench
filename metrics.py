@@ -19,7 +19,12 @@ from torch_geometric.utils import from_networkx
 def shorten(uri, graph):
     try:
         # If it's a known prefix like "rdf", "rdfs", "owl", "xsd", ":", etc.
-        return graph.namespace_manager.qname(uri)
+        t = graph.namespace_manager.qname(uri)
+        if ":" in t:
+            prefix = t.split(":")[0]
+            if prefix not in [":", "rdf", "rdfs", "owl", "xsd"]:
+                t = t.split(":")[-1]  
+        return t
     except:
         # If there's no prefix, try extracting the localname manually
         uri = str(uri)
@@ -47,16 +52,6 @@ def ttl_to_graph(ttl_file_path, fmt="ttl"):
         print(f"Error parsing {ttl_file_path}: {e}")
         return None
 
-    def title(t, g):
-        t = shorten(t, g)
-        # Remove the prefix if it exists
-        if ":" in t:
-            prefix = t.split(":")[0]
-            if prefix not in [":", "rdf", "rdfs", "owl", "xsd"]:
-                t = t.split(":")[-1]  # Quita el prefijo si no está permitido
-
-        return t
-
     def describe_blank_node(graph, bnode, seen=None):
         """Generates a human-readable (and deterministic) representation of a blank node."""
         if seen is None:
@@ -77,12 +72,12 @@ def ttl_to_graph(ttl_file_path, fmt="ttl"):
         parts = []
         for p, o in props:
             p_str = shorten(p, graph) if isinstance(p, rdflib.URIRef) else str(p)
-            o_str = format_node(o, graph, seen=seen)
+            o_str = shorten(format_node(o, graph, seen=seen), graph) if isinstance(o, rdflib.URIRef) else format_node(o, graph, seen=seen)
             parts.append(f"{p_str}={o_str}")
         return "[" + "; ".join(parts) + "]"
 
     def format_node(n, g, seen=None):
-        return str(n) if not isinstance(n, rdflib.BNode) else describe_blank_node(g, n, seen=seen)
+        return shorten(n, g) if not isinstance(n, rdflib.BNode) else describe_blank_node(g, n, seen=seen)
     
     # Create a directed graph
     G = nx.DiGraph()
@@ -91,23 +86,16 @@ def ttl_to_graph(ttl_file_path, fmt="ttl"):
         #if pred in [rdflib.RDFS.comment, rdflib.RDFS.label, rdflib.RDF.first, rdflib.RDF.rest]:
         if pred in [rdflib.RDFS.comment, rdflib.RDFS.label]:
                 continue
+        
         subj_label = format_node(subj, g)
         obj_label = format_node(obj, g)
+
         if subj not in G:
-            G.add_node(subj_label, title=title(subj, g) if isinstance(subj, rdflib.URIRef) else subj_label)
+            G.add_node(subj_label, blankNode=1 if isinstance(subj, rdflib.BNode) else 0)
         if obj not in G:
-            G.add_node(obj_label, title=title(obj, g) if isinstance(obj, rdflib.URIRef) else obj_label)
-        # Special case: treat owl:hasKey as a semantic relation
-        if pred == rdflib.OWL.hasKey and isinstance(obj, rdflib.BNode):
-            try:
-                keys = list(Collection(g, obj))
-                for key in keys:
-                    key_label = format_node(key, g)
-                    G.add_edge(subj_label, key_label, predicate=rdflib.OWL.hasKey)
-            except:
-                pass
-        else:
-            # Add edge (subj -> obj) with predicate as optional attribute
+            G.add_node(obj_label, blankNode=1 if isinstance(obj, rdflib.BNode) else 0)
+
+        if pred != rdflib.RDF.first and pred != rdflib.RDF.rest:
             G.add_edge(subj_label, obj_label, predicate=pred)
 
     return G
@@ -129,8 +117,8 @@ def literal_f1(G_pred: nx.Graph, G_true: nx.Graph):
     if len(G_pred) == 0 or len(G_true) == 0:
         return 0, 0, 0
 
-    edges_G = {(G_pred.nodes[u]['title'], G_pred.nodes[v]['title']) for u, v in G_pred.edges}
-    edges_G_true = {(G_true.nodes[u]['title'], G_true.nodes[v]['title']) for u, v in G_true.edges}
+    edges_G = {(u, v) for u, v in G_pred.edges}
+    edges_G_true = {(u, v) for u, v in G_true.edges}
 
     intersection = edges_G.intersection(edges_G_true)
 

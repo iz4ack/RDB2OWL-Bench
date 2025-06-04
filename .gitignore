@@ -7,3 +7,4 @@ lib64/
 .pixi
 *.egg-info
 aux/
+experimentacion/run_experimentation.sh

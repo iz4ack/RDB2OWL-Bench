@@ -1,66 +1,33 @@
 from rdflib.namespace import RDF, RDFS, OWL
 import networkx as nx
 
-BASE = {
+BASIC = {
     0: {
         "predicates": {
-            RDFS.range, RDFS.domain
+            RDFS.range, RDFS.domain, RDFS.subClassOf
         },
         "rdf_type_objects": {
-            OWL.Class,
-            OWL.ObjectProperty,
-            OWL.DatatypeProperty
-        }
-    },
-    1: {
-        "predicates": {
-            RDFS.subClassOf,
-            OWL.withRestrictions,
-            OWL.onProperty,
-            OWL.onDatatype,
-            OWL.allValuesFrom,
-            OWL.someValuesFrom,
-            OWL.hasValue,
-            OWL.cardinality,
-            OWL.minCardinality,
-            OWL.maxCardinality
-        },
-        "rdf_type_objects": {
-            OWL.Restriction
+            "owl:Class",
+            "owl:DatatypeProperty",
+            "owl:DatatypeProperty"
         }
     }
 }
 
+def get_basic_subgraph(G):
+    predicates = BASIC[0].get("predicates", set())
+    rdf_type_objs = BASIC[0].get("rdf_type_objects", set())
 
-def build_chokepoints():
-    cumulative = {}
-    pred_union = set()
-    rdf_types_union = set()
-
-    for level in sorted(BASE.keys()):
-        pred_union |= BASE[level]["predicates"]
-        rdf_types_union |= BASE[level]["rdf_type_objects"]
-        cumulative[level] = {
-            "predicates": set(pred_union),
-            "rdf_type_objects": set(rdf_types_union)
-        }
-
-    return cumulative
-
-
-CHOKEPOINTS = build_chokepoints()
-
-def get_chokepoint_subgraph(G, level):
-    if level not in CHOKEPOINTS:
-        raise ValueError(f"Nivel {level} no está definido.")
-
-    predicates = CHOKEPOINTS[level].get("predicates", set())
-    rdf_type_objs = {str(obj) for obj in CHOKEPOINTS[level].get("rdf_type_objects", set())}
+    nodes = G.nodes(data=True)
 
     edges_cp = []
     for u, v, d in G.edges(data=True):
         pred = d.get("predicate")
         
+        # If node has atribute blankNode = 1 skip it
+        if nodes[u].get("blankNode") or nodes[v].get("blankNode"):
+            continue
+
         # Caso 1: predicado explícito permitido
         if pred in predicates:
             edges_cp.append((u, v, d))

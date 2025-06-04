@@ -5,7 +5,7 @@ import csv
 from metrics import (   
     literal_f1, fuzzy_f1, continuous_f1, graph_f1, motif_distance, ttl_to_graph
 )
-from chokepoints import get_chokepoint_subgraph
+from chokepoints import get_basic_subgraph
 from tqdm import tqdm
 
 
@@ -16,7 +16,6 @@ def main():
     parser.add_argument("--gen-dir", required=True, help="Directory with generated ontologies (.ttl)")
     parser.add_argument("--gold-dir", help="Directory with gold standard ontologies (.ttl)", default="recursos/ontologies")
     parser.add_argument("--output-csv", "-o", default="evaluation_results.csv", help="Output CSV file name with metrics, it will be saved in the gen_dir")
-    parser.add_argument("--chokepoint", "-c", type=int, default=2, help="Max chokepoint level to evaluate (0-2)")
     args = parser.parse_args()
     
     output_path = os.path.join(args.gen_dir, args.output_csv)
@@ -33,7 +32,12 @@ def main():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        for fname in sorted(os.listdir(args.gen_dir)):
+        ontologies = []
+        for o in os.listdir(args.gen_dir):
+            if o.endswith((".ttl", ".xml")):
+                ontologies.append(o)
+        
+        for fname in tqdm(sorted(ontologies), desc="Evaluating ontologies"):
             if fname.endswith(".ttl"): fmt = "ttl"
             elif fname.endswith(".xml"): fmt = "xml"
             else: continue  # Skip non-TTL/XML files
@@ -64,13 +68,11 @@ def main():
                 continue
             
             # Run metrics for each chokepoint
-            for i in tqdm(range(args.chokepoint + 1), desc=f"Evaluating {fname}"):
-                G_sys_cp = get_chokepoint_subgraph(G_sys, i) if i != 2 else G_sys
-                G_gold_cp = get_chokepoint_subgraph(G_gold, i) if i != 2 else G_gold
 
-                if G_sys_cp is None or G_gold_cp is None:
-                    print(f"Warning: failed to apply chokepoint {i} for {fname}, skipping.", file=sys.stderr)
-                    continue
+            G_sys0 = get_basic_subgraph(G_sys)
+            G_gold0 = get_basic_subgraph(G_gold)
+
+            for G_sys_cp, G_gold_cp, name in [(G_sys0, G_gold0, "basic"), (G_sys, G_gold, "full")]:
                 # Compute metrics
                 litP, litR, litF = literal_f1(G_sys_cp, G_gold_cp)
                 fzP, fzR, fzF = fuzzy_f1(G_sys_cp, G_gold_cp)
@@ -79,7 +81,7 @@ def main():
                 m_dist = motif_distance(G_sys_cp, G_gold_cp)
 
                 writer.writerow({
-                    "file": f"{fname} (chokepoint {i})",
+                    "file": f"{fname} ({name})",
                     "literal_P": f"{litP:.4f}", "literal_R": f"{litR:.4f}", "literal_F1": f"{litF:.4f}",
                     "fuzzy_P": f"{fzP:.4f}", "fuzzy_R": f"{fzR:.4f}", "fuzzy_F1": f"{fzF:.4f}",
                     "cont_P": f"{cP:.4f}", "cont_R": f"{cR:.4f}", "cont_F1": f"{cF:.4f}",
