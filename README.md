@@ -1,4 +1,4 @@
-# Ontology Generation Benchmark from Relational Databases
+# Ontology Learning Benchmark from Relational Databases
 
 This repository provides a **benchmarking framework for the automatic generation of ontologies** from relational databases. It includes:
 
