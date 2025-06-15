@@ -8,3 +8,7 @@ lib64/
 *.egg-info
 aux/
 experimentacion/run_experimentation.sh
+# Python cache files
+__pycache__/
+p.ipynb 
+metrics2.py
