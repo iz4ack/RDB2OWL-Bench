@@ -9,6 +9,6 @@ lib64/
 aux/
 experimentacion/run_experimentation.sh
 # Python cache files
-__pycache__/
+__pycache__
 p.ipynb 
 metrics2.py
