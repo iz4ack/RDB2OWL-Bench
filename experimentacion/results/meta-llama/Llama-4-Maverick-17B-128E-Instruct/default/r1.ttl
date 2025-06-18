@@ -9,38 +9,35 @@
 
 :departmentID rdf:type owl:DatatypeProperty .
 :departmentID rdfs:domain :Department .
-:departmentID rdfs:range xsd:int .
+:departmentID rdfs:range xsd:integer .
 
 :departmentName rdf:type owl:DatatypeProperty .
 :departmentName rdfs:domain :Department .
 :departmentName rdfs:range xsd:string .
 
-:Person rdf:type owl:Class .
-:Person rdfs:label "Person"@en .
-:DNI rdf:type owl:DatatypeProperty .
-:DNI rdfs:domain :Person .
-:DNI rdfs:range xsd:string .
-:firstName rdf:type owl:DatatypeProperty .
-:firstName rdfs:domain :Person .
-:firstName rdfs:range xsd:string .
-:lastName rdf:type owl:DatatypeProperty .
-:lastName rdfs:domain :Person .
-:lastName rdfs:range xsd:string .
-:email rdf:type owl:DatatypeProperty .
-:email rdfs:domain :Person .
-:email rdfs:range xsd:string .
-:birthDate rdf:type owl:DatatypeProperty .
-:birthDate rdfs:domain :Person .
-:birthDate rdfs:range xsd:date .
-
 :Student rdf:type owl:Class .
 :Student rdfs:label "Student"@en .
-:Student rdfs:subClassOf :Person .
-:Student rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :enrolledIn ;
-    owl:minCardinality "0"^^xsd:nonNegativeInteger ;
-] .
+
+:dni rdf:type owl:DatatypeProperty .
+:dni rdfs:domain :Student .
+:dni rdfs:range xsd:string .
+
+:firstName rdf:type owl:DatatypeProperty .
+:firstName rdfs:domain :Student .
+:firstName rdfs:range xsd:string .
+
+:lastName rdf:type owl:DatatypeProperty .
+:lastName rdfs:domain :Student .
+:lastName rdfs:range xsd:string .
+
+:email rdf:type owl:DatatypeProperty .
+:email rdfs:domain :Student .
+:email rdfs:range xsd:string .
+
+:birthDate rdf:type owl:DatatypeProperty .
+:birthDate rdfs:domain :Student .
+:birthDate rdfs:range xsd:date .
+
 :enrollmentDate rdf:type owl:DatatypeProperty .
 :enrollmentDate rdfs:domain :Student .
 :enrollmentDate rdfs:range xsd:date .
@@ -48,136 +45,165 @@
 :Professor rdf:type owl:Class .
 :Professor rdfs:label "Professor"@en .
 :Professor rdfs:subClassOf :Person .
-:department rdf:type owl:ObjectProperty .
-:department rdfs:domain :Professor .
-:department rdfs:range :Department .
+:Person rdf:type owl:Class .
+
+:Student rdf:type owl:Class .
+:Student rdfs:subClassOf :Person .
+
+:hasDepartment rdf:type owl:ObjectProperty .
+:hasDepartment rdfs:domain :Professor .
+:hasDepartment rdfs:range :Department .
 
 :Course rdf:type owl:Class .
 :Course rdfs:label "Course"@en .
+
 :courseID rdf:type owl:DatatypeProperty .
 :courseID rdfs:domain :Course .
-:courseID rdfs:range xsd:int .
+:courseID rdfs:range xsd:integer .
+
 :courseName rdf:type owl:DatatypeProperty .
 :courseName rdfs:domain :Course .
 :courseName rdfs:range xsd:string .
+
 :courseLevel rdf:type owl:DatatypeProperty .
 :courseLevel rdfs:domain :Course .
 :courseLevel rdfs:range xsd:string .
+
 :credits rdf:type owl:DatatypeProperty .
 :credits rdfs:domain :Course .
-:credits rdfs:range xsd:int .
+:credits rdfs:range xsd:integer .
+
 :department rdf:type owl:ObjectProperty .
 :department rdfs:domain :Course .
 :department rdfs:range :Department .
 
-:enrolledIn rdf:type owl:ObjectProperty .
-:enrolledIn rdfs:domain :Student .
-:enrolledIn rdfs:range :Course .
+:Enrollment rdf:type owl:Class .
+:Enrollment rdfs:label "Enrollment"@en .
+
+:hasStudent rdf:type owl:ObjectProperty .
+:hasStudent rdfs:domain :Enrollment .
+:hasStudent rdfs:range :Student .
+
+:hasCourse rdf:type owl:ObjectProperty .
+:hasCourse rdfs:domain :Enrollment .
+:hasCourse rdfs:range :Course .
+
+:enrollmentDate rdf:type owl:DatatypeProperty .
+:enrollmentDate rdfs:domain :Enrollment .
+:enrollmentDate rdfs:range xsd:date .
 
 :Evaluation rdf:type owl:Class .
 :Evaluation rdfs:label "Evaluation"@en .
+
+:hasEvaluation rdf:type owl:ObjectProperty .
+:hasEvaluation rdfs:domain :Student .
+:hasEvaluation rdfs:range :Evaluation .
+
 :evaluationDate rdf:type owl:DatatypeProperty .
 :evaluationDate rdfs:domain :Evaluation .
 :evaluationDate rdfs:range xsd:date .
+
 :grade rdf:type owl:DatatypeProperty .
 :grade rdfs:domain :Evaluation .
 :grade rdfs:range xsd:decimal .
-:evaluates rdf:type owl:ObjectProperty .
-:evaluates rdfs:domain :Evaluation .
-:evaluates rdfs:range :Student .
-:hasCourse rdf:type owl:ObjectProperty .
-:hasCourse rdfs:domain :Evaluation .
-:hasCourse rdfs:range :Course .
 
 :StudentID rdf:type owl:DatatypeProperty .
 :StudentID rdfs:domain :Student .
-:StudentID rdfs:range xsd:int .
-:ProfessorID rdf:type owl:DatatypeProperty .
-:ProfessorID rdfs:domain :Professor .
-:ProfessorID rdfs:range xsd:int .
+:StudentID rdfs:range xsd:integer .
 
-:Enrollments rdf:type owl:Class .
-:Enrollments rdfs:subClassOf [
+:CourseID rdf:type owl:DatatypeProperty .
+:CourseID rdfs:domain :Course .
+:CourseID rdfs:range xsd:integer .
+
+:DepartmentID rdf:type owl:DatatypeProperty .
+:DepartmentID rdfs:domain :Department .
+:DepartmentID rdfs:range xsd:integer .
+
+:Professor rdfs:subClassOf [
     rdf:type owl:Restriction ;
-    owl:onProperty :enrolledIn ;
-    owl:minCardinality "0"^^xsd:nonNegativeInteger ;
+    owl:onProperty :hasDepartment ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
 ] .
 
-:Students rdf:type owl:Class .
-:Students owl:equivalentClass [
-    rdf:type owl:Class ;
-    owl:oneOf (:Student) ;
-] .
-
-:Courses rdf:type owl:Class .
-:Courses owl:equivalentClass [
-    rdf:type owl:Class ;
-    owl:oneOf (:Course) ;
-] .
-
-:Departments rdf:type owl:Class .
-:Departments owl:equivalentClass [
-    rdf:type owl:Class ;
-    owl:oneOf (:Department) ;
-] .
-
-:Evaluations rdf:type owl:Class .
-:Evaluations owl:equivalentClass [
-    rdf:type owl:Class ;
-    owl:oneOf (:Evaluation) ;
-] .
-
-:Person rdf:type owl:Class .
-:Person owl:disjointWith :Course .
-:Person owl:disjointWith :Department .
-:Student rdf:type owl:Class .
-:Student rdfs:subClassOf :Person .
-:Professor rdf:type owl:Class .
-:Professor rdfs:subClassOf :Person .
-:Student owl:disjointWith :Professor .
-
-:Department rdf:type owl:Class .
-:Course rdf:type owl:Class .
 :Course rdfs:subClassOf [
     rdf:type owl:Restriction ;
     owl:onProperty :department ;
-    owl:cardinality "1"^^xsd:nonNegativeInteger ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
 ] .
 
-:Evaluation rdf:type owl:Class .
-:Evaluation rdfs:subClassOf [
+:Enrollment rdfs:subClassOf [
     rdf:type owl:Restriction ;
-    owl:onProperty :evaluates ;
-    owl:cardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onProperty :hasStudent ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
 ] .
+
+:Enrollment rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :hasCourse ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
+] .
+
 :Evaluation rdfs:subClassOf [
     rdf:type owl:Restriction ;
     owl:onProperty :hasCourse ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
+] .
+
+:Evaluation rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :hasStudent ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
+] .
+
+:Person rdf:type owl:Class .
+:Person rdfs:label "Person"@en .
+
+:dni rdf:type owl:FunctionalProperty .
+
+:firstName rdf:type owl:FunctionalProperty .
+
+:lastName rdf:type owl:FunctionalProperty .
+
+:email rdf:type owl:FunctionalProperty .
+
+:birthDate rdf:type owl:FunctionalProperty .
+
+:Student rdfs:subClassOf :Person .
+:Professor rdfs:subClassOf :Person .
+
+:Student rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :enrollmentDate ;
+    owl:minCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
+] .
+
+:Student rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :dni ;
     owl:cardinality "1"^^xsd:nonNegativeInteger ;
 ] .
 
-:enrolledIn rdf:type owl:ObjectProperty .
-:enrolledIn rdfs:subPropertyOf owl:topObjectProperty .
-:department rdf:type owl:ObjectProperty .
-:department rdfs:subPropertyOf owl:topObjectProperty .
-:evaluates rdf:type owl:ObjectProperty .
-:evaluates rdfs:subPropertyOf owl:topObjectProperty .
-:hasCourse rdf:type owl:ObjectProperty .
-:hasCourse rdfs:subPropertyOf owl:topObjectProperty .
+:Professor rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :dni ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger ;
+] .
 
-:DNI rdf:type owl:FunctionalProperty .
-:firstName rdf:type owl:FunctionalProperty .
-:lastName rdf:type owl:FunctionalProperty .
-:email rdf:type owl:FunctionalProperty .
-:birthDate rdf:type owl:FunctionalProperty .
-:departmentID rdf:type owl:FunctionalProperty .
-:departmentName rdf:type owl:FunctionalProperty .
-:courseID rdf:type owl:FunctionalProperty .
-:courseName rdf:type owl:FunctionalProperty .
-:courseLevel rdf:type owl:FunctionalProperty .
-:credits rdf:type owl:FunctionalProperty .
-:enrollmentDate rdf:type owl:FunctionalProperty .
-:evaluationDate rdf:type owl:FunctionalProperty .
-:grade rdf:type owl:FunctionalProperty .
-:StudentID rdf:type owl:FunctionalProperty .
-:ProfessorID rdf:type owl:FunctionalProperty .
+:Course rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :courseID ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger ;
+] .
+
+:Department rdfs:subClassOf [
+    rdf:type owl:Restriction ;
+    owl:onProperty :departmentID ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger ;
+] .

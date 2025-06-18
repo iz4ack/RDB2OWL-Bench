@@ -7,47 +7,12 @@
 :Territory a owl:Class ;
     rdfs:label "Territory"@en ;
     rdfs:comment "Represents a geographical territory."@en ;
-    rdfs:subClassOf :GeographicalEntity .
-
-:PartOf a owl:ObjectProperty ;
-    rdfs:label "is part of"@en ;
-    rdfs:domain :Territory ;
-    rdfs:range :Territory ;
-    owl:inverseOf :hasPart ;
-    owl:propertyDisjointWith :bordersWith .
-
-:hasPart a owl:ObjectProperty ;
-    rdfs:label "has part"@en ;
-    rdfs:domain :Territory ;
-    rdfs:range :Territory ;
-    owl:inverseOf :isPartOf .
-
-:isPartOf a owl:ObjectProperty ;
-    rdfs:label "is part of"@en ;
-    rdfs:domain :Territory ;
-    rdfs:range :Territory .
-
-:bordersWith a owl:ObjectProperty ;
-    rdfs:label "borders with"@en ;
-    rdfs:domain :Territory ;
-    rdfs:range :Territory ;
-    owl:symmetricProperty :bordersWith ;
-    owl:propertyDisjointWith :isPartOf .
-
-:territoryName a owl:DatatypeProperty ;
-    rdfs:label "territory name"@en ;
-    rdfs:domain :Territory ;
-    rdfs:range xsd:string .
-
-:territoryType a owl:DatatypeProperty ;
-    rdfs:label "territory type"@en ;
-    rdfs:domain :Territory ;
-    rdfs:range :TerritoryType ;
-    rdfs:comment "The type of territory (country, region, province, locality)."@en .
+    rdfs:subClassOf owl:Thing .
 
 :TerritoryType a owl:Class ;
     rdfs:label "Territory Type"@en ;
-    rdfs:subClassOf rdfs:Literal .
+    rdfs:comment "Enumeration of territory types."@en ;
+    owl:members :Country, :Region, :Province, :Locality .
 
 :Country a owl:Class ;
     rdfs:label "Country"@en ;
@@ -65,15 +30,45 @@
     rdfs:label "Locality"@en ;
     rdfs:subClassOf :TerritoryType .
 
-:GeographicalEntity a owl:Class ;
-    rdfs:label "Geographical Entity"@en .
-    
-:NoSelfReference a owl:Restriction ;
-    owl:onProperty :isPartOf ;
-    owl:allValuesFrom :Territory ;
-    owl:notAllValuesFrom :Territory .
+:territoryName a owl:DatatypeProperty ;
+    rdfs:label "territory name"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range xsd:string .
 
-:NoSelfBorder a owl:Restriction ;
-    owl:onProperty :bordersWith ;
-    owl:allValuesFrom :Territory ;
-    owl:notAllValuesFrom :Territory .
+:territoryType a owl:ObjectProperty ;
+    rdfs:label "territory type"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :TerritoryType .
+
+:PartOf a owl:ObjectProperty ;
+    rdfs:label "part of"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    rdfs:comment "Indicates that a territory is part of another territory."@en ;
+    owl:inverseOf :hasPart .
+
+:hasPart a owl:ObjectProperty ;
+    rdfs:label "has part"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    rdfs:comment "Indicates that a territory has parts."@en ;
+    owl:inverseOf :PartOf .
+
+:BordersWith a owl:ObjectProperty ;
+    rdfs:label "borders with"@en ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    rdfs:comment "Indicates that a territory shares a border with another territory."@en ;
+    owl:symmetricProperty :BordersWith .
+
+:TerritoryIndividual a owl:Class;
+    rdfs:label "Territory Individual"@en;
+    rdfs:subClassOf :Territory.
+
+:NoSelfReference a owl:Restriction;
+    owl:onProperty :PartOf;
+    owl:hasValue [ a rdf:Statement; rdf:subject ?x; rdf:predicate :PartOf; rdf:object ?x ].
+
+:NoSelfBorder a owl:Restriction;
+    owl:onProperty :BordersWith;
+    owl:hasValue [ a rdf:Statement; rdf:subject ?x; rdf:predicate :BordersWith; rdf:object ?x ].

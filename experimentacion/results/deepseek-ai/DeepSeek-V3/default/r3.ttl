@@ -6,87 +6,105 @@
 
 :Territory a owl:Class ;
     rdfs:label "Territory" ;
+    rdfs:comment "A geographical territory" .
+
+:Country a owl:Class ;
+    rdfs:subClassOf :Territory ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
+            :Territory
             [
                 a owl:Restriction ;
-                owl:onProperty :territory_name ;
-                owl:someValuesFrom xsd:string
-            ]
-            [
-                a owl:Restriction ;
-                owl:onProperty :territory_type ;
-                owl:someValuesFrom [
-                    a owl:Class ;
-                    owl:oneOf (
-                        :country
-                        :region
-                        :province
-                        :locality
-                    )
-                ]
+                owl:onProperty :territoryType ;
+                owl:hasValue "country"
             ]
         )
     ] .
 
-:country a owl:NamedIndividual , :TerritoryType .
-:region a owl:NamedIndividual , :TerritoryType .
-:province a owl:NamedIndividual , :TerritoryType .
-:locality a owl:NamedIndividual , :TerritoryType .
+:Region a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Territory
+            [
+                a owl:Restriction ;
+                owl:onProperty :territoryType ;
+                owl:hasValue "region"
+            ]
+        )
+    ] .
 
-:TerritoryType a owl:Class ;
-    rdfs:label "TerritoryType" .
+:Province a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Territory
+            [
+                a owl:Restriction ;
+                owl:onProperty :territoryType ;
+                owl:hasValue "province"
+            ]
+        )
+    ] .
 
-:territory_name a owl:DatatypeProperty ;
+:Locality a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Territory
+            [
+                a owl:Restriction ;
+                owl:onProperty :territoryType ;
+                owl:hasValue "locality"
+            ]
+        )
+    ] .
+
+:territoryName a owl:DatatypeProperty ;
     rdfs:domain :Territory ;
     rdfs:range xsd:string .
 
-:territory_type a owl:ObjectProperty ;
+:territoryType a owl:DatatypeProperty ;
     rdfs:domain :Territory ;
-    rdfs:range :TerritoryType .
+    rdfs:range xsd:string ;
+    owl:oneOf ("country" "region" "province" "locality") .
 
-:PartOf a owl:ObjectProperty ;
-    rdfs:label "PartOf" ;
+:partOf a owl:ObjectProperty ;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
-    owl:propertyDisjointWith :BordersWith ;
-    [
-        a owl:Restriction ;
-        owl:onProperty :PartOf ;
-        owl:allValuesFrom [
-            a owl:Restriction ;
-            owl:onProperty [ owl:inverseOf :PartOf ] ;
-            owl:allValuesFrom :Territory
-        ]
-    ] .
-
-:BordersWith a owl:SymmetricProperty , owl:IrreflexiveProperty ;
-    rdfs:label "BordersWith" ;
-    rdfs:domain :Territory ;
-    rdfs:range :Territory ;
-    owl:propertyDisjointWith :PartOf .
+    owl:propertyChainAxiom (:parent_id :child_id) ;
+    owl:IrreflexiveProperty true .
 
 :parent_id a owl:ObjectProperty ;
-    rdfs:subPropertyOf :PartOf ;
-    rdfs:domain :Territory ;
+    rdfs:domain :PartOf ;
     rdfs:range :Territory .
 
 :child_id a owl:ObjectProperty ;
-    rdfs:subPropertyOf [ owl:inverseOf :PartOf ] ;
-    rdfs:domain :Territory ;
+    rdfs:domain :PartOf ;
     rdfs:range :Territory .
 
-:territory1_id a owl:ObjectProperty ;
-    rdfs:subPropertyOf :BordersWith ;
+:PartOf a owl:Class ;
+    rdfs:label "PartOf" ;
+    rdfs:comment "Relationship indicating a territory is part of another territory" .
+
+:bordersWith a owl:ObjectProperty ;
     rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    owl:SymmetricProperty true ;
+    owl:IrreflexiveProperty true .
+
+:territory1_id a owl:ObjectProperty ;
+    rdfs:domain :BordersWith ;
     rdfs:range :Territory .
 
 :territory2_id a owl:ObjectProperty ;
-    rdfs:subPropertyOf :BordersWith ;
-    rdfs:domain :Territory ;
+    rdfs:domain :BordersWith ;
     rdfs:range :Territory .
 
-[ a owl:AllDisjointProperties ;
-  owl:members ( :PartOf :BordersWith )
-] .
+:BordersWith a owl:Class ;
+    rdfs:label "BordersWith" ;
+    rdfs:comment "Relationship indicating two territories share a border" .

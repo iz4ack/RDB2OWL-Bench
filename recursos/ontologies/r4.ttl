@@ -9,7 +9,7 @@
 #################################################################
 :Resource4 a owl:Ontology ;
     rdfs:label "Ontology 4" ;
-    rdfs:comment "Resource 4. UNIQUE, super-entity as union of two entities (explicit and implicit), asymmetric properties, property chain, inverseOf, IrreflexiveProperty." .
+    rdfs:comment "Resource 4. super-entity as union of two entities (explicit and implicit), asymmetric properties, property chain, inverseOf, IrreflexiveProperty, subclasses from CHECK contraint" .
 
 #################################################################
 # Classes and Definitions
@@ -123,6 +123,12 @@
     rdfs:range :Location ;
     rdfs:label "has location" ;
     rdfs:comment "Relationship indicating the location of the company." .
+
+:hasEmployee owl:inverseOf :worksAt ;
+    rdfs:domain :Company ;
+    rdfs:range :Employee ;
+    rdfs:label "has employee" ;
+    rdfs:comment "Relationship indicating that a company has employees." .
 
 ## Location
 :Location a owl:Class ;

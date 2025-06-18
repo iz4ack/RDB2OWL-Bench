@@ -6,7 +6,7 @@
 
 :UniversityOntology a owl:Ontology ;
     rdfs:label "University Ontology (example)" ;
-    rdfs:comment "Resource 1. 1..N relation, N..N relation, regular class, N..N relation with intermediate attributes, unique, superclass inference." .
+    rdfs:comment "Resource 1. 1..N relation, regular class, N..N relation with intermediate attributes, superclass inference, propertyChain, domain unionOf" .
 
 ##### Department #####
 :Department a owl:Class ;

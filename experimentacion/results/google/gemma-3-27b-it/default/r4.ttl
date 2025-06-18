@@ -29,7 +29,7 @@
 
 :nif a owl:DatatypeProperty ;
     rdfs:domain :Person ;
-    rdfs:range xsd:integer ;
+    rdfs:range xsd:string ;
     rdfs:label "NIF" .
 
 :email a owl:DatatypeProperty ;
@@ -89,22 +89,22 @@
 
 :mentorId a owl:DatatypeProperty ;
     rdfs:domain :Mentorship ;
-    rdfs:range xsd:integer ;
+    rdfs:range :Person ;
     rdfs:label "Mentor ID" .
 
 :menteeId a owl:DatatypeProperty ;
     rdfs:domain :Mentorship ;
-    rdfs:range xsd:integer ;
+    rdfs:range :Person ;
     rdfs:label "Mentee ID" .
 
 :personId a owl:DatatypeProperty ;
     rdfs:domain :WorksWith ;
-    rdfs:range xsd:integer ;
+    rdfs:range :Person ;
     rdfs:label "Person ID" .
 
 :companyId a owl:DatatypeProperty ;
     rdfs:domain :WorksWith ;
-    rdfs:range xsd:string ;
+    rdfs:range :Company ;
     rdfs:label "Company ID" .
 
 :RoleType a owl:Class ;
@@ -119,12 +119,12 @@
 :hasMentor a owl:ObjectProperty ;
     rdfs:domain :Person ;
     rdfs:range :Person ;
-    rdfs:label "has Mentor" .
+    rdfs:label "has mentor" .
 
 :hasMentee a owl:ObjectProperty ;
     rdfs:domain :Person ;
     rdfs:range :Person ;
-    rdfs:label "has Mentee" .
+    rdfs:label "has mentee" .
 
 :worksFor a owl:ObjectProperty ;
     rdfs:domain :Person ;

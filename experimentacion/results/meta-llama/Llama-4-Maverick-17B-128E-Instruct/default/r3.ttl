@@ -7,121 +7,73 @@
 :Territory rdf:type owl:Class .
 :Territory rdfs:label "Territory" .
 
-:hasId rdf:type owl:DatatypeProperty .
-:hasId rdfs:domain :Territory .
-:hasId rdfs:range xsd:integer .
+:territoryName rdf:type owl:DatatypeProperty .
+:territoryName rdfs:domain :Territory .
+:territoryName rdfs:range xsd:string .
 
-:hasTerritoryName rdf:type owl:DatatypeProperty .
-:hasTerritoryName rdfs:domain :Territory .
-:hasTerritoryName rdfs:range xsd:string .
-
-:hasTerritoryType rdf:type owl:DatatypeProperty .
-:hasTerritoryType rdfs:domain :Territory .
-:hasTerritoryType rdfs:range xsd:string .
-:Territory rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :hasTerritoryType ;
-    owl:in [ rdf:type rdf:List ; rdf:first "country" ; rdf:rest (
-        [ rdf:first "region" ; rdf:rest (
-            [ rdf:first "province" ; rdf:rest (
-                [ rdf:first "locality" ; rdf:rest rdf:nil ]
-            ) ]
-        ) ]
-    ) ]
-] .
-
-:isPartOf rdf:type owl:ObjectProperty .
-:isPartOf rdfs:domain :Territory .
-:isPartOf rdfs:range :Territory .
-:isPartOf owl:inverseOf :contains .
-
-:contains rdf:type owl:ObjectProperty .
-:contains rdfs:domain :Territory .
-:contains rdfs:range :Territory .
-:contains rdf:type owl:TransitiveProperty .
-
-:Territory rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :isPartOf ;
-    owl:minCardinality 0 ;
-    owl:maxCardinality 1
-] .
-
-:bordersWith rdf:type owl:ObjectProperty .
-:bordersWith rdfs:domain :Territory .
-:bordersWith rdfs:range :Territory .
-:bordersWith rdf:type owl:SymmetricProperty .
-:bordersWith rdf:type owl:IrreflexiveProperty .
-
-:Territory rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :bordersWith ;
-    owl:cardinality 0
-] .
-
-:PartOf rdf:type owl:Class .
-:PartOf rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :parent ;
-    owl:cardinality 1
-] .
-:PartOf rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :child ;
-    owl:cardinality 1
-] .
-
-:parent rdf:type owl:ObjectProperty .
-:parent rdfs:domain :PartOf .
-:parent rdfs:range :Territory .
-
-:child rdf:type owl:ObjectProperty .
-:child rdfs:domain :PartOf .
-:child rdfs:range :Territory .
-
-:BordersWith rdf:type owl:Class .
-:BordersWith rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :territory1 ;
-    owl:cardinality 1
-] .
-:BordersWith rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty :territory2 ;
-    owl:cardinality 1
-] .
-
-:territory1 rdf:type owl:ObjectProperty .
-:territory1 rdfs:domain :BordersWith .
-:territory1 rdfs:range :Territory .
-
-:territory2 rdf:type owl:ObjectProperty .
-:territory2 rdfs:domain :BordersWith .
-:territory2 rdfs:range :Territory .
-
-[ rdf:type owl:Axiom ;
-  owl:annotatedSource :territory1 ;
-  owl:annotatedProperty rdf:type ;
-  owl:annotatedTarget owl:ObjectProperty ;
-  rdfs:comment "inverse of territory2" ;
-  owl:property owl:inverseOf ;
-  owl:value :territory2
-] .
-
-:Territory rdfs:subClassOf [
-    rdf:type owl:Restriction ;
-    owl:onProperty [:isPartOf] ;
-    owl:allValuesFrom :Territory
-] .
+:territoryType rdf:type owl:DatatypeProperty .
+:territoryType rdfs:domain :Territory .
+:territoryType rdfs:range xsd:string .
+:territoryType rdfs:subPropertyOf owl:topDataProperty .
+{"country", "region", "province", "locality"} a owl:DataRange ;
+    owl:oneOf ( "country"^^xsd:string "region"^^xsd:string "province"^^xsd:string "locality"^^xsd:string ) .
+:territoryType rdfs:range [ rdf:type rdfs:Datatype ;
+    owl:oneOf ( "country"^^xsd:string "region"^^xsd:string "province"^^xsd:string "locality"^^xsd:string ) ] .
 
 :partOf rdf:type owl:ObjectProperty .
-:partOf owl:inverseOf :contains .
+:partOf rdfs:domain :Territory .
+:partOf rdfs:range :Territory .
+:partOf owl:inverseOf :hasPart .
 
-[ rdf:type owl:EquivalentClass ;
-  owl:oneOf ( :country :region :province :locality )
-] .
+:hasPart rdf:type owl:ObjectProperty .
+:hasPart rdfs:domain :Territory .
+:hasPart rdfs:range :Territory .
+:hasPart owl:inverseOf :partOf .
 
-:hasTerritoryType rdfs:range [
-    rdf:type owl:DataRange ;
-    owl:oneOf ( "country" "region" "province" "locality" )
-] .
+:bordersWith rdf:type owl:SymmetricProperty, owl:ObjectProperty .
+:bordersWith rdfs:domain :Territory .
+:bordersWith rdfs:range :Territory .
+
+:Territory owl:disjointWith owl:Thing .
+
+[ rdf:type owl:Restriction ;
+    owl:onProperty :partOf ;
+    owl:maxCardinality "1"^^xsd:nonNegativeInteger ;
+    owl:onClass :Territory ;
+] rdfs:subClassOf owl:Nothing .
+
+[ rdf:type owl:Restriction ;
+    owl:onProperty :partOf ;
+    owl:allValuesFrom :Territory ;
+] rdfs:subClassOf :Territory .
+
+[ rdf:type owl:Restriction ;
+    owl:onProperty :hasPart ;
+    owl:allValuesFrom :Territory ;
+] rdfs:subClassOf :Territory .
+
+[ rdf:type owl:Restriction ;
+    owl:onProperty :bordersWith ;
+    owl:allValuesFrom :Territory ;
+] rdfs:subClassOf :Territory .
+
+[ rdf:type owl:Restriction ;
+    owl:onProperty :partOf ;
+    owl:irreflexiveProperty owl:True ;
+] rdfs:subClassOf :Territory .
+
+[ rdf:type owl:Restriction ;
+    owl:onProperty :bordersWith ;
+    owl:irreflexiveProperty owl:True ;
+] rdfs:subClassOf :Territory .
+
+:Territory rdf:type owl:Class ;
+    rdfs:subClassOf [ rdf:type owl:Restriction ;
+            owl:onProperty :territoryType ;
+            owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+            owl:onDataRange [ rdf:type rdfs:Datatype ;
+                    owl:oneOf ( "country"^^xsd:string "region"^^xsd:string "province"^^xsd:string "locality"^^xsd:string ) ] ] ,
+        [ rdf:type owl:Restriction ;
+            owl:onProperty :territoryName ;
+            owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+            owl:onDataType xsd:string ] .

@@ -1,5 +1,5 @@
 schema_file,ttl_file,duration_s,status,error_msg
-r1.sql,r1.ttl,6.34,OK,
-r2.sql,r2.ttl,3.99,OK,
-r3.sql,r3.ttl,4.20,OK,
-r4.sql,r4.ttl,6.25,OK,
+r1.sql,r1.ttl,17.35,OK,
+r2.sql,r2.ttl,12.69,OK,
+r3.sql,r3.ttl,8.81,OK,
+r4.sql,r4.ttl,10.85,OK,

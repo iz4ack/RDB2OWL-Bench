@@ -18,7 +18,7 @@ CREATE TABLE Mentors (
 CREATE TABLE Company (
   NIF VARCHAR(9) PRIMARY KEY,
   company_name VARCHAR(100), 
-  location_id INT NOT NULL,
+  location_id INT NOT NULL UNIQUE,
   FOREIGN KEY (location_id) REFERENCES Locationn(id)
 );
 
@@ -31,8 +31,8 @@ CREATE TABLE Locationn (
 );
 
 CREATE TABLE WorksWith (
-  person_id INT,
-  company_id VARCHAR(9),
+  person_id INT NOT NULL,
+  company_id VARCHAR(9) NOT NULL,
   PRIMARY KEY (person_id, company_id),
   FOREIGN KEY (person_id) REFERENCES Person(NIF),
   FOREIGN KEY (company_id) REFERENCES Company(NIF)

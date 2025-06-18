@@ -5,98 +5,104 @@
 @prefix : <http://example.com/ontology/> .
 
 :Person a owl:Class .
+:Company a owl:Class .
+:Location a owl:Class .
+:Mentorship a owl:Class .
+:Employment a owl:Class .
+
+:hasNIF a owl:DatatypeProperty ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
 :email a owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:string .
-:first_name a owl:DatatypeProperty ;
+
+:firstName a owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:string .
+
 :roleType a owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:string .
-:employee_salary a owl:DatatypeProperty ;
+
+:employeeSalary a owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:decimal .
-:consultant_hourly_rate a owl:DatatypeProperty ;
+
+:consultantHourlyRate a owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:decimal .
 
-:Employee a owl:Class ;
-    rdfs:subClassOf :Person .
-:Consultant a owl:Class ;
-    rdfs:subClassOf :Person .
-
-:hasRoleType a owl:ObjectProperty ;
-    rdfs:domain :Person ;
-    rdfs:range :RoleType .
-:RoleType a owl:Class ;
-    rdfs:subClassOf owl:Thing .
-:EmployeeRole a owl:NamedIndividual , :RoleType ;
-    rdfs:label "Employee" .
-:ConsultantRole a owl:NamedIndividual , :RoleType ;
-    rdfs:label "Consultant" .
-
-:Person a owl:Class ;
-    rdfs:subClassOf [ a owl:Restriction ;
-        owl:onProperty :roleType ;
-        owl:someValuesFrom [ a rdfs:Class ;
-            owl:oneOf ( :EmployeeRole :ConsultantRole )
-        ]
-    ] .
-
-:Mentor a owl:Class ;
-    rdfs:subClassOf :Person .
-:Mentee a owl:Class ;
-    rdfs:subClassOf :Person .
-:mentors a owl:ObjectProperty ;
-    rdfs:domain :Mentor ;
-    rdfs:range :Mentee .
-:isMentoredBy a owl:ObjectProperty ;
-    rdfs:domain :Mentee ;
-    rdfs:range :Mentor ;
-    owl:inverseOf :mentors .
-
-:Company a owl:Class .
-:company_name a owl:DatatypeProperty ;
+:companyName a owl:DatatypeProperty ;
     rdfs:domain :Company ;
     rdfs:range xsd:string .
+
 :location a owl:ObjectProperty ;
     rdfs:domain :Company ;
     rdfs:range :Location .
 
-:Location a owl:Class .
 :street a owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
+
 :city a owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
+
 :province a owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
+
 :coordinates a owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
 
+:mentor a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :mentee .
+
+:mentee a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :mentor .
+
 :worksWith a owl:ObjectProperty ;
     rdfs:domain :Person ;
     rdfs:range :Company .
-:hasEmployee a owl:ObjectProperty ;
-    rdfs:domain :Company ;
+
+:Employee a owl:Class ;
+    rdfs:subClassOf :Person ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :roleType ;
+        owl:hasValue "Employee" ] .
+
+:Consultant a owl:Class ;
+    rdfs:subClassOf :Person ;
+    owl:equivalentClass [ a owl:Restriction ;
+        owl:onProperty :roleType ;
+        owl:hasValue "Consultant" ] .
+
+:hasMentor a owl:ObjectProperty ;
+    rdfs:domain :Person ;
     rdfs:range :Person ;
-    owl:inverseOf :worksWith .
+    owl:inverseOf :hasMentee .
+
+:hasMentee a owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasMentor .
 
 :Person a owl:Class ;
     rdfs:subClassOf [ a owl:Restriction ;
-        owl:onProperty :employee_salary ;
-        owl:someValuesFrom xsd:decimal ;
-        owl:qualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass :Employee
-    ] ;
+        owl:onProperty :email ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger ] ;
     rdfs:subClassOf [ a owl:Restriction ;
-        owl:onProperty :consultant_hourly_rate ;
-        owl:someValuesFrom xsd:decimal ;
-        owl:qualifiedCardinality "0"^^xsd:nonNegativeInteger ;
-        owl:onClass :Consultant
-    ] .
+        owl:onProperty :hasNIF ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger ] .
 
+:Company a owl:Class ;
+    rdfs:subClassOf [ a owl:Restriction ;
+        owl:onProperty :location ;
+        owl:cardinality "1"^^xsd:nonNegativeInteger ] .

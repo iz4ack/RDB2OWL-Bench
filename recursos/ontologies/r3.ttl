@@ -7,49 +7,66 @@
 #################################################################
 # Ontology
 #################################################################
+
 :TerritoryOntology a owl:Ontology ;
     rdfs:label "Territory Ontology" ;
-    rdfs:comment "Resource 3. Model demonstrating part-whole relationships, 1..1 self-relation, literals with enumeration constraints, transitive, inverse, and irreflexive properties." .
+    rdfs:comment "Ontology modeling territorial units and their part-whole relationships with semantic restrictions." .
 
 #################################################################
-# Class
+# Base Class
 #################################################################
+
 :Territory a owl:Class ;
     rdfs:label "Territory" ;
-    rdfs:comment "A territorial unit that can contain other territories." .
+    rdfs:comment "A territorial unit that can contain or be part of other territories." .
+
+#################################################################
+# Subclasses
+#################################################################
+
+:Country a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    rdfs:label "Country" .
+
+:Region a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    rdfs:label "Region" .
+
+:Province a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    rdfs:label "Province" .
+
+:Locality a owl:Class ;
+    rdfs:subClassOf :Territory ;
+    rdfs:label "Locality" .
 
 #################################################################
 # Datatype Properties
 #################################################################
+
 :hasTerritoryName a owl:DatatypeProperty ;
     rdfs:domain :Territory ;
     rdfs:range xsd:string ;
     rdfs:label "name" ;
     rdfs:comment "Name of the territory." .
 
-:territoryType a rdfs:Datatype ; 
-  owl:oneOf ( 
-    "country"^^xsd:string 
-    "region"^^xsd:string 
-    "province"^^xsd:string 
-    "locality"^^xsd:string
-  ) .
-
-:hasTerritoryType a owl:DatatypeProperty ;
-    rdfs:domain :Territory ;
-    rdfs:range :territoryType ;
-    rdfs:label "type" ;
-    rdfs:comment "Type of the territory." .
-
 #################################################################
 # Object Properties
 #################################################################
-:isPartOf a owl:ObjectProperty, owl:IrreflexiveProperty, owl:TransitiveProperty;
+
+:isPartOf a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
     rdfs:label "is part of" ;
     rdfs:comment "Indicates that one territory is part of another." .
-:hasPart owl:inverseOf :isPartOf .
+
+:hasPart a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty  ;
+    owl:inverseOf :isPartOf ;
+    rdfs:domain :Territory ;
+    rdfs:range :Territory ;
+    rdfs:label "has part" ;
+    rdfs:comment "Indicates that one territory contains another." .
+
 :bordersWith a owl:ObjectProperty, owl:IrreflexiveProperty, owl:SymmetricProperty ;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
@@ -57,3 +74,41 @@
     rdfs:comment "Indicates that a territory borders another." .
 
 :hasPart owl:propertyDisjointWith :bordersWith .
+
+#################################################################
+# Containment Restrictions
+#################################################################
+
+# A Country cannot be part of any other territory
+:Country rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :isPartOf ;
+    owl:allValuesFrom owl:Nothing
+] .
+
+# A Region can only be part of a Country
+:Region rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :isPartOf ;
+    owl:allValuesFrom :Country
+] .
+
+# A Province can only be part of a Region or a Country
+:Province rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :isPartOf ;
+    owl:allValuesFrom [
+        a owl:Class ;
+        owl:unionOf ( :Region :Country )
+    ]
+] .
+
+# A Locality can only be part of a Province or a Region
+:Locality rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :isPartOf ;
+    owl:allValuesFrom [
+        a owl:Class ;
+        owl:unionOf ( :Province :Region :Country)
+    ]
+] .

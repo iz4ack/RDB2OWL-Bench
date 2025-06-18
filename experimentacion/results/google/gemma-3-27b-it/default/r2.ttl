@@ -49,7 +49,7 @@ ex:budget a owl:DatatypeProperty ;
 ex:managerID a owl:ObjectProperty ;
     rdfs:domain ex:Department ;
     rdfs:range ex:Manager ;
-    rdfs:label "Manager" .
+    rdfs:label "Manager ID" .
 
 ex:projectID a owl:DatatypeProperty ;
     rdfs:domain ex:Project ;
@@ -64,12 +64,12 @@ ex:projectName a owl:DatatypeProperty ;
 ex:projectBudget a owl:DatatypeProperty ;
     rdfs:domain ex:Project ;
     rdfs:range xsd:decimal ;
-    rdfs:label "Budget" .
+    rdfs:label "Project Budget" .
 
 ex:departmentProject a owl:ObjectProperty ;
     rdfs:domain ex:Project ;
     rdfs:range ex:Department ;
-    rdfs:label "Department" .
+    rdfs:label "Department of Project" .
 
 ex:employeeID a owl:DatatypeProperty ;
     rdfs:domain ex:Employee ;
@@ -89,7 +89,7 @@ ex:lastName a owl:DatatypeProperty ;
 ex:employeeDepartment a owl:ObjectProperty ;
     rdfs:domain ex:Employee ;
     rdfs:range ex:Department ;
-    rdfs:label "Department" .
+    rdfs:label "Department of Employee" .
 
 ex:specialty a owl:DatatypeProperty ;
     rdfs:domain ex:TechnicalEmployee ;
@@ -114,22 +114,22 @@ ex:taskID a owl:DatatypeProperty ;
 ex:taskDescription a owl:DatatypeProperty ;
     rdfs:domain ex:Task ;
     rdfs:range xsd:string ;
-    rdfs:label "Description" .
+    rdfs:label "Task Description" .
 
 ex:assignmentEmployee a owl:ObjectProperty ;
     rdfs:domain ex:Assignment ;
     rdfs:range ex:Employee ;
-    rdfs:label "Employee" .
+    rdfs:label "Employee in Assignment" .
 
 ex:assignmentProject a owl:ObjectProperty ;
     rdfs:domain ex:Assignment ;
     rdfs:range ex:Project ;
-    rdfs:label "Project" .
+    rdfs:label "Project in Assignment" .
 
 ex:assignmentTask a owl:ObjectProperty ;
     rdfs:domain ex:Assignment ;
     rdfs:range ex:Task ;
-    rdfs:label "Task" .
+    rdfs:label "Task in Assignment" .
 
 ex:startDate a owl:DatatypeProperty ;
     rdfs:domain ex:Assignment ;

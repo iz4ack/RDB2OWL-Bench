@@ -1,3 +1,4 @@
+```
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -11,51 +12,53 @@
 :TerritoryType a owl:DatatypeProperty ;
     rdfs:domain :Territory ;
     rdfs:range xsd:string ;
-    owl:equivalentClass [ a owl:Restriction ;
-        owl:onProperty :TerritoryType ;
-        owl:oneOf ( "country" "region" "province" "locality" ) ] .
+    rdfs:comment "country, region, province, locality" .
 
 :PartOf a owl:ObjectProperty ;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
-    owl:inverseOf :PartOf ;
-    owl:symmetric false ;
-    rdfs:subPropertyOf :contains .
+    rdfs:comment "child territory is part of parent territory" ;
+    owl:inverseOf :HasPart .
 
-:contains a owl:TransitiveProperty ;
+:HasPart a owl:ObjectProperty ;
     rdfs:domain :Territory ;
-    rdfs:range :Territory .
+    rdfs:range :Territory ;
+    rdfs:comment "parent territory has child territory" ;
+    owl:inverseOf :PartOf .
+
+:PartOf a owl:TransitiveProperty .
+
+:PartOf a owl:IrreflexiveProperty .
 
 :BordersWith a owl:SymmetricProperty ;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
-    owl:equivalentClass [ a owl:Restriction ;
-        owl:onProperty :BordersWith ;
-        owl:allDisjoint ( :PartOf ) ] .
+    rdfs:comment "two territories share a common border" ;
+    owl:inverseOf :BordersWith .
 
-:Country a owl:Class ;
+:BordersWith a owl:IrreflexiveProperty .
+
+:Country a rdfs:Class ;
     rdfs:subClassOf :Territory ;
     owl:equivalentClass [ a owl:Restriction ;
         owl:onProperty :TerritoryType ;
         owl:hasValue "country" ] .
 
-:Region a owl:Class ;
+:Region a rdfs:Class ;
     rdfs:subClassOf :Territory ;
     owl:equivalentClass [ a owl:Restriction ;
         owl:onProperty :TerritoryType ;
         owl:hasValue "region" ] .
 
-:Province a owl:Class ;
+:Province a rdfs:Class ;
     rdfs:subClassOf :Territory ;
     owl:equivalentClass [ a owl:Restriction ;
         owl:onProperty :TerritoryType ;
         owl:hasValue "province" ] .
 
-:Locality a owl:Class ;
+:Locality a rdfs:Class ;
     rdfs:subClassOf :Territory ;
     owl:equivalentClass [ a owl:Restriction ;
         owl:onProperty :TerritoryType ;
         owl:hasValue "locality" ] .
-
-:DisjointTerritoryTypes a owl:AllDisjoint ;
-    owl:members ( :Country :Region :Province :Locality ) .
+```

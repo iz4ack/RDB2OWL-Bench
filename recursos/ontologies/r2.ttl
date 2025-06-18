@@ -9,7 +9,7 @@
 #################################################################
 :OrganizationOntology a owl:Ontology ;
     rdfs:label "Project and Employee Management Ontology" ;
-    rdfs:comment "Resource 2. Model demonstrating explicit class hierarchy in the schema, subproperty, and class definition as an intersection." .
+    rdfs:comment "Resource 2. Model demonstrating explicit class hierarchy in the schema, subproperty, class definition as an intersection, restriction on value, disjoint axiom" .
 
 #################################################################
 # Classes

@@ -29,27 +29,26 @@
 :Manager a owl:Class ;
     rdfs:subClassOf :Employee .
 
-:Task a owl:Class ;
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        owl:onProperty :partOfProject ;
-        owl:someValuesFrom :Project
-    ] .
+:Task a owl:Class .
 
 :Assignment a owl:Class ;
     rdfs:subClassOf [
         a owl:Restriction ;
-        owl:onProperty :assignedEmployee ;
+        owl:onProperty :involvesEmployee ;
         owl:someValuesFrom :Employee
     ], [
         a owl:Restriction ;
-        owl:onProperty :assignedProject ;
+        owl:onProperty :involvesProject ;
         owl:someValuesFrom :Project
     ], [
         a owl:Restriction ;
-        owl:onProperty :assignedTask ;
+        owl:onProperty :involvesTask ;
         owl:someValuesFrom :Task
     ] .
+
+:hasDepartment a owl:ObjectProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range :Department .
 
 :hasManager a owl:ObjectProperty ;
     rdfs:domain :Department ;
@@ -59,58 +58,91 @@
     rdfs:domain :Project ;
     rdfs:range :Department .
 
-:hasDepartment a owl:ObjectProperty ;
-    rdfs:domain :Employee ;
-    rdfs:range :Department .
-
-:partOfProject a owl:ObjectProperty ;
-    rdfs:domain :Task ;
-    rdfs:range :Project .
-
-:assignedEmployee a owl:ObjectProperty ;
-    rdfs:domain :Assignment ;
-    rdfs:range :Employee .
-
-:assignedProject a owl:ObjectProperty ;
-    rdfs:domain :Assignment ;
-    rdfs:range :Project .
-
-:assignedTask a owl:ObjectProperty ;
-    rdfs:domain :Assignment ;
-    rdfs:range :Task .
-
-:DepartmentName a owl:DatatypeProperty ;
-    rdfs:domain :Department ;
-    rdfs:range xsd:string .
-
-:Budget a owl:DatatypeProperty ;
-    rdfs:domain [ owl:unionOf (:Department :Project) ] ;
-    rdfs:range xsd:decimal .
-
-:FirstName a owl:DatatypeProperty ;
-    rdfs:domain :Employee ;
-    rdfs:range xsd:string .
-
-:LastName a owl:DatatypeProperty ;
-    rdfs:domain :Employee ;
-    rdfs:range xsd:string .
-
-:Specialty a owl:DatatypeProperty ;
+:hasSpecialty a owl:DatatypeProperty ;
     rdfs:domain :TechnicalEmployee ;
     rdfs:range xsd:string .
 
-:HoursWorked a owl:DatatypeProperty ;
+:hasHoursWorked a owl:DatatypeProperty ;
     rdfs:domain :AdministrativeEmployee ;
     rdfs:range xsd:integer .
 
-:YearsOfService a owl:DatatypeProperty ;
+:hasYearsOfService a owl:DatatypeProperty ;
     rdfs:domain :Manager ;
     rdfs:range xsd:integer .
 
-:Description a owl:DatatypeProperty ;
+:hasDescription a owl:DatatypeProperty ;
     rdfs:domain :Task ;
     rdfs:range xsd:string .
 
-:StartDate a owl:DatatypeProperty ;
+:hasStartDate a owl:DatatypeProperty ;
     rdfs:domain :Assignment ;
     rdfs:range xsd:date .
+
+:involvesEmployee a owl:ObjectProperty ;
+    rdfs:domain :Assignment ;
+    rdfs:range :Employee .
+
+:involvesProject a owl:ObjectProperty ;
+    rdfs:domain :Assignment ;
+    rdfs:range :Project .
+
+:involvesTask a owl:ObjectProperty ;
+    rdfs:domain :Assignment ;
+    rdfs:range :Task .
+
+:hasDepartmentName a owl:DatatypeProperty ;
+    rdfs:domain :Department ;
+    rdfs:range xsd:string .
+
+:hasBudget a owl:DatatypeProperty ;
+    rdfs:domain :Department, :Project ;
+    rdfs:range xsd:decimal .
+
+:hasProjectName a owl:DatatypeProperty ;
+    rdfs:domain :Project ;
+    rdfs:range xsd:string .
+
+:hasFirstName a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string .
+
+:hasLastName a owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string .
+
+:Department a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasDepartmentName ;
+        owl:someValuesFrom xsd:string
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :hasBudget ;
+        owl:someValuesFrom xsd:decimal
+    ] .
+
+:Project a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasProjectName ;
+        owl:someValuesFrom xsd:string
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :hasBudget ;
+        owl:someValuesFrom xsd:decimal
+    ] .
+
+:Employee a owl:Class ;
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        owl:onProperty :hasFirstName ;
+        owl:someValuesFrom xsd:string
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :hasLastName ;
+        owl:someValuesFrom xsd:string
+    ], [
+        a owl:Restriction ;
+        owl:onProperty :hasDepartment ;
+        owl:someValuesFrom :Department
+    ] .

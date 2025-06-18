@@ -21,7 +21,7 @@ CREATE TABLE Professors (
     Email             VARCHAR(150),
     BirthDate         DATE,
     DepartmentID      INT            NOT NULL,
-    PRIMARY KEY (ProfessorID),
+    PRIMARY KEY (DNI),
     FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
 );
 

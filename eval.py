@@ -59,11 +59,11 @@ def main():
                 print(f"Warning: failed to parse {fname}, skipping.", file=sys.stderr)
                 writer.writerow({
                     "file": fname,
-                    "literal_P": "N/A", "literal_R": "N/A", "literal_F1": "N/A",
-                    "fuzzy_P": "N/A", "fuzzy_R": "N/A", "fuzzy_F1": "N/A",
-                    "cont_P": "N/A", "cont_R": "N/A", "cont_F1": "N/A",
-                    "graph_P": "N/A", "graph_R": "N/A", "graph_F1": "N/A",
-                    "motif_dist": "N/A"
+                    "literal_P": 0, "literal_R": 0, "literal_F1": 0,
+                    "fuzzy_P": 0, "fuzzy_R": 0, "fuzzy_F1": 0,
+                    "cont_P": 0, "cont_R": 0, "cont_F1": 0,
+                    "graph_P": 0, "graph_R": 0, "graph_F1": 0,
+                    "motif_dist": 0
                 })
                 continue
             

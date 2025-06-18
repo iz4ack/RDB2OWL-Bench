@@ -12,7 +12,8 @@ CREATE TABLE PartOf (
 );
 
 CREATE TABLE BordersWith (
-    territory1_id INTEGER PRIMARY KEY REFERENCES Territory(id) ON DELETE CASCADE,
-    territory2_id INTEGER UNIQUE NOT NULL REFERENCES Territory(id) ON DELETE CASCADE,
+    territory1_id INTEGER NOT NULL REFERENCES Territory(id) ON DELETE CASCADE,
+    territory2_id INTEGER NOT NULL REFERENCES Territory(id) ON DELETE CASCADE,
+    PRIMARY KEY (territory1_id, territory2_id),
     CONSTRAINT no_self_border CHECK (territory1_id <> territory2_id)
 );

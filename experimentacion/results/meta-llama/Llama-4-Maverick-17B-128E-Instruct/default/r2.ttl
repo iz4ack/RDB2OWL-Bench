@@ -37,6 +37,7 @@
 :department rdf:type owl:ObjectProperty .
 :department rdfs:domain :Project .
 :department rdfs:range :Department .
+:department owl:inverseOf :project .
 
 :Employee rdf:type owl:Class .
 :Employee rdfs:label "Employee" .
@@ -56,6 +57,7 @@
 :departmentEmployee rdf:type owl:ObjectProperty .
 :departmentEmployee rdfs:domain :Employee .
 :departmentEmployee rdfs:range :Department .
+:departmentEmployee owl:inverseOf :employee .
 
 :TechnicalEmployee rdf:type owl:Class .
 :TechnicalEmployee rdfs:label "Technical Employee" .
@@ -92,85 +94,68 @@
 :Description rdfs:domain :Task .
 :Description rdfs:range xsd:string .
 
-:projectTask rdf:type owl:ObjectProperty .
-:projectTask rdfs:domain :Task .
-:projectTask rdfs:range :Project .
-
 :Assignment rdf:type owl:Class .
 :Assignment rdfs:label "Assignment" .
 
-:employeeAssignment rdf:type owl:ObjectProperty .
-:employeeAssignment rdfs:domain :Assignment .
-:employeeAssignment rdfs:range :Employee .
+:assignmentEmployee rdf:type owl:ObjectProperty .
+:assignmentEmployee rdfs:domain :Assignment .
+:assignmentEmployee rdfs:range :Employee .
 
-:projectAssignment rdf:type owl:ObjectProperty .
-:projectAssignment rdfs:domain :Assignment .
-:projectAssignment rdfs:range :Project .
+:assignmentProject rdf:type owl:ObjectProperty .
+:assignmentProject rdfs:domain :Assignment .
+:assignmentProject rdfs:range :Project .
 
-:taskAssignment rdf:type owl:ObjectProperty .
-:taskAssignment rdfs:domain :Assignment .
-:taskAssignment rdfs:range :Task .
+:assignmentTask rdf:type owl:ObjectProperty .
+:assignmentTask rdfs:domain :Assignment .
+:assignmentTask rdfs:range :Task .
 
 :StartDate rdf:type owl:DatatypeProperty .
 :StartDate rdfs:domain :Assignment .
 :StartDate rdfs:range xsd:date .
 
-:Department owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :Manager ;
-    owl:cardinality 1 ;
-    owl:onClass :Manager
-] .
-
-:Project owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :department ;
-    owl:cardinality 1 ;
-    owl:onClass :Department
-] .
-
-:Employee owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :departmentEmployee ;
-    owl:cardinality 1 ;
-    owl:onClass :Department
-] .
-
-:Task owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :projectTask ;
-    owl:cardinality 1 ;
-    owl:onClass :Project
-] .
-
-:Assignment owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :employeeAssignment ;
-    owl:cardinality 1 ;
-    owl:onClass :Employee
-] .
-
-:Assignment owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :projectAssignment ;
-    owl:cardinality 1 ;
-    owl:onClass :Project
-] .
-
-:Assignment owl:equivalentClass [
-    rdf:type owl:Restriction ;
-    owl:onProperty :taskAssignment ;
-    owl:cardinality 1 ;
-    owl:onClass :Task
-] .
+:Employee owl:disjointWith :Department .
+:Employee owl:disjointWith :Project .
+:Employee owl:disjointWith :Task .
+:Department owl:disjointWith :Project .
+:Department owl:disjointWith :Task .
+:Project owl:disjointWith :Task .
 
 :TechnicalEmployee owl:disjointWith :AdministrativeEmployee .
 :TechnicalEmployee owl:disjointWith :Manager .
 :AdministrativeEmployee owl:disjointWith :Manager .
 
-:DepartmentID rdf:type owl:FunctionalProperty .
-:ProjectID rdf:type owl:FunctionalProperty .
-:EmployeeID rdf:type owl:FunctionalProperty .
-:TaskID rdf:type owl:FunctionalProperty .
+[ rdf:type owl:Restriction ;
+  owl:onProperty :Manager ;
+  owl:cardinality "1"^^xsd:nonNegativeInteger ;
+  rdfs:subClassOf :Department ;
+] .
 
-:Manager a owl:InverseFunctionalProperty .
+[ rdf:type owl:Restriction ;
+  owl:onProperty :department ;
+  owl:cardinality "1"^^xsd:nonNegativeInteger ;
+  rdfs:subClassOf :Project ;
+] .
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :departmentEmployee ;
+  owl:cardinality "1"^^xsd:nonNegativeInteger ;
+  rdfs:subClassOf :Employee ;
+] .
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :assignmentEmployee ;
+  owl:cardinality "1"^^xsd:nonNegativeInteger ;
+  rdfs:subClassOf :Assignment ;
+] .
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :assignmentProject ;
+  owl:cardinality "1"^^xsd:nonNegativeInteger ;
+  rdfs:subClassOf :Assignment ;
+] .
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :assignmentTask ;
+  owl:cardinality "1"^^xsd:nonNegativeInteger ;
+  rdfs:subClassOf :Assignment ;
+] .

@@ -5,147 +5,125 @@
 @prefix : <http://example.org/ontology#> .
 
 :Person rdf:type owl:Class .
+:Person rdfs:label "Person"@en .
+
 :NIF rdf:type owl:DatatypeProperty ;
     rdfs:domain :Person ;
-    rdfs:range xsd:int .
+    rdfs:range xsd:string .
+
 :email rdf:type owl:DatatypeProperty ;
     rdfs:domain :Person ;
-    rdfs:range xsd:string .
+    rdfs:range xsd:string ;
+    owl:FunctionalProperty .
+
 :first_name rdf:type owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:string .
+
 :roleType rdf:type owl:DatatypeProperty ;
     rdfs:domain :Person ;
     rdfs:range xsd:string .
-:employee_salary rdf:type owl:DatatypeProperty ;
-    rdfs:domain :Person ;
-    rdfs:range xsd:decimal .
-:consultant_hourly_rate rdf:type owl:DatatypeProperty ;
-    rdfs:domain :Person ;
-    rdfs:range xsd:decimal .
 
 :Employee rdf:type owl:Class ;
     rdfs:subClassOf :Person ;
     owl:equivalentClass [ rdf:type owl:Restriction ;
                           owl:onProperty :roleType ;
                           owl:hasValue "Employee" ] .
+
 :Consultant rdf:type owl:Class ;
     rdfs:subClassOf :Person ;
     owl:equivalentClass [ rdf:type owl:Restriction ;
                           owl:onProperty :roleType ;
                           owl:hasValue "Consultant" ] .
 
-:mentors rdf:type owl:ObjectProperty ;
+:employee_salary rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:decimal .
+
+:consultant_hourly_rate rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Consultant ;
+    rdfs:range xsd:decimal .
+
+:Mentor rdf:type owl:ObjectProperty ;
     rdfs:domain :Person ;
     rdfs:range :Person .
-:mentee rdf:type owl:ObjectProperty ;
-    owl:inverseOf :mentors .
 
-:Mentors rdf:type owl:Class ;
-    owl:equivalentClass [ rdf:type owl:Restriction ;
-                          owl:onProperty :mentors ;
-                          owl:minCardinality 1 ] .
+:Mentee rdf:type owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :Mentor .
+
+:mentors rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :Mentor ;
+    owl:inverseOf :mentees .
+
+:mentees rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :Mentee .
 
 :PersonMentorship rdf:type owl:Class ;
     owl:equivalentClass [ rdf:type owl:Restriction ;
                           owl:onProperty :mentors ;
-                          owl:onClass :Person ;
-                          owl:qualifiedCardinality 1 ] .
+                          owl:minCardinality 0 ;
+                          owl:maxCardinality 1 ] .
 
-:worksWith rdf:type owl:ObjectProperty ;
-    rdfs:domain :Person ;
-    rdfs:range :Company .
+:mentors rdf:type owl:FunctionalProperty .
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :mentors ;
+  owl:allValuesFrom :Person ] rdfs:subClassOf :Person .
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :mentees ;
+  owl:allValuesFrom :Person ] rdfs:subClassOf :Person .
 
 :Company rdf:type owl:Class .
 :NIFCompany rdf:type owl:DatatypeProperty ;
     rdfs:domain :Company ;
     rdfs:range xsd:string .
+
 :company_name rdf:type owl:DatatypeProperty ;
     rdfs:domain :Company ;
     rdfs:range xsd:string .
+
 :hasLocation rdf:type owl:ObjectProperty ;
     rdfs:domain :Company ;
     rdfs:range :Location .
 
 :Location rdf:type owl:Class .
+
 :street rdf:type owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
+
 :city rdf:type owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
+
 :province rdf:type owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
+
 :coordinates rdf:type owl:DatatypeProperty ;
     rdfs:domain :Location ;
     rdfs:range xsd:string .
 
-:EmployeeWorksWithCompany rdf:type owl:Class ;
-    owl:equivalentClass [ rdf:type owl:Restriction ;
-                          owl:onProperty :worksWith ;
-                          owl:onClass :Company ;
-                          owl:minCardinality 0 ] .
+:worksWith rdf:type owl:ObjectProperty ;
+    rdfs:domain :Person ;
+    rdfs:range :Company .
 
-:ConsultantWorksWithCompany rdf:type owl:Class ;
-    owl:equivalentClass [ rdf:type owl:Restriction ;
-                          owl:onProperty :worksWith ;
-                          owl:onClass :Company ;
-                          owl:minCardinality 0 ] .
+:worksFor rdf:type owl:ObjectProperty ;
+    rdfs:domain :Company ;
+    rdfs:range :Person ;
+    owl:inverseOf :worksWith .
 
-:Person owl:disjointUnionOf (:Employee :Consultant) .
+[ rdf:type owl:Restriction ;
+  owl:onProperty :worksWith ;
+  owl:allValuesFrom :Company ] rdfs:subClassOf :Person .
 
-[ rdf:type owl:AllDisjointClasses ;
-  owl:members ( :Employee :Consultant ) ] .
+[ rdf:type owl:Restriction ;
+  owl:onProperty :worksFor ;
+  owl:allValuesFrom :Person ] rdfs:subClassOf :Company .
 
-:mentors rdf:type owl:IrreflexiveProperty .
-:mentors rdf:type owl:AsymmetricProperty .
-
-:worksWith rdf:type owl:SymmetricProperty .
-
-:Person rdf:type owl:Class ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :NIF ;
-                      owl:cardinality 1 ] ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :email ;
-                      owl:maxCardinality 1 ] .
-
-:Company rdf:type owl:Class ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :NIFCompany ;
-                      owl:cardinality 1 ] ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :hasLocation ;
-                      owl:cardinality 1 ] .
-
-:Location rdf:type owl:Class ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :street ;
-                      owl:maxCardinality 1 ] ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :city ;
-                      owl:maxCardinality 1 ] ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :province ;
-                      owl:maxCardinality 1 ] ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :coordinates ;
-                      owl:maxCardinality 1 ] .
-
-:WorksWith rdf:type owl:Class ;
-    owl:equivalentClass [ rdf:type owl:Restriction ;
-                          owl:onProperty :worksWith ;
-                          owl:minCardinality 1 ] .
-
-:Employee rdf:type owl:Class ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :employee_salary ;
-                      owl:minCardinality 0 ;
-                      owl:maxCardinality 1 ] .
-
-:Consultant rdf:type owl:Class ;
-    rdfs:subClassOf [ rdf:type owl:Restriction ;
-                      owl:onProperty :consultant_hourly_rate ;
-                      owl:minCardinality 0 ;
-                      owl:maxCardinality 1 ] .
+:Person owl:disjointWith :Company .
+:Person owl:disjointWith :Location .
+:Company owl:disjointWith :Location .
