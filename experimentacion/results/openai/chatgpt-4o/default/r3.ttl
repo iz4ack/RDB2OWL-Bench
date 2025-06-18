@@ -1,48 +1,49 @@
-@prefix : <http://example.org/ontology#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix :     <http://example.com/territory#> .
 
-#################################################################
-# Classes
-#################################################################
+: a owl:Ontology .
 
-:Territory a owl:Class .
+### Classes
+:Territory a owl:Class ;
+    owl:disjointWith :TerritoryRelation .
 
-#################################################################
-# Object Properties
-#################################################################
+:TerritoryRelation a owl:Class .
 
-:isPartOf a owl:ObjectProperty ;
+### Subclasses (Territory types)
+:Country a owl:Class ; rdfs:subClassOf :Territory .
+:Region a owl:Class ; rdfs:subClassOf :Territory .
+:Province a owl:Class ; rdfs:subClassOf :Territory .
+:Locality a owl:Class ; rdfs:subClassOf :Territory .
+
+### Object Properties
+:partOf a owl:ObjectProperty ;
     rdfs:domain :Territory ;
     rdfs:range :Territory ;
-    owl:propertyDisjointWith :hasPart .
+    owl:inverseOf :hasPart ;
+    owl:propertyDisjointWith :bordersWith .
 
 :hasPart a owl:ObjectProperty ;
     rdfs:domain :Territory ;
-    rdfs:range :Territory ;
-    owl:inverseOf :isPartOf .
+    rdfs:range :Territory .
 
 :bordersWith a owl:ObjectProperty ;
+    a owl:SymmetricProperty ;
     rdfs:domain :Territory ;
-    rdfs:range :Territory ;
-    owl:SymmetricProperty true ;
-    owl:IrreflexiveProperty true .
+    rdfs:range :Territory .
 
-#################################################################
-# Data Properties
-#################################################################
-
-:hasTerritoryID a owl:DatatypeProperty ;
+### Datatype Properties
+:territoryID a owl:DatatypeProperty , owl:FunctionalProperty ;
     rdfs:domain :Territory ;
-    rdfs:range xsd:integer .
+    rdfs:range xsd:int .
 
-:hasTerritoryName a owl:DatatypeProperty ;
+:territoryName a owl:DatatypeProperty ;
     rdfs:domain :Territory ;
     rdfs:range xsd:string .
 
-:hasTerritoryType a owl:DatatypeProperty ;
+:territoryType a owl:DatatypeProperty ;
     rdfs:domain :Territory ;
     rdfs:range xsd:string ;
     owl:oneOf (
@@ -50,4 +51,29 @@
         "region"^^xsd:string
         "province"^^xsd:string
         "locality"^^xsd:string
+    ) .
+
+### Restrictions
+:NoSelfReference a owl:Class ;
+    owl:intersectionOf (
+        :Territory
+        [ a owl:Class ;
+          owl:complementOf [
+              a owl:Restriction ;
+              owl:onProperty :partOf ;
+              owl:hasSelf true
+          ]
+        ]
+    ) .
+
+:NoSelfBorder a owl:Class ;
+    owl:intersectionOf (
+        :Territory
+        [ a owl:Class ;
+          owl:complementOf [
+              a owl:Restriction ;
+              owl:onProperty :bordersWith ;
+              owl:hasSelf true
+          ]
+        ]
     ) .
