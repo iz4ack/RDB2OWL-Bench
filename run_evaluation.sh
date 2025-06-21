@@ -9,7 +9,7 @@ python eval.py --gen-dir experimentacion/results/google/gemma-3-27b-it/default
 echo "Evaluating Llama-4-Maverick-17B-128E-Instruct..."
 python eval.py --gen-dir experimentacion/results/meta-llama/Llama-4-Maverick-17B-128E-Instruct/default
 
-echo "Evaluating Llama-4-Maverick-17B-128E-Instruct..."
+echo "Evaluating Llama-3.3-70B-Instruct..."
 python eval.py --gen-dir experimentacion/results/meta-llama/Llama-3.3-70B-Instruct/default
 
 echo "Evaluating chatgpt-4o..."

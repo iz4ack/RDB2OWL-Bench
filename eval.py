@@ -3,7 +3,7 @@ import sys
 import argparse
 import csv
 from metrics import (   
-    literal_f1, fuzzy_f1, continuous_f1, graph_f1, motif_distance, ttl_to_graph
+    literal_f1, fuzzy_f1, continuous_f1, graph_f1, motif_distance, ttl_to_graph, resource_f1
 )
 from chokepoints import get_basic_subgraph
 from tqdm import tqdm
@@ -63,7 +63,8 @@ def main():
                     "fuzzy_P": 0, "fuzzy_R": 0, "fuzzy_F1": 0,
                     "cont_P": 0, "cont_R": 0, "cont_F1": 0,
                     "graph_P": 0, "graph_R": 0, "graph_F1": 0,
-                    "motif_dist": 0
+                    "motif_dist": 0,
+                    "resource_P": 0, "resource_R": 0, "resource_F1": 0
                 })
                 continue
             
@@ -79,6 +80,7 @@ def main():
                 cP, cR, cF = continuous_f1(G_sys_cp, G_gold_cp)
                 gP, gR, gF = graph_f1(G_sys_cp, G_gold_cp)
                 m_dist = motif_distance(G_sys_cp, G_gold_cp)
+                resourceP, resourceR, resourceF = resource_f1(G_sys_cp, G_gold_cp)
 
                 writer.writerow({
                     "file": f"{fname} ({name})",
@@ -86,7 +88,8 @@ def main():
                     "fuzzy_P": f"{fzP:.4f}", "fuzzy_R": f"{fzR:.4f}", "fuzzy_F1": f"{fzF:.4f}",
                     "cont_P": f"{cP:.4f}", "cont_R": f"{cR:.4f}", "cont_F1": f"{cF:.4f}",
                     "graph_P": f"{gP:.4f}", "graph_R": f"{gR:.4f}", "graph_F1": f"{gF:.4f}",
-                    "motif_dist": f"{m_dist:.4f}"
+                    "motif_dist": f"{m_dist:.4f}",
+                    "resource_P": f"{resourceP:.4f}", "resource_R": f"{resourceR:.4f}", "resource_F1": f"{resourceF:.4f}"
                 })
                 #print(f"\nEvaluated {fname} (chokepoint {i})")
     print(f"\nEvaluation completed. Results in {args.output_csv}")

@@ -428,33 +428,6 @@ def motif_distance(G1_nx: nx.DiGraph,
     tvd = 0.5 * np.abs(p_dist - q_dist).sum()
     return tvd
 
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python script.py generatedOntology.ttl goldStandardOntology.ttl")
-        sys.exit(1)
-
-    ttl_file1 = sys.argv[1]
-    ttl_file2 = sys.argv[2]
-
-    G1 = ttl_to_graph(ttl_file1)
-    G2 = ttl_to_graph(ttl_file2)
-
-    # Metrics
-    precisionLiteral, recallLiteral, f1Literal = literal_f1(G1, G2)
-    pFuzzy, rFuzzy, f1Fuzzy = fuzzy_f1(G1, G2)
-    pCont, rCont, f1Cont = continuous_f1(G1, G2)
-    pGraph, rGraph, f1Graph = graph_f1(G1, G2)
-    mDistance = motif_distance(G1, G2)
-
-    print(f"Literal       : P={precisionLiteral:.4f} R={recallLiteral:.4f} F1={f1Literal:.4f}")
-    print(f"Fuzzy F1      : P={pFuzzy:.4f} R={rFuzzy:.4f} F1={f1Fuzzy:.4f}")
-    print(f"Continuous F1 : P={pCont:.4f} R={rCont:.4f} F1={f1Cont:.4f}")
-    print(f"Graph F1      : P={pGraph:.4f} R={rGraph:.4f} F1={f1Graph:.4f}")
-    print(f"Motif distance: {mDistance:.4f}")
-
-
-
 _CAMEL_RE = re.compile(r'(?<!^)(?=[A-Z])')
 
 def _local(txt: str) -> str:
@@ -614,3 +587,31 @@ def resource_f1(
     recall    = scont / len(nodes_true)
     f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
     return precision, recall, f1
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python script.py generatedOntology.ttl goldStandardOntology.ttl")
+        sys.exit(1)
+
+    ttl_file1 = sys.argv[1]
+    ttl_file2 = sys.argv[2]
+
+    G1 = ttl_to_graph(ttl_file1)
+    G2 = ttl_to_graph(ttl_file2)
+
+    # Metrics
+    precisionLiteral, recallLiteral, f1Literal = literal_f1(G1, G2)
+    pFuzzy, rFuzzy, f1Fuzzy = fuzzy_f1(G1, G2)
+    pCont, rCont, f1Cont = continuous_f1(G1, G2)
+    pGraph, rGraph, f1Graph = graph_f1(G1, G2)
+    mDistance = motif_distance(G1, G2)
+    pResource, rResource, f1Resource = resource_f1(G1, G2)
+
+    print(f"Literal       : P={precisionLiteral:.4f} R={recallLiteral:.4f} F1={f1Literal:.4f}")
+    print(f"Fuzzy F1      : P={pFuzzy:.4f} R={rFuzzy:.4f} F1={f1Fuzzy:.4f}")
+    print(f"Continuous F1 : P={pCont:.4f} R={rCont:.4f} F1={f1Cont:.4f}")
+    print(f"Graph F1      : P={pGraph:.4f} R={rGraph:.4f} F1={f1Graph:.4f}")
+    print(f"Motif distance: {mDistance:.4f}")
+    print(f"Resource F1   : P={pResource:.4f} R={rResource:.4f} F1={f1Resource:.4f}")
+
