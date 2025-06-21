@@ -9,6 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 from sentence_transformers import SentenceTransformer
+import re
 
 torch = __import__('torch')
 from torch_geometric.nn import SGConv
@@ -451,3 +452,165 @@ if __name__ == "__main__":
     print(f"Continuous F1 : P={pCont:.4f} R={rCont:.4f} F1={f1Cont:.4f}")
     print(f"Graph F1      : P={pGraph:.4f} R={rGraph:.4f} F1={f1Graph:.4f}")
     print(f"Motif distance: {mDistance:.4f}")
+
+
+
+_CAMEL_RE = re.compile(r'(?<!^)(?=[A-Z])')
+
+def _local(txt: str) -> str:
+    """
+    Extrae el nombre local de un URI, separa camelCase/PascalCase,
+    reemplaza guiones bajos y pasa a minúsculas.
+    """
+    if '#' in txt:
+        txt = txt.split('#')[-1]
+    elif '/' in txt:
+        txt = txt.split('/')[-1]
+    return _CAMEL_RE.sub(' ', txt).replace('_', ' ').lower().strip()
+
+# --- 1) convertir cada entidad en texto natural --------------------------------
+def _collect_entity_texts(G: nx.DiGraph) -> dict:
+    ent_texts = {}
+
+    for node in G.nodes():
+        if not any(d.get("predicate") == rdflib.RDF.type
+                   for _, _, d in G.out_edges(node, data=True)):
+            continue
+
+        name_txt = _local(str(node))
+        parts = []
+        axiomas = set()
+
+        for _, obj, data in G.out_edges(node, data=True):
+            pred_txt = _local(str(data.get("predicate")))
+            obj_txt  = _local(str(obj))
+            parts.append(f"{pred_txt} {obj_txt}")
+            axiomas.add((pred_txt, obj_txt))
+        
+        ent_texts[node] = {
+            "name": name_txt,
+            "atributos": axiomas
+        }
+
+    return ent_texts
+
+def _sim_atributos(model:SentenceTransformer, ai: dict, aj: dict, threshold: float = 0.9) -> dict:
+    """
+    Calcula:
+    - Similitud semántica promedio entre atributos con el mismo predicado.
+    - F1-score basado en similitud de predicados.
+    
+    Parámetros:
+    - ai: dict con predicados y objetos (predicciones)
+    - aj: dict con predicados y objetos (reales)
+    - umbral_sim: valor a partir del cual una similitud se considera verdadera positiva
+
+    Retorna F1-score.
+    """
+    from sklearn.metrics.pairwise import cosine_similarity
+    import numpy as np
+
+    # Agrupar objetos por predicado
+    ai_dict = {}
+    aj_dict = {}
+
+    for p, o in ai:
+        ai_dict.setdefault(p, []).append(o)
+    for p, o in aj:
+        aj_dict.setdefault(p, []).append(o)
+
+    pred_ai = set(ai_dict.keys())
+    pred_aj = set(aj_dict.keys())
+    pred_comunes = pred_ai & pred_aj
+    pred_solo_ai = pred_ai - pred_aj
+    pred_solo_aj = pred_aj - pred_ai
+
+    similitudes = []
+    tp_sim = 0  # suma de similitudes consideradas verdaderos positivos
+
+    for pred in pred_comunes:
+        objs_ai = ai_dict[pred]
+        objs_aj = aj_dict[pred]
+
+        frases_ai = [f"{pred} {o}" for o in objs_ai]
+        frases_aj = [f"{pred} {o}" for o in objs_aj]
+
+        emb_ai = model.encode(frases_ai, normalize_embeddings=True)
+        emb_aj = model.encode(frases_aj, normalize_embeddings=True)
+
+        sim_matrix = cosine_similarity(emb_ai, emb_aj)
+
+        # Similitud promedio máxima entre los objetos
+        max_pred = sim_matrix.max(axis=1)
+        max_true = sim_matrix.max(axis=0)
+        score = (max_pred.mean() + max_true.mean()) / 2
+
+        similitudes.append(score)
+
+        if score >= threshold:
+            tp_sim += 1
+
+    # Cálculo de métricas
+    fp = len(pred_solo_ai)
+    fn = len(pred_solo_aj)
+
+    precision = tp_sim / (tp_sim + fp) if (tp_sim + fp) > 0 else 0
+    recall = tp_sim / (tp_sim + fn) if (tp_sim + fn) > 0 else 0
+    f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0
+    return f1
+
+
+def resource_f1(
+    G_pred: nx.DiGraph,
+    G_true: nx.DiGraph,
+    model_name: str = 'all-MiniLM-L6-v2',
+    threshold: float = 0.85,
+) -> tuple[float, float, float]:
+    """
+    Calcula (precision, recall, F1) continuos entre dos ontologías OWL
+    modeladas como nx.DiGraph.
+    Args:
+        G_pred, G_true: ontologías de predicción y de referencia.
+        model_name: SentenceTransformer a utilizar.
+        threshold: descarta parejas con sim < threshold antes del conteo.
+
+    Returns:
+        (precision, recall, F1)
+    """
+    ent_pred = _collect_entity_texts(G_pred)
+    ent_true = _collect_entity_texts(G_true)
+
+    if not ent_pred or not ent_true:
+        return 0.0, 0.0, 0.
+
+    nodes_pred = list(ent_pred.keys())
+    nodes_true = list(ent_true.keys())
+
+    # --- 2.1 embeddings --------------------------------------------------------
+    model = SentenceTransformer(model_name)
+
+    names_pred = [ent_pred[n]["name"] for n in nodes_pred]
+    names_true = [ent_true[n]["name"] for n in nodes_true]
+
+    emb_name_pred = model.encode(names_pred, normalize_embeddings=True)
+    emb_name_true = model.encode(names_true, normalize_embeddings=True)
+
+    # --- 2.2 matriz de similitud ----------------------------------------------
+    S = cosine_similarity(emb_name_pred, emb_name_true)
+
+    
+    # --- 3) emparejamiento Húngaro sobre coste = 1 - S -------------------------
+    row_ind, col_ind = linear_sum_assignment(1 - S)
+    entMatched = [
+        (ent_pred[nodes_pred[i]], ent_true[nodes_true[j]], S[i, j])
+        for i, j in zip(row_ind, col_ind)
+    ]
+    scont = 0
+    for n in range(len(entMatched)):
+        if entMatched[n][2] > threshold:
+            scont += _sim_atributos(model, entMatched[n][0]["atributos"], entMatched[n][0]["atributos"])
+
+    precision = scont / len(nodes_pred)
+    recall    = scont / len(nodes_true)
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) else 0.0
+    return precision, recall, f1
