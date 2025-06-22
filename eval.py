@@ -27,7 +27,8 @@ def main():
             "fuzzy_P", "fuzzy_R", "fuzzy_F1",
             "cont_P", "cont_R", "cont_F1",
             "graph_P", "graph_R", "graph_F1",
-            "motif_dist"
+            "motif_dist", 
+            "resource_P", "resource_R", "resource_F1"
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
