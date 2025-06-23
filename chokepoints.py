@@ -9,7 +9,7 @@ BASIC = {
         "rdf_type_objects": {
             "owl:Class",
             "owl:DatatypeProperty",
-            "owl:DatatypeProperty"
+            "owl:ObjectProperty",
         }
     }
 }

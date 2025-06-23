@@ -64,7 +64,7 @@ def main():
                     "fuzzy_P": 0, "fuzzy_R": 0, "fuzzy_F1": 0,
                     "cont_P": 0, "cont_R": 0, "cont_F1": 0,
                     "graph_P": 0, "graph_R": 0, "graph_F1": 0,
-                    "motif_dist": 0,
+                    "motif_dist": 1,
                     "resource_P": 0, "resource_R": 0, "resource_F1": 0
                 })
                 continue
