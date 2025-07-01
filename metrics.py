@@ -442,7 +442,7 @@ def _local(txt: str) -> str:
     return _CAMEL_RE.sub(' ', txt).replace('_', ' ').lower().strip()
 
 # --- 1) convertir cada entidad en texto natural --------------------------------
-def _collect_entity_texts(G: nx.DiGraph) -> dict:
+def _collect_resource_texts(G: nx.DiGraph) -> dict:
     ent_texts = {}
 
     for node in G.nodes():
@@ -537,7 +537,7 @@ def resource_f1(
     G_pred: nx.DiGraph,
     G_true: nx.DiGraph,
     model_name: str = 'all-MiniLM-L6-v2',
-    threshold: float = 0.85,
+    threshold: float = 0.6,
 ) -> tuple[float, float, float]:
     """
     Calcula (precision, recall, F1) continuos entre dos ontologías OWL
@@ -550,8 +550,8 @@ def resource_f1(
     Returns:
         (precision, recall, F1)
     """
-    ent_pred = _collect_entity_texts(G_pred)
-    ent_true = _collect_entity_texts(G_true)
+    ent_pred = _collect_resource_texts(G_pred)
+    ent_true = _collect_resource_texts(G_true)
 
     if not ent_pred or not ent_true:
         return 0.0, 0.0, 0.
@@ -581,7 +581,7 @@ def resource_f1(
     scont = 0
     for n in range(len(entMatched)):
         if entMatched[n][2] > threshold:
-            scont += _sim_atributos(model, entMatched[n][0]["atributos"], entMatched[n][0]["atributos"])
+            scont += _sim_atributos(model, entMatched[n][0]["atributos"], entMatched[n][1]["atributos"])
 
     precision = scont / len(nodes_pred)
     recall    = scont / len(nodes_true)
