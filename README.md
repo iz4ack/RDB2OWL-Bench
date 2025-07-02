@@ -49,7 +49,7 @@ pixi install
 ```
 
 ## Scripts Usage
-# === eval.py ===
+# === Evaluation ===
 Evaluates a folder of generated ontologies against gold standards using multiple metrics
 
 python eval.py --gen-dir <generated_ontologies_folder> \
@@ -60,7 +60,7 @@ Example:
 python eval.py --gen-dir experimentacion/results/my-model/default
 
 
-# === ontologyGenerator.py ===
+# === Ontology Generation ===
 Generates OWL ontologies (Turtle) from SQL schemas using an LLM via Hugging Face
 
 python experimentacion/ontologyGenerator.py \
@@ -83,7 +83,7 @@ python experimentacion/ontologyGenerator.py \
   --log-file generation_log.csv
 
 
-# === metrics.py ===
+# === Metrics ===
 Evaluates a single pair of ontologies: one generated and one gold standard
 
 python metrics.py <generatedOntology.ttl> <goldStandardOntology.ttl>
